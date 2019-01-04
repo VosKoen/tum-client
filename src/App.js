@@ -15,20 +15,20 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-          <header className="App-header">
-            {/* <HeaderContainer /> */}
+          <header>
+            <HeaderContainer />
           </header>
           <nav>
-            {/* <NavContainer /> */}
+            <NavContainer />
           </nav>
           <main>
-            {/* <Route exact path="/" component={RecipeViewContainer} />
-            <Route exact path="/recipe-form" component={RecipeFormContainer} /> */}
+            <Route exact path="/" component={RecipeViewContainer} />
+            <Route exact path="/recipe-form" component={RecipeFormContainer} />
             <Route exact path="/logon" component={LogonContainer} />
-            {/* <Route exact path="/signup" component={SignupContainer} /> */}
+            <Route exact path="/signup" component={SignupContainer} />
           </main>
           <footer>
-            {/* <FooterContainer /> */}
+            <FooterContainer />
           </footer>
         </div>
       </Router>
