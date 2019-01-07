@@ -10,8 +10,16 @@ export default function RecipeContent(props) {
       <div className="recipe-description">
         {props.recipe.description}
       </div>
-      <div className='recipe-ingredients' />
-      <div className='recipe-steps' />
+      <div className='recipe-ingredients'>
+      <ul>
+      {props.recipe.ingredients.map(ingredient => <li key={ingredient.id}>{ingredient.name}</li>)}
+        </ul>
+      </div>
+      <div className='recipe-steps'>
+      <ul>
+      {props.recipe.steps.map(step => <li key={step.id}>{step.description}</li>)}
+        </ul>
+      </div>
     </div>
   );
 
