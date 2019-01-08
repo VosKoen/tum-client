@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import RecipeImage from './RecipeImage'
-import RecipeContent from './RecipeContent'
+import RecipeView from './RecipeView'
 
 import { getRandomRecipe } from '../../actions/recipes'
 
@@ -14,8 +13,7 @@ class RecipeViewContainer extends React.PureComponent {
   render() {
     return (
       <div>
-          <RecipeImage />
-          <RecipeContent recipe={this.props.recipe} />
+          <RecipeView recipe={this.props.recipe} />
       </div>
     );
   }
