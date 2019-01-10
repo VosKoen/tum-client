@@ -26,6 +26,7 @@ const styles = theme => ({
     card: {
         maxWidth: 400,
       },
+      recipeImage: {}
 })
 
 const mapStateToProps = state => ({
