@@ -2,6 +2,8 @@ import * as React from "react";
 import { connect } from "react-redux";
 import Header from './Header'
 
+import { withStyles } from "@material-ui/core/styles";
+
 class HeaderContainer extends React.PureComponent {
 
 
@@ -14,7 +16,10 @@ class HeaderContainer extends React.PureComponent {
   }
 }
 
+const styles = theme => ({
+})
+
 const mapStateToProps = state => ({
 });
 
-export default connect(mapStateToProps)(HeaderContainer);
+export default withStyles(styles)(connect(mapStateToProps)(HeaderContainer));

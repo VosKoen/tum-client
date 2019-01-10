@@ -1,6 +1,8 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
+import { withStyles } from "@material-ui/core/styles";
+
 class FooterContainer extends React.PureComponent {
 
 
@@ -13,7 +15,10 @@ class FooterContainer extends React.PureComponent {
   }
 }
 
+const styles = theme => ({
+})
+
 const mapStateToProps = state => ({
 });
 
-export default connect(mapStateToProps)(FooterContainer);
+export default withStyles(styles)(connect(mapStateToProps)(FooterContainer));

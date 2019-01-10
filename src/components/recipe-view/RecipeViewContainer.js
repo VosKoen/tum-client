@@ -1,6 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import RecipeView from './RecipeView'
+import { withStyles } from "@material-ui/core/styles";
 
 import { getRandomRecipe } from '../../actions/recipes'
 
@@ -11,16 +12,25 @@ class RecipeViewContainer extends React.PureComponent {
   }
 
   render() {
+   const {classes} = this.props
+
     return (
       <div>
-          <RecipeView recipe={this.props.recipe} />
+          <RecipeView recipe={this.props.recipe} classes={classes} />
       </div>
     );
   }
 }
 
+const styles = theme => ({
+    card: {
+        maxWidth: 400,
+      },
+})
+
 const mapStateToProps = state => ({
   recipe: state.recipe
 });
 
-export default connect(mapStateToProps, {getRandomRecipe})(RecipeViewContainer);
+
+export default withStyles(styles)(connect(mapStateToProps, {getRandomRecipe})(RecipeViewContainer));

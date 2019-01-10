@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import LogonContainer from "./components/logon/LogonContainer";
 import SignupContainer from "./components/signup/SignupContainer";
 import NavContainer from "./components/navigation/NavContainer";
-import HeaderContainer from "./components/header/HeaderContainer";
+// import HeaderContainer from "./components/header/HeaderContainer";
 import FooterContainer from "./components/footer/FooterContainer";
 import RecipeFormContainer from "./components/recipe-form/RecipeFormContainer";
 import RecipeViewContainer from "./components/recipe-view/RecipeViewContainer";
@@ -16,9 +16,9 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-          <header>
+          {/* <header>
             <HeaderContainer />
-          </header>
+          </header> */}
           <nav>
             <NavContainer />
           </nav>
