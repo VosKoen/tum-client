@@ -1,16 +1,18 @@
 import * as React from "react";
 import Card from "@material-ui/core/Card";
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-
+import CardHeader from "@material-ui/core/CardHeader";
+import CardMedia from "@material-ui/core/CardMedia";
+import CardContent from "@material-ui/core/CardContent";
+import Typography from "@material-ui/core/Typography";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
 
 export default function RecipeView(props) {
-    const {classes, recipe} = props
+  const { classes, recipe } = props;
   if (recipe.title)
     return (
       <Card className={classes.card}>
-        <CardHeader title={recipe.title}/>
+        <CardHeader title={recipe.title} />
         <CardMedia
           component="img"
           className={classes.recipeImage}
@@ -18,21 +20,48 @@ export default function RecipeView(props) {
           title={recipe.title}
         />
         <CardContent>
-        <div className="recipe-description">{recipe.description}</div>
-        <div className="recipe-ingredients">
-          <ul>
+          <Typography variant="h6" align="left">
+            Description
+          </Typography>
+          <Typography
+            component="p"
+            className={classes.recipeDescription}
+            align="left"
+          >
+            {recipe.description}
+          </Typography>
+          <Typography variant="h6" align="left">
+            Ingredients
+          </Typography>
+          <List>
             {recipe.ingredients.map(ingredient => (
-              <li key={ingredient.id}>{ingredient.name}</li>
+              <ListItem key={ingredient.id} disableGutters="true">
+                <Typography
+                  component="p"
+                  className={classes.recipeIngredients}
+                  align="left"
+                >
+                  {ingredient.name}
+                </Typography>
+              </ListItem>
             ))}
-          </ul>
-        </div>
-        <div className="recipe-steps">
-          <ul>
-            {recipe.steps.map(step => (
-              <li key={step.id}>{step.description}</li>
-            ))}
-          </ul>
-        </div>
+          </List>
+          <Typography variant="h6" align="left">
+            Steps
+          </Typography>
+            <List>
+              {recipe.steps.map(step => (
+                <ListItem key={step.id} disableGutters="true">
+                  <Typography
+                    component="p"
+                    className={classes.recipeSteps}
+                    align="left"
+                  >
+                    {step.description}
+                  </Typography>
+                </ListItem>
+              ))}
+            </List>
         </CardContent>
       </Card>
     );

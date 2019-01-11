@@ -4,12 +4,24 @@ import Navbar from "./Navbar";
 import { withStyles } from "@material-ui/core/styles";
 
 class NavContainer extends React.PureComponent {
+  state = {
+    anchorEl: null,
+  };
+
+  handleClick = event => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
+
+  handleClose = () => {
+    this.setState({ anchorEl: null });
+  };
+
   render() {
     const { classes } = this.props;
 
     return (
       <div>
-        <Navbar classes={classes} />
+        <Navbar classes={classes} handleClick={this.handleClick} handleClose={this.handleClose} anchorEl={this.state.anchorEl} />
       </div>
     );
   }
