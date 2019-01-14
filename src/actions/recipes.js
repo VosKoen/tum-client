@@ -1,7 +1,7 @@
 import * as request from "superagent";
 import { baseUrl } from "../constants";
 import { logout } from "./users";
-import { isExpired } from "../jwt";
+import { isExpired, userId } from "../jwt";
 
 export const SET_RANDOM_RECIPE = "SET_RANDOM_RECIPE";
 export const SET_MY_RECIPES = "SET_MY_RECIPES";
@@ -49,12 +49,11 @@ export const getMyRecipes = () => async (dispatch, getState) => {
 
   if (isExpired(jwt)) dispatch(logout())
   
-  const userId = state.user.id;
+  const user = userId(jwt);
 
   await request
-    .get(`${baseUrl}/users/${userId}/recipes`)
+    .get(`${baseUrl}/users/${user}/recipes`)
     .then(result => {
-      console.log(result.body)
       dispatch(setMyRecipes(result.body));
     })
     .catch(err => console.error(err));
