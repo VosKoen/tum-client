@@ -42,16 +42,19 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
     .catch(err => console.error(err));
 };
 
-export const getMyRecipes = userId => async (dispatch, getState) => {
+export const getMyRecipes = () => async (dispatch, getState) => {
   const state = getState();
   if (!state.user) return null;
   const jwt = state.user.jwt;
 
   if (isExpired(jwt)) dispatch(logout())
   
+  const userId = state.user.id;
+
   await request
     .get(`${baseUrl}/users/${userId}/recipes`)
     .then(result => {
+      console.log(result.body)
       dispatch(setMyRecipes(result.body));
     })
     .catch(err => console.error(err));

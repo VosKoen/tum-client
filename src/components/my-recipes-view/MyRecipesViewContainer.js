@@ -9,7 +9,7 @@ import { getMyRecipes } from "../../actions/recipes";
 class MyRecipesViewContainer extends React.PureComponent {
   componentDidMount() {
     if(this.props.user)
-    this.props.getMyRecipes(this.props.user.id);
+    this.props.getMyRecipes();
   }
 
   render() {
@@ -17,9 +17,9 @@ class MyRecipesViewContainer extends React.PureComponent {
     if (!this.props.user) return <Redirect to="/logon" />;
 
     return (
-      <div>
+
         <MyRecipesView myRecipes={myRecipes} classes={classes} />
-      </div>
+
     );
   }
 }
