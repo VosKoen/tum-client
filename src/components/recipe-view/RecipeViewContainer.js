@@ -12,7 +12,7 @@ class RecipeViewContainer extends React.PureComponent {
 
   render() {
     const { classes } = this.props;
-
+    
     return (
       <div>
         <RecipeView recipe={this.props.recipe} classes={classes} />
