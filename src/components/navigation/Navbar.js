@@ -3,12 +3,19 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 import Typography from "@material-ui/core/Typography";
+import { Link } from "react-router-dom";
 
 export default function Navbar(props) {
-  const { classes, handleClick, handleClose, anchorEl } = props;
+  const {
+    classes,
+    handleClick,
+    handleClose,
+    handleClickLogout,
+    anchorEl
+  } = props;
   return (
     <AppBar position="static">
       <Toolbar>
@@ -28,9 +35,14 @@ export default function Navbar(props) {
           onClose={handleClose}
         >
           <MenuItem onClick={handleClose}>Profile</MenuItem>
-          <MenuItem onClick={handleClose}>My recipes</MenuItem>
-          <MenuItem onClick={handleClose}>Logout</MenuItem>
-          </Menu>
+          <Link to={"/my-recipes"}>
+            <MenuItem onClick={handleClose}>My recipes</MenuItem>
+          </Link>
+          <Link to={"/"}>
+            <MenuItem onClick={handleClose}>Cook!</MenuItem>
+          </Link>
+          <MenuItem onClick={handleClickLogout}>Logout</MenuItem>
+        </Menu>
         <Typography variant="h1" className={classes.header}>
           Tum
         </Typography>

@@ -9,7 +9,7 @@ import NavContainer from "./components/navigation/NavContainer";
 import FooterContainer from "./components/footer/FooterContainer";
 import RecipeFormContainer from "./components/recipe-form/RecipeFormContainer";
 import RecipeViewContainer from "./components/recipe-view/RecipeViewContainer";
-
+import MyRecipesViewContainer from "./components/my-recipes-view/MyRecipesViewContainer";
 
 class App extends Component {
   render() {
@@ -25,6 +25,11 @@ class App extends Component {
           <main>
             <Route exact path="/" component={RecipeViewContainer} />
             <Route exact path="/recipe-form" component={RecipeFormContainer} />
+            <Route
+              exact
+              path="/my-recipes"
+              component={MyRecipesViewContainer}
+            />
             <Route exact path="/logon" component={LogonContainer} />
             <Route exact path="/signup" component={SignupContainer} />
           </main>

@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import RecipeView from "./RecipeView";
 import { withStyles } from "@material-ui/core/styles";
-
+import { Redirect } from "react-router-dom";
 import { getRandomRecipe } from "../../actions/recipes";
 
 class RecipeViewContainer extends React.PureComponent {
@@ -12,7 +12,7 @@ class RecipeViewContainer extends React.PureComponent {
 
   render() {
     const { classes } = this.props;
-    
+    if (!this.props.user) return <Redirect to="/logon" />
     return (
       <div>
         <RecipeView recipe={this.props.recipe} classes={classes} />
@@ -35,7 +35,8 @@ const styles = theme => ({
 });
 
 const mapStateToProps = state => ({
-  recipe: state.recipe
+  recipe: state.recipe,
+  user: state.user,
 });
 
 export default withStyles(styles)(

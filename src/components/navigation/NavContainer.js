@@ -2,6 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import Navbar from "./Navbar";
 import { withStyles } from "@material-ui/core/styles";
+import { logout } from "../../actions/users";
 
 class NavContainer extends React.PureComponent {
   state = {
@@ -16,14 +17,18 @@ class NavContainer extends React.PureComponent {
     this.setState({ anchorEl: null });
   };
 
+  handleClickLogout = () => {
+    this.props.dispatch(logout())
+    this.handleClose()
+  }
+
   render() {
     const { classes } = this.props;
 
-    return (
-      <div>
-        <Navbar classes={classes} handleClick={this.handleClick} handleClose={this.handleClose} anchorEl={this.state.anchorEl} />
-      </div>
+    if(this.props.user) return (
+        <Navbar classes={classes} handleClick={this.handleClick} handleClose={this.handleClose} handleClickLogout={this.handleClickLogout} anchorEl={this.state.anchorEl} />
     );
+    return (<div />)
   }
 }
 
@@ -36,6 +41,8 @@ const styles = theme => ({
   }
 });
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  user: state.user
+});
 
 export default withStyles(styles)(connect(mapStateToProps)(NavContainer));

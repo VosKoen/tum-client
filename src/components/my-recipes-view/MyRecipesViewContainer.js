@@ -8,7 +8,8 @@ import { getMyRecipes } from "../../actions/recipes";
 
 class MyRecipesViewContainer extends React.PureComponent {
   componentDidMount() {
-    this.props.getMyRecipes(userId);
+    if(this.props.user)
+    this.props.getMyRecipes(this.props.user.id);
   }
 
   render() {
@@ -34,5 +35,5 @@ export default withStyles(styles)(
   connect(
     mapStateToProps,
     { getMyRecipes }
-  )(MyRecipesContainer)
+  )(MyRecipesViewContainer)
 );
