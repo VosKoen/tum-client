@@ -25,9 +25,14 @@ const styles = theme => ({
   card: {
     maxWidth: '80%',
     margin: 'auto'},
-  recipeImage: {},
+  recipeImage: {
+    maxWidth: '50%',
+    height: '100%'
+  },
   recipeDescription: {
-
+    display: 'flex',
+  },
+  descriptionContent: {
   },
   recipeIngredients: {
   },

@@ -35,10 +35,10 @@ export default function Navbar(props) {
           onClose={handleClose}
         >
           <MenuItem onClick={handleClose}>Profile</MenuItem>
-          <Link to={"/my-recipes"}>
+          <Link to={"/my-recipes"} style={{ textDecoration: 'none' }}>
             <MenuItem onClick={handleClose}>My recipes</MenuItem>
           </Link>
-          <Link to={"/"}>
+          <Link to={"/"} style={{ textDecoration: 'none' }}>
             <MenuItem onClick={handleClose}>Cook!</MenuItem>
           </Link>
           <MenuItem onClick={handleClickLogout}>Logout</MenuItem>

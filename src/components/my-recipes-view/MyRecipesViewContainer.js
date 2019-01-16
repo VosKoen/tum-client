@@ -24,7 +24,16 @@ class MyRecipesViewContainer extends React.PureComponent {
   }
 }
 
-const styles = theme => ({});
+const styles = theme => ({
+  myRecipes: {
+    width: '80%',
+    margin: 'auto'
+  },
+  myRecipesHeader: {
+    display: "flex",
+    justifyContent: 'space-between'
+  }
+});
 
 const mapStateToProps = state => ({
   myRecipes: state.myRecipes,

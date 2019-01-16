@@ -12,24 +12,29 @@ export default function RecipeView(props) {
   if (recipe.title)
     return (
       <Card className={classes.card}>
-        <CardHeader title={recipe.title} />
-        <CardMedia
-          component="img"
-          className={classes.recipeImage}
-          image={recipe.imageUrl}
-          title={recipe.title}
-        />
-        <CardContent>
-          <Typography variant="h6" align="left">
+        <div className={classes.recipeDescription}>
+          <CardMedia
+            component="img"
+            className={classes.recipeImage}
+            image={recipe.imageUrl}
+            title={recipe.title}
+          />
+          <div className={classes.descriptionContent}>
+            {/* <CardHeader title={recipe.title} /> */}
+            <Typography variant="h4">
+              {recipe.title}
+              </Typography>
+            <CardContent className={classes.descriptionContent}>
+              {/* <Typography variant="h6" align="left">
             Description
-          </Typography>
-          <Typography
-            component="p"
-            className={classes.recipeDescription}
-            align="left"
-          >
-            {recipe.description}
-          </Typography>
+          </Typography> */}
+              <Typography component="p" align="left">
+                {recipe.description}
+              </Typography>
+            </CardContent>
+          </div>
+        </div>
+        <CardContent>
           <Typography variant="h6" align="left">
             Ingredients
           </Typography>
@@ -49,19 +54,19 @@ export default function RecipeView(props) {
           <Typography variant="h6" align="left">
             Steps
           </Typography>
-            <List>
-              {recipe.steps.map(step => (
-                <ListItem key={step.id} disableGutters={true}>
-                  <Typography
-                    component="p"
-                    className={classes.recipeSteps}
-                    align="left"
-                  >
-                    {step.description}
-                  </Typography>
-                </ListItem>
-              ))}
-            </List>
+          <List>
+            {recipe.steps.map(step => (
+              <ListItem key={step.id} disableGutters={true}>
+                <Typography
+                  component="p"
+                  className={classes.recipeSteps}
+                  align="left"
+                >
+                  {step.description}
+                </Typography>
+              </ListItem>
+            ))}
+          </List>
         </CardContent>
       </Card>
     );
