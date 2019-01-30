@@ -81,7 +81,7 @@ class RecipeFormContainer extends React.PureComponent {
   state = {
     suggestions: [],
     ingredientOpen: false,
-    single:''
+    single:'',
   };
 
   handleSuggestionsFetchRequested = ({ value }) => {

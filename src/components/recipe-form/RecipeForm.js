@@ -16,7 +16,9 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-import {amountTypes} from "../../constants";
+import { amountTypes } from "../../constants";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
 
 export default function RecipeForm(props) {
   const {
@@ -99,7 +101,7 @@ export default function RecipeForm(props) {
             <FormControl component="fieldset">
               <RadioGroup
                 aria-label="amount-type"
-                name="amount-type"
+                name="amountType"
                 value={state.amountType}
                 onChange={handleChange}
               >
@@ -114,18 +116,92 @@ export default function RecipeForm(props) {
               </RadioGroup>
             </FormControl>
             <TextField
-          id="amount-number"
-          value={state.amountNumber}
-          onChange={handleChange}
-          type="number"
-          margin="normal"
-          required
-
-        />
-        <Typography>
-          {}
-        </Typography>
-
+              id="amount-number"
+              value={state.amountNumber}
+              onChange={handleChange}
+              type="number"
+              margin="normal"
+              required
+            />
+            {state.amountType === "1" ? (
+              amountTypes.find(type => type.id === 1).units.length > 0 ? (
+                <FormControl>
+                  <InputLabel>
+                    {amountTypes.find(type => type.id === 1).name}
+                  </InputLabel>
+                  <Select
+                    native
+                    value={state[amountTypes.find(type => type.id === 1).name]}
+                    onChange={handleChange}
+                    inputProps={{
+                      name: amountTypes.find(type => type.id === 1).name,
+                      id: amountTypes.find(type => type.id === 1).name
+                    }}
+                  >
+                    {amountTypes
+                      .find(type => type.id === 1)
+                      .units.map(unit => (
+                        <option value={unit}>{unit}</option>
+                      ))}
+                  </Select>
+                </FormControl>
+              ) : (
+                <div />
+              )
+            ) : state.amountType === "2" ? (
+              amountTypes.find(type => type.id === 2).units.length > 0 ? (
+                <FormControl>
+                  <InputLabel>
+                    {amountTypes.find(type => type.id === 2).name}
+                  </InputLabel>
+                  <Select
+                    native
+                    value={state[amountTypes.find(type => type.id === 2).name]}
+                    onChange={handleChange}
+                    inputProps={{
+                      name: amountTypes.find(type => type.id === 2).name,
+                      id: amountTypes.find(type => type.id === 2).name
+                    }}
+                  >
+                    {amountTypes
+                      .find(type => type.id === 2)
+                      .units.map(unit => (
+                        <option value={unit}>{unit}</option>
+                      ))}
+                  </Select>
+                </FormControl>
+              ) : (
+                <div />
+              )
+            ) : state.amountType === "3" ? (
+              amountTypes.find(type => type.id === 3).units.length > 0 ? (
+                <FormControl>
+                  <InputLabel>
+                    {amountTypes.find(type => type.id === 3).name}
+                  </InputLabel>
+                  <Select
+                    native
+                    value={state[amountTypes.find(type => type.id === 3).name]}
+                    onChange={handleChange}
+                    inputProps={{
+                      name: amountTypes.find(type => type.id === 3).name,
+                      id: amountTypes.find(type => type.id === 3).name
+                    }}
+                  >
+                    {amountTypes
+                      .find(type => type.id === 3)
+                      .units.map(unit => (
+                        <option value={unit}>{unit}</option>
+                      ))}
+                  </Select>
+                </FormControl>
+              ) : (
+                <div />
+              )
+            ) : (
+              <Typography>No choice yet</Typography>
+            )}
+            <Typography>{state.single}</Typography>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleIngredientClose} color="primary">

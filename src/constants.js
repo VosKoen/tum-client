@@ -6,15 +6,18 @@ export const localStorageJwtKey = "currentUserJwt";
 export const amountTypes = [
     {
       id: 1,
-      name: "amount"
+      name: "amount",
+      units: []
     },
     {
       id: 2,
-      name: "volume"
+      name: "volume",
+      units: [ "ml.", "l."]
     },
     {
       id: 3,
-      name: "weight"
+      name: "weight",
+      units: ["kg.","gr."]
     }
   ];
 
