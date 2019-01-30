@@ -36,6 +36,7 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
     })
     .catch(err => console.error(err));
 
+
   await request
     .get(`${baseUrl}/recipes/${recipeId}/images/random`)
     .then(result => dispatch(setRecipeImage(result.body.imageUrl)))

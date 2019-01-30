@@ -12,7 +12,6 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleChange = event => {
-    console.log(event.target.name)
     const { name, value } = event.target;
     this.setState({
       [name]: value
@@ -22,14 +21,16 @@ class RecipeFormContainer extends React.PureComponent {
 
 
   render() {
-    const { classes } = this.props;
-    return <RecipeForm classes={classes} handleSubmit={this.handleSubmit} handleChange={this.handleChange} state={this.state} />;
+    const { classes, myRecipe } = this.props;
+    return <RecipeForm classes={classes} handleSubmit={this.handleSubmit} handleChange={this.handleChange} state={this.state} myRecipe={myRecipe} />;
   }
 }
 
 const styles = theme => ({});
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  myRecipe: state.myRecipe
+});
 
 export default withStyles(styles)(
   connect(mapStateToProps)(RecipeFormContainer)

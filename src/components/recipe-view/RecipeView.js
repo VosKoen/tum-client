@@ -39,7 +39,7 @@ export default function RecipeView(props) {
             Ingredients
           </Typography>
           <List>
-            {recipe.ingredients.map(ingredient => (
+            {recipe.recipeIngredients.map(ingredient => (
               <ListItem key={ingredient.id} disableGutters={true}>
                 <Typography
                   component="p"
