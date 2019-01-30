@@ -1,6 +1,5 @@
 import * as React from "react";
 import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
@@ -16,7 +15,7 @@ export default function RecipeView(props) {
           <CardMedia
             component="img"
             className={classes.recipeImage}
-            image={recipe.imageUrl}
+            src={recipe.imageUrl}
             title={recipe.title}
           />
           <div className={classes.descriptionContent}>
@@ -39,7 +38,7 @@ export default function RecipeView(props) {
             Ingredients
           </Typography>
           <List>
-            {recipe.recipeIngredients.map(ingredient => (
+            {recipe.ingredientDetails.map(ingredient => (
               <ListItem key={ingredient.id} disableGutters={true}>
                 <Typography
                   component="p"

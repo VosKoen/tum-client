@@ -6,6 +6,7 @@ import { isExpired, userId } from "../jwt";
 export const SET_RANDOM_RECIPE = "SET_RANDOM_RECIPE";
 export const SET_MY_RECIPES = "SET_MY_RECIPES";
 export const SET_RECIPE_IMAGE = "SET_RECIPE_IMAGE";
+export const ADD_NEW_INGREDIENT = "ADD_NEW_INGREDIENT";
 
 const setRandomRecipe = recipe => {
   return { type: SET_RANDOM_RECIPE, payload: recipe };
@@ -19,13 +20,17 @@ const setRecipeImage = imageUrl => {
   return { type: SET_RECIPE_IMAGE, payload: { imageUrl } };
 };
 
+const addNewIngredient = ingredient => {
+  return { type: ADD_NEW_INGREDIENT, payload: { ingredient } };
+};
+
 export const getRandomRecipe = () => async (dispatch, getState) => {
   const state = getState();
   if (!state.user) return null;
   const jwt = state.user.jwt;
 
   if (isExpired(jwt)) return dispatch(logout());
-  
+
   let recipeId;
 
   await request
@@ -35,7 +40,6 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
       dispatch(setRandomRecipe(result.body));
     })
     .catch(err => console.error(err));
-
 
   await request
     .get(`${baseUrl}/recipes/${recipeId}/images/random`)
@@ -48,8 +52,8 @@ export const getMyRecipes = () => async (dispatch, getState) => {
   if (!state.user) return null;
   const jwt = state.user.jwt;
 
-  if (isExpired(jwt)) dispatch(logout())
-  
+  if (isExpired(jwt)) dispatch(logout());
+
   const user = userId(jwt);
 
   await request

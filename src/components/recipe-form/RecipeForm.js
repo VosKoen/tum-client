@@ -6,9 +6,30 @@ import Paper from "@material-ui/core/Paper";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Autosuggest from "react-autosuggest";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
+import {amountTypes} from "../../constants";
 
 export default function RecipeForm(props) {
-  const { classes, handleSubmit, handleChange, state, myRecipe } = props;
+  const {
+    classes,
+    handleSubmit,
+    handleChange,
+    state,
+    myRecipe,
+    handleIngredientOpen,
+    handleIngredientClose,
+    autosuggestProps,
+    handleAutosuggestChange
+  } = props;
   return (
     <Paper>
       <form onSubmit={handleSubmit}>
@@ -42,9 +63,79 @@ export default function RecipeForm(props) {
           variant="contained"
           color="secondary"
           className={classes.button}
+          onClick={handleIngredientOpen}
         >
           Add new ingredient
         </Button>
+        <Dialog
+          fullScreen
+          open={state.ingredientOpen}
+          onClose={handleIngredientClose}
+          aria-labelledby="responsive-dialog-title"
+        >
+          <DialogTitle>{"Add new ingredient"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText />
+            <Autosuggest
+              {...autosuggestProps}
+              inputProps={{
+                classes,
+                placeholder: "Search for an ingredient",
+                value: state.single,
+                onChange: handleAutosuggestChange("single")
+              }}
+              theme={{
+                container: classes.container,
+                suggestionsContainerOpen: classes.suggestionsContainerOpen,
+                suggestionsList: classes.suggestionsList,
+                suggestion: classes.suggestion
+              }}
+              renderSuggestionsContainer={options => (
+                <Paper {...options.containerProps} square>
+                  {options.children}
+                </Paper>
+              )}
+            />
+            <FormControl component="fieldset">
+              <RadioGroup
+                aria-label="amount-type"
+                name="amount-type"
+                value={state.amountType}
+                onChange={handleChange}
+              >
+                {amountTypes.map((amountType, index) => (
+                  <FormControlLabel
+                    key={index}
+                    value={amountType.id.toString()}
+                    control={<Radio />}
+                    label={amountType.name}
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
+            <TextField
+          id="amount-number"
+          value={state.amountNumber}
+          onChange={handleChange}
+          type="number"
+          margin="normal"
+          required
+
+        />
+        <Typography>
+          {}
+        </Typography>
+
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleIngredientClose} color="primary">
+              Add ingredient
+            </Button>
+            <Button onClick={handleIngredientClose} color="primary">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
         <List>
           {myRecipe.ingredients.map(ingredient => (
             <ListItem key={ingredient.id} disableGutters={true}>
