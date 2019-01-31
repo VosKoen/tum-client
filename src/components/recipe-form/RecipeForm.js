@@ -172,7 +172,7 @@ export default function RecipeForm(props) {
                     {amountTypes
                       .find(type => type.id === 2)
                       .units.map(unit => (
-                        <option value={unit}>{unit}</option>
+                        <option key={unit} value={unit}>{unit}</option>
                       ))}
                   </Select>
                 </FormControl>
