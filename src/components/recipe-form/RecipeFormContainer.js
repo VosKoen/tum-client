@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import RecipeForm from "./RecipeForm";
-import deburr from 'lodash/deburr';
+import deburr from "lodash/deburr";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
 import { ingredientNames } from "../../constants";
@@ -53,7 +53,6 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
 }
 
 function getSuggestions(value) {
-
   const inputValue = deburr(value.trim()).toLowerCase();
   const inputLength = inputValue.length;
   let count = 0;
@@ -81,12 +80,34 @@ class RecipeFormContainer extends React.PureComponent {
   state = {
     suggestions: [],
     ingredientOpen: false,
-    single:'',
+    single: "",
+    nosuggestions: false,
+    ingredientSelected: false
+  };
+
+  handleIngredientSelected = value => {
+    let ingredientSelected = false;
+    const suggestions = getSuggestions(value);
+
+    if (
+      suggestions.length > 0 &&
+      suggestions.find(
+        suggestion => suggestion.name.toLowerCase() === value.toLowerCase()
+      )
+    )
+      ingredientSelected = true;
+
+    this.setState({
+      ingredientSelected
+    });
   };
 
   handleSuggestionsFetchRequested = ({ value }) => {
+    const suggestions = getSuggestions(value);
+
     this.setState({
-      suggestions: getSuggestions(value)
+      suggestions,
+      nosuggestions: suggestions.length === 0 && value.length > 0
     });
   };
 
@@ -112,13 +133,14 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleIngredientClose = () => {
-    this.setState({ ingredientOpen: false,
-    single: ""});
+    this.setState({ ingredientOpen: false, single: "" });
   };
 
   handleAutosuggestChange = name => (event, { newValue }) => {
+    this.handleIngredientSelected(newValue);
+
     this.setState({
-      [name]: newValue,
+      [name]: newValue
     });
   };
 

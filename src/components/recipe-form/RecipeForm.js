@@ -77,7 +77,6 @@ export default function RecipeForm(props) {
         >
           <DialogTitle>{"Add new ingredient"}</DialogTitle>
           <DialogContent>
-            <DialogContentText />
             <Autosuggest
               {...autosuggestProps}
               inputProps={{
@@ -98,6 +97,13 @@ export default function RecipeForm(props) {
                 </Paper>
               )}
             />
+            {
+              state.nosuggestions ? 
+            <DialogContentText>
+              Please select an existing ingredient from the list.
+            </DialogContentText>
+            : ""
+            }
             <FormControl component="fieldset">
               <RadioGroup
                 aria-label="amount-type"
@@ -198,9 +204,8 @@ export default function RecipeForm(props) {
               ) : (
                 <div />
               )
-            ) : (
-              <Typography>No choice yet</Typography>
-            )}
+            ) : 
+            ""}
             <Typography>{state.single}</Typography>
           </DialogContent>
           <DialogActions>
