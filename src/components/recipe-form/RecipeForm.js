@@ -20,6 +20,36 @@ import { amountTypes } from "../../constants";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 
+function renderIngredientAmountType(state, handleChange) {
+
+  const amountType = parseInt(state.amountType);
+  const selectedAmountType = amountTypes.find(type => type.id === amountType);
+
+  if (state.amountType !== undefined && selectedAmountType.units.length > 0)
+    return (
+      <FormControl>
+        <InputLabel>{selectedAmountType.name}</InputLabel>
+        <Select
+          native
+          value={state[selectedAmountType.name]}
+          onChange={handleChange}
+          inputProps={{
+            name: selectedAmountType.name,
+            id: selectedAmountType.name
+          }}
+        >
+          {selectedAmountType.units.map(unit => (
+            <option key={unit} value={unit}>
+              {unit}
+            </option>
+          ))}
+        </Select>
+      </FormControl>
+    );
+
+  return <div />;
+}
+
 export default function RecipeForm(props) {
   const {
     classes,
@@ -32,6 +62,9 @@ export default function RecipeForm(props) {
     autosuggestProps,
     handleAutosuggestChange
   } = props;
+
+  const ingredientAmountType = renderIngredientAmountType(state, handleChange);
+
   return (
     <Paper>
       <form onSubmit={handleSubmit}>
@@ -97,13 +130,16 @@ export default function RecipeForm(props) {
                 </Paper>
               )}
             />
-            {
-              state.nosuggestions ? 
-            <DialogContentText>
-              Please select an existing ingredient from the list.
-            </DialogContentText>
-            : ""
-            }
+            {state.nosuggestions ? (
+              <DialogContentText>
+                Please select an existing ingredient from the list.
+              </DialogContentText>
+            ) : (
+              ""
+            )}
+{            state.ingredientSelected ?
+
+<div>
             <FormControl component="fieldset">
               <RadioGroup
                 aria-label="amount-type"
@@ -129,84 +165,14 @@ export default function RecipeForm(props) {
               margin="normal"
               required
             />
-            {state.amountType === "1" ? (
-              amountTypes.find(type => type.id === 1).units.length > 0 ? (
-                <FormControl>
-                  <InputLabel>
-                    {amountTypes.find(type => type.id === 1).name}
-                  </InputLabel>
-                  <Select
-                    native
-                    value={state[amountTypes.find(type => type.id === 1).name]}
-                    onChange={handleChange}
-                    inputProps={{
-                      name: amountTypes.find(type => type.id === 1).name,
-                      id: amountTypes.find(type => type.id === 1).name
-                    }}
-                  >
-                    {amountTypes
-                      .find(type => type.id === 1)
-                      .units.map(unit => (
-                        <option value={unit}>{unit}</option>
-                      ))}
-                  </Select>
-                </FormControl>
-              ) : (
-                <div />
-              )
-            ) : state.amountType === "2" ? (
-              amountTypes.find(type => type.id === 2).units.length > 0 ? (
-                <FormControl>
-                  <InputLabel>
-                    {amountTypes.find(type => type.id === 2).name}
-                  </InputLabel>
-                  <Select
-                    native
-                    value={state[amountTypes.find(type => type.id === 2).name]}
-                    onChange={handleChange}
-                    inputProps={{
-                      name: amountTypes.find(type => type.id === 2).name,
-                      id: amountTypes.find(type => type.id === 2).name
-                    }}
-                  >
-                    {amountTypes
-                      .find(type => type.id === 2)
-                      .units.map(unit => (
-                        <option key={unit} value={unit}>{unit}</option>
-                      ))}
-                  </Select>
-                </FormControl>
-              ) : (
-                <div />
-              )
-            ) : state.amountType === "3" ? (
-              amountTypes.find(type => type.id === 3).units.length > 0 ? (
-                <FormControl>
-                  <InputLabel>
-                    {amountTypes.find(type => type.id === 3).name}
-                  </InputLabel>
-                  <Select
-                    native
-                    value={state[amountTypes.find(type => type.id === 3).name]}
-                    onChange={handleChange}
-                    inputProps={{
-                      name: amountTypes.find(type => type.id === 3).name,
-                      id: amountTypes.find(type => type.id === 3).name
-                    }}
-                  >
-                    {amountTypes
-                      .find(type => type.id === 3)
-                      .units.map(unit => (
-                        <option value={unit}>{unit}</option>
-                      ))}
-                  </Select>
-                </FormControl>
-              ) : (
-                <div />
-              )
-            ) : 
-            ""}
+            
+            {ingredientAmountType}
             <Typography>{state.single}</Typography>
+            </div>
+            :
+            <div />
+          }
+                
           </DialogContent>
           <DialogActions>
             <Button onClick={handleIngredientClose} color="primary">
