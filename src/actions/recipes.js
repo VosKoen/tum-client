@@ -21,7 +21,18 @@ const setRecipeImage = imageUrl => {
 };
 
 const addNewIngredient = ingredient => {
-  return { type: ADD_NEW_INGREDIENT, payload: { ingredient } };
+
+  return { type: ADD_NEW_INGREDIENT, payload: ingredient };
+};
+
+export const addIngredientToRecipe = ingredient => (dispatch, getState) => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  if (isExpired(jwt)) return dispatch(logout());
+  
+  dispatch(addNewIngredient(ingredient));
 };
 
 export const getRandomRecipe = () => async (dispatch, getState) => {
@@ -52,7 +63,7 @@ export const getMyRecipes = () => async (dispatch, getState) => {
   if (!state.user) return null;
   const jwt = state.user.jwt;
 
-  if (isExpired(jwt)) dispatch(logout());
+  if (isExpired(jwt)) return dispatch(logout());
 
   const user = userId(jwt);
 
