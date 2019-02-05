@@ -66,7 +66,9 @@ export default function RecipeForm(props) {
     handleIngredientAdd,
     handleStepOpen,
     handleStepClose,
-    handleStepAdd
+    handleStepAdd,
+    handleCancelSubmit,
+    handleIngredientDelete
   } = props;
 
   const ingredientAmountType = renderIngredientAmountType(state, handleChange);
@@ -119,7 +121,7 @@ export default function RecipeForm(props) {
               <ListItemText>{ingredient.amountNumber}</ListItemText>
               <ListItemText>{ingredient.unit}</ListItemText>
               <ListItemText>{ingredient.name}</ListItemText>
-              <ListItemSecondaryAction>
+              <ListItemSecondaryAction onClick={() => handleIngredientDelete(ingredient.ingredientId)}>
                 <IconButton aria-label="Delete">
                   <DeleteIcon />
                 </IconButton>
@@ -138,8 +140,8 @@ export default function RecipeForm(props) {
           Add new step
         </Button>
         <List>
-          {myRecipe.steps.map(step => (
-            <ListItem key={step.id} disableGutters={true}>
+          {myRecipe.steps.map((step, index) => (
+            <ListItem key={index} disableGutters={true}>
               <ListItemText>{step.description}</ListItemText>
             </ListItem>
           ))}
@@ -153,6 +155,15 @@ export default function RecipeForm(props) {
         >
           Submit recipe
         </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          onClick={handleCancelSubmit}
+        >
+          Cancel
+        </Button>
+
 
         <Dialog
           fullScreen

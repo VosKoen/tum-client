@@ -8,6 +8,7 @@ export const SET_MY_RECIPES = "SET_MY_RECIPES";
 export const SET_RECIPE_IMAGE = "SET_RECIPE_IMAGE";
 export const ADD_NEW_INGREDIENT = "ADD_NEW_INGREDIENT";
 export const ADD_NEW_STEP = "ADD_NEW_STEP";
+export const DELETE_INGREDIENT = "DELETE_INGREDIENT";
 
 const setRandomRecipe = recipe => {
   return { type: SET_RANDOM_RECIPE, payload: recipe };
@@ -22,12 +23,17 @@ const setRecipeImage = imageUrl => {
 };
 
 const addNewIngredient = ingredient => {
-
   return { type: ADD_NEW_INGREDIENT, payload: ingredient };
 };
 
-const addNewStep = step => {
+const deleteIngredient = id => {
+  return {
+    type: DELETE_INGREDIENT,
+    payload: id
+  };
+};
 
+const addNewStep = step => {
   return { type: ADD_NEW_STEP, payload: step };
 };
 
@@ -37,8 +43,21 @@ export const addIngredientToRecipe = ingredient => (dispatch, getState) => {
   const jwt = state.user.jwt;
 
   if (isExpired(jwt)) return dispatch(logout());
-  
+
   dispatch(addNewIngredient(ingredient));
+};
+
+export const removeIngredientFromRecipe = ingredientId => (
+  dispatch,
+  getState
+) => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  if (isExpired(jwt)) return dispatch(logout());
+
+  dispatch(deleteIngredient(ingredientId));
 };
 
 export const addStepToRecipe = step => (dispatch, getState) => {
@@ -47,7 +66,7 @@ export const addStepToRecipe = step => (dispatch, getState) => {
   const jwt = state.user.jwt;
 
   if (isExpired(jwt)) return dispatch(logout());
-  
+
   dispatch(addNewStep(step));
 };
 
