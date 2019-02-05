@@ -7,6 +7,7 @@ export const SET_RANDOM_RECIPE = "SET_RANDOM_RECIPE";
 export const SET_MY_RECIPES = "SET_MY_RECIPES";
 export const SET_RECIPE_IMAGE = "SET_RECIPE_IMAGE";
 export const ADD_NEW_INGREDIENT = "ADD_NEW_INGREDIENT";
+export const ADD_NEW_STEP = "ADD_NEW_STEP";
 
 const setRandomRecipe = recipe => {
   return { type: SET_RANDOM_RECIPE, payload: recipe };
@@ -25,6 +26,11 @@ const addNewIngredient = ingredient => {
   return { type: ADD_NEW_INGREDIENT, payload: ingredient };
 };
 
+const addNewStep = step => {
+
+  return { type: ADD_NEW_STEP, payload: step };
+};
+
 export const addIngredientToRecipe = ingredient => (dispatch, getState) => {
   const state = getState();
   if (!state.user) return null;
@@ -33,6 +39,16 @@ export const addIngredientToRecipe = ingredient => (dispatch, getState) => {
   if (isExpired(jwt)) return dispatch(logout());
   
   dispatch(addNewIngredient(ingredient));
+};
+
+export const addStepToRecipe = step => (dispatch, getState) => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  if (isExpired(jwt)) return dispatch(logout());
+  
+  dispatch(addNewStep(step));
 };
 
 export const getRandomRecipe = () => async (dispatch, getState) => {

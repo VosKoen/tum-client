@@ -8,7 +8,7 @@ import parse from "autosuggest-highlight/parse";
 import { ingredientNames } from "../../constants";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
-import { addIngredientToRecipe } from "../../actions/recipes";
+import { addIngredientToRecipe, addStepToRecipe } from "../../actions/recipes";
 import { Redirect } from "react-router-dom";
 
 function renderInputComponent(inputProps) {
@@ -86,7 +86,8 @@ class RecipeFormContainer extends React.PureComponent {
     nosuggestions: false,
     ingredientSelected: false,
     amountNumber: "",
-    unit: ""
+    unit: "",
+    stepOpen: false
   };
 
   handleIngredientSelected = value => {
@@ -154,6 +155,7 @@ class RecipeFormContainer extends React.PureComponent {
         ingredient => ingredient.name === this.state.ingredient
       ).id,
       amountType: this.state.amountType,
+      amountNumber: this.state.amountNumber,
       unit: this.state.unit,
       name: this.state.ingredient
     };
@@ -161,6 +163,21 @@ class RecipeFormContainer extends React.PureComponent {
     this.props.addIngredientToRecipe(ingredient);
     this.handleIngredientClose();
   };
+
+  handleStepOpen = () => {
+    this.setState({ stepOpen: true});
+  } 
+  handleStepClose = () => {
+    this.setState({ stepOpen: false});
+  } 
+  handleStepAdd = () => {
+    const step = {
+      description: this.state.stepDescription
+    }
+
+    this.props.addStepToRecipe(step)
+    this.handleStepClose()
+  } 
 
   handleAutosuggestChange = name => (event, { newValue }) => {
     this.handleIngredientSelected(newValue);
@@ -196,6 +213,9 @@ class RecipeFormContainer extends React.PureComponent {
         handleIngredientClose={this.handleIngredientClose}
         handleAutosuggestChange={this.handleAutosuggestChange}
         handleIngredientAdd={this.handleIngredientAdd}
+        handleStepOpen={this.handleStepOpen}
+        handleStepClose={this.handleStepClose}
+        handleStepAdd={this.handleStepAdd}
       />
     );
   }
@@ -230,6 +250,6 @@ const mapStateToProps = state => ({
 export default withStyles(styles)(
   connect(
     mapStateToProps,
-    { addIngredientToRecipe }
+    { addIngredientToRecipe, addStepToRecipe }
   )(RecipeFormContainer)
 );
