@@ -9,6 +9,7 @@ import { ingredientNames } from "../../constants";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import { addIngredientToRecipe } from "../../actions/recipes";
+import { Redirect } from "react-router-dom";
 
 function renderInputComponent(inputProps) {
   const { classes, inputRef = () => {}, ref, ...other } = inputProps;
@@ -132,7 +133,14 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleIngredientOpen = () => {
-    this.setState({ ingredientOpen: true });
+    this.setState({ ingredientOpen: true,
+      suggestions: [],
+      ingredient: "",
+      nosuggestions: false,
+      ingredientSelected: false,
+      amountNumber: "",
+      unit: ""
+     });
   };
 
   handleIngredientClose = () => {
@@ -174,6 +182,8 @@ class RecipeFormContainer extends React.PureComponent {
       renderSuggestion
     };
 
+    if (!this.props.user) return <Redirect to="/logon" />
+
     return (
       <RecipeForm
         classes={classes}
@@ -213,7 +223,8 @@ const styles = theme => ({
 });
 
 const mapStateToProps = state => ({
-  myRecipe: state.myRecipe
+  myRecipe: state.myRecipe,
+  user: state.user
 });
 
 export default withStyles(styles)(
