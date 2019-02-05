@@ -31,11 +31,11 @@ function renderIngredientAmountType(state, handleChange) {
         <InputLabel>{selectedAmountType.name}</InputLabel>
         <Select
           native
-          value={state[selectedAmountType.name]}
+          value={state.unit}
           onChange={handleChange}
           inputProps={{
-            name: selectedAmountType.name,
-            id: selectedAmountType.name
+            name: "unit",
+            id: "unit"
           }}
         >
           {selectedAmountType.units.map(unit => (
@@ -60,7 +60,8 @@ export default function RecipeForm(props) {
     handleIngredientOpen,
     handleIngredientClose,
     autosuggestProps,
-    handleAutosuggestChange
+    handleAutosuggestChange,
+    handleIngredientAdd
   } = props;
 
   const ingredientAmountType = renderIngredientAmountType(state, handleChange);
@@ -115,8 +116,8 @@ export default function RecipeForm(props) {
               inputProps={{
                 classes,
                 placeholder: "Search for an ingredient",
-                value: state.single,
-                onChange: handleAutosuggestChange("single")
+                value: state.ingredient,
+                onChange: handleAutosuggestChange("ingredient")
               }}
               theme={{
                 container: classes.container,
@@ -159,6 +160,7 @@ export default function RecipeForm(props) {
             </FormControl>
             <TextField
               id="amount-number"
+              name="amountNumber"
               value={state.amountNumber}
               onChange={handleChange}
               type="number"
@@ -167,7 +169,7 @@ export default function RecipeForm(props) {
             />
             
             {ingredientAmountType}
-            <Typography>{state.single}</Typography>
+            <Typography>{state.ingredient}</Typography>
             </div>
             :
             <div />
@@ -175,7 +177,7 @@ export default function RecipeForm(props) {
                 
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleIngredientClose} color="primary">
+            <Button onClick={handleIngredientAdd} color="primary">
               Add ingredient
             </Button>
             <Button onClick={handleIngredientClose} color="primary">
@@ -185,7 +187,7 @@ export default function RecipeForm(props) {
         </Dialog>
         <List>
           {myRecipe.ingredients.map(ingredient => (
-            <ListItem key={ingredient.id} disableGutters={true}>
+            <ListItem key={ingredient.ingredientId} disableGutters={true}>
               <ListItemText>{ingredient.name}</ListItemText>
             </ListItem>
           ))}

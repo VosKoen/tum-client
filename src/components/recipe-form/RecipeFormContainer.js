@@ -8,6 +8,7 @@ import parse from "autosuggest-highlight/parse";
 import { ingredientNames } from "../../constants";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
+import { addIngredientToRecipe } from "../../actions/recipes";
 
 function renderInputComponent(inputProps) {
   const { classes, inputRef = () => {}, ref, ...other } = inputProps;
@@ -80,9 +81,11 @@ class RecipeFormContainer extends React.PureComponent {
   state = {
     suggestions: [],
     ingredientOpen: false,
-    single: "",
+    ingredient: "",
     nosuggestions: false,
-    ingredientSelected: false
+    ingredientSelected: false,
+    amountNumber: "",
+    unit: ""
   };
 
   handleIngredientSelected = value => {
@@ -133,7 +136,22 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleIngredientClose = () => {
-    this.setState({ ingredientOpen: false, single: "" });
+    this.setState({ ingredientOpen: false, ingredient: "" });
+  };
+
+  handleIngredientAdd = () => {
+
+    const ingredient = {
+      ingredientId: ingredientNames.find(
+        ingredient => ingredient.name === this.state.ingredient
+      ).id,
+      amountType: this.state.amountType,
+      unit: this.state.unit,
+      name: this.state.ingredient
+    };
+
+    this.props.addIngredientToRecipe(ingredient);
+    this.handleIngredientClose();
   };
 
   handleAutosuggestChange = name => (event, { newValue }) => {
@@ -167,6 +185,7 @@ class RecipeFormContainer extends React.PureComponent {
         handleIngredientOpen={this.handleIngredientOpen}
         handleIngredientClose={this.handleIngredientClose}
         handleAutosuggestChange={this.handleAutosuggestChange}
+        handleIngredientAdd={this.handleIngredientAdd}
       />
     );
   }
@@ -198,5 +217,8 @@ const mapStateToProps = state => ({
 });
 
 export default withStyles(styles)(
-  connect(mapStateToProps)(RecipeFormContainer)
+  connect(
+    mapStateToProps,
+    { addIngredientToRecipe }
+  )(RecipeFormContainer)
 );
