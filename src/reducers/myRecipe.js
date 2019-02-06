@@ -5,10 +5,9 @@ import {
 } from "../actions/recipes";
 
 const initialState = {
-  title: null,
-  description: null,
   ingredients: [],
-  steps: []
+  steps: [],
+  image: null,
 };
 
 export default (state = initialState, action = []) => {

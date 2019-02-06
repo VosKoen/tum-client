@@ -8,7 +8,12 @@ import parse from "autosuggest-highlight/parse";
 import { ingredientNames } from "../../constants";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
-import { addIngredientToRecipe, removeIngredientFromRecipe, addStepToRecipe } from "../../actions/recipes";
+import {
+  addIngredientToRecipe,
+  removeIngredientFromRecipe,
+  addStepToRecipe,
+  addRecipe
+} from "../../actions/recipes";
 import { Redirect } from "react-router-dom";
 
 function renderInputComponent(inputProps) {
@@ -91,7 +96,8 @@ class RecipeFormContainer extends React.PureComponent {
     cancelSubmit: false,
     submitRecipe: false,
     recipeTitle: "",
-    recipeDescription: ""
+    recipeDescription: "",
+    alertIngredientAlreadyPresent: false
   };
 
   handleIngredientSelected = value => {
@@ -160,12 +166,16 @@ class RecipeFormContainer extends React.PureComponent {
       name: this.state.ingredient
     };
 
-    this.props.addIngredientToRecipe(ingredient);
+    const alert = this.props.addIngredientToRecipe(ingredient);
+    if (alert) {
+      return this.openAlert(alert);
+    }
+
     this.handleIngredientClose();
   };
 
   handleIngredientDelete = ingredientId => {
-    this.props.removeIngredientFromRecipe(ingredientId)
+    this.props.removeIngredientFromRecipe(ingredientId);
   };
 
   handleStepOpen = () => {
@@ -185,6 +195,15 @@ class RecipeFormContainer extends React.PureComponent {
 
   handleSubmit = e => {
     this.setState({ submitRecipe: true });
+
+    const recipe = {
+      title: this.state.recipeTitle,
+      description: this.state.recipeDescription,
+      recipeIngredients: this.props.myRecipe.ingredients,
+      steps: this.props.myRecipe.steps
+    };
+    this.props.addRecipe(recipe);
+
     e.preventDefault();
   };
 
@@ -197,6 +216,18 @@ class RecipeFormContainer extends React.PureComponent {
 
     this.setState({
       [name]: newValue
+    });
+  };
+
+  closeAlert = alertName => {
+    this.setState({
+      [alertName]: false
+    });
+  };
+
+  openAlert = alertName => {
+    this.setState({
+      [alertName]: true
     });
   };
 
@@ -233,6 +264,7 @@ class RecipeFormContainer extends React.PureComponent {
         handleStepAdd={this.handleStepAdd}
         handleCancelSubmit={this.handleCancelSubmit}
         handleIngredientDelete={this.handleIngredientDelete}
+        closeAlert={this.closeAlert}
       />
     );
   }
@@ -267,6 +299,11 @@ const mapStateToProps = state => ({
 export default withStyles(styles)(
   connect(
     mapStateToProps,
-    { addIngredientToRecipe, removeIngredientFromRecipe, addStepToRecipe }
+    {
+      addIngredientToRecipe,
+      removeIngredientFromRecipe,
+      addStepToRecipe,
+      addRecipe
+    }
   )(RecipeFormContainer)
 );

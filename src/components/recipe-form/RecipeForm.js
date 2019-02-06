@@ -22,6 +22,7 @@ import Select from "@material-ui/core/Select";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
+import imagePlaceholder from "../../constants"
 
 function renderIngredientAmountType(state, handleChange) {
   const amountType = parseInt(state.amountType);
@@ -68,7 +69,8 @@ export default function RecipeForm(props) {
     handleStepClose,
     handleStepAdd,
     handleCancelSubmit,
-    handleIngredientDelete
+    handleIngredientDelete,
+    closeAlert
   } = props;
 
   const ingredientAmountType = renderIngredientAmountType(state, handleChange);
@@ -117,6 +119,7 @@ export default function RecipeForm(props) {
               key={ingredient.ingredientId}
               disableGutters={true}
               onClick={() => console.log("Clicked item!")}
+              divider
             >
               <ListItemText>{ingredient.amountNumber}</ListItemText>
               <ListItemText>{ingredient.unit}</ListItemText>
@@ -141,12 +144,24 @@ export default function RecipeForm(props) {
         </Button>
         <List>
           {myRecipe.steps.map((step, index) => (
-            <ListItem key={index} disableGutters={true}>
+            <ListItem key={index} disableGutters={true} divider>
               <ListItemText>{step.description}</ListItemText>
             </ListItem>
           ))}
         </List>
 
+            <img
+            src={myRecipe.image}
+            />
+
+        <Button
+          variant="contained"
+          color="secondary"
+          className={classes.button}
+        >
+          Upload image
+        </Button>     
+          
         <Button
           variant="contained"
           color="primary"
@@ -274,6 +289,22 @@ export default function RecipeForm(props) {
             </Button>
             <Button onClick={handleStepClose} color="primary">
               Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={state.alertIngredientAlreadyPresent}
+          onClose={closeAlert}
+        >
+          <DialogContent>
+            <DialogContentText>
+              The selected ingredient is already present in the recipe. If you want to change the details of this ingredient please click on the ingredient in the recipe overview.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => closeAlert("alertIngredientAlreadyPresent")} color="primary">
+              Ok
             </Button>
           </DialogActions>
         </Dialog>
