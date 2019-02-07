@@ -1,6 +1,7 @@
 export const baseUrl = "http://localhost:4000";
 export const localStorageJwtKey = "currentUserJwt";
 
+export const imageUrl = ""
 export const imagePlaceholder = "https://ik.imagekit.io/foxAppDevImages/image-placeholder-350x350_SyVxCduEV.png"
 
 // Constants which should be retrieved somehow from the database

@@ -12,7 +12,8 @@ import {
   addIngredientToRecipe,
   removeIngredientFromRecipe,
   addStepToRecipe,
-  addRecipe
+  addRecipe,
+  uploadImage
 } from "../../actions/recipes";
 import { Redirect } from "react-router-dom";
 
@@ -97,7 +98,8 @@ class RecipeFormContainer extends React.PureComponent {
     submitRecipe: false,
     recipeTitle: "",
     recipeDescription: "",
-    alertIngredientAlreadyPresent: false
+    alertIngredientAlreadyPresent: false,
+    uploadingImage: false
   };
 
   handleIngredientSelected = value => {
@@ -231,6 +233,13 @@ class RecipeFormContainer extends React.PureComponent {
     });
   };
 
+  handleImageUpload = async e => {
+    const image = e.target.files[0];
+    this.setState({ uploadingImage: true });
+    await this.props.uploadImage(image)
+    this.setState({ uploadingImage: false });
+  };
+
   render() {
     const { classes, myRecipe } = this.props;
 
@@ -265,6 +274,7 @@ class RecipeFormContainer extends React.PureComponent {
         handleCancelSubmit={this.handleCancelSubmit}
         handleIngredientDelete={this.handleIngredientDelete}
         closeAlert={this.closeAlert}
+        handleImageUpload={this.handleImageUpload}
       />
     );
   }
@@ -303,7 +313,8 @@ export default withStyles(styles)(
       addIngredientToRecipe,
       removeIngredientFromRecipe,
       addStepToRecipe,
-      addRecipe
+      addRecipe,
+      uploadImage
     }
   )(RecipeFormContainer)
 );

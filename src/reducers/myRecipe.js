@@ -1,13 +1,15 @@
 import {
   ADD_NEW_INGREDIENT,
   ADD_NEW_STEP,
-  DELETE_INGREDIENT
+  DELETE_INGREDIENT,
+  ADD_IMAGE_TO_RECIPE
 } from "../actions/recipes";
+import { imagePlaceholder } from "../constants";
 
 const initialState = {
   ingredients: [],
   steps: [],
-  image: null,
+  image: imagePlaceholder,
 };
 
 export default (state = initialState, action = []) => {
@@ -27,6 +29,9 @@ export default (state = initialState, action = []) => {
         ingredient => ingredient.ingredientId !== action.payload
       );
       return { ...state, ingredients };
+
+    case ADD_IMAGE_TO_RECIPE:
+        return {...state, image: action.payload}
 
     default:
       return state;

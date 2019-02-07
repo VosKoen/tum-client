@@ -22,7 +22,7 @@ import Select from "@material-ui/core/Select";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
-import imagePlaceholder from "../../constants"
+
 
 function renderIngredientAmountType(state, handleChange) {
   const amountType = parseInt(state.amountType);
@@ -70,7 +70,8 @@ export default function RecipeForm(props) {
     handleStepAdd,
     handleCancelSubmit,
     handleIngredientDelete,
-    closeAlert
+    closeAlert,
+    handleImageUpload
   } = props;
 
   const ingredientAmountType = renderIngredientAmountType(state, handleChange);
@@ -133,6 +134,22 @@ export default function RecipeForm(props) {
           ))}
         </List>
 
+        <img
+            src={myRecipe.image}
+            alt='finished dish'
+            />
+
+     <Button
+          variant="contained"
+          color="secondary"
+          className={classes.button}
+          component='label'
+        >
+        Upload image
+          <input type='file' style={{ display: 'none' }} onChange={handleImageUpload} /> 
+        </Button>     
+
+
         <Typography variant="h6">Steps</Typography>
         <Button
           variant="contained"
@@ -150,17 +167,7 @@ export default function RecipeForm(props) {
           ))}
         </List>
 
-            <img
-            src={myRecipe.image}
-            />
 
-        <Button
-          variant="contained"
-          color="secondary"
-          className={classes.button}
-        >
-          Upload image
-        </Button>     
           
         <Button
           variant="contained"

@@ -1,5 +1,5 @@
 import * as request from "superagent";
-import { baseUrl, imagePlaceholder } from "../constants";
+import { baseUrl } from "../constants";
 import { logout } from "./users";
 import { isExpired, userId } from "../jwt";
 export const SET_RANDOM_RECIPE = "SET_RANDOM_RECIPE";
@@ -46,9 +46,16 @@ const addImageToRecipe = image => {
   return { type: ADD_IMAGE_TO_RECIPE, payload: image };
 };
 
-export const uploadImage = image => {
-  
-}
+export const uploadImage = image => async dispatch => {
+  console.log(image);
+
+  await request
+    .post(`${baseUrl}/images/upload`)
+    .attach('file', image)
+    .then(result => {console.log(result)
+      dispatch(addImageToRecipe(result.body.imageUrl))})
+    .catch(err => console.error(err));
+};
 
 export const addRecipe = recipe => async (dispatch, getState) => {
   const state = getState();
