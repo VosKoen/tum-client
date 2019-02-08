@@ -46,11 +46,17 @@ const addImageToRecipe = image => {
   return { type: ADD_IMAGE_TO_RECIPE, payload: image };
 };
 
-export const uploadImage = image => async dispatch => {
-  console.log(image);
+export const uploadImage = image => async (dispatch, getState) => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  const user = userId(jwt);
+
 
   await request
     .post(`${baseUrl}/images/upload`)
+    .field("userId", user)
     .attach('file', image)
     .then(result => {console.log(result)
       dispatch(addImageToRecipe(result.body.imageUrl))})
@@ -63,18 +69,19 @@ export const addRecipe = recipe => async (dispatch, getState) => {
   const jwt = state.user.jwt;
 
   const user = userId(jwt);
+  let recipeId
 
   await request
     .post(`${baseUrl}/recipes`)
     .send({ ...recipe, userId: user })
-    .then(result => (recipe = result.body))
+    .then(result => (recipeId = result.body.id))
     .catch(err => console.error(err));
-
-  if (recipe.ingredients)
-    await recipe.ingredients.map(ingredient =>
+  console.log(recipe)
+  if (recipe.recipeIngredients)
+    await recipe.recipeIngredients.map(ingredient =>
       request
         .post(
-          `${baseUrl}/recipes/${recipe.id}/ingredients/${
+          `${baseUrl}/recipes/${recipeId}/ingredients/${
             ingredient.ingredientId
           }`
         )
@@ -88,13 +95,22 @@ export const addRecipe = recipe => async (dispatch, getState) => {
   if (recipe.steps)
     await recipe.steps.map((step, index) =>
       request
-        .post(`${baseUrl}/recipes/${recipe.id}/steps`)
+        .post(`${baseUrl}/recipes/${recipeId}/steps`)
         .send({
           order: index,
           description: step.description
         })
         .catch(err => console.error(err))
     );
+
+if (recipe.image)
+await 
+request
+  .post(`${baseUrl}/recipes/${recipeId}/images`)
+  .send({
+    imageUrl: recipe.image
+  })
+  .catch(err => console.error(err));
 
   return dispatch(addNewRecipeToMyRecipes(recipe));
 };

@@ -197,13 +197,15 @@ class RecipeFormContainer extends React.PureComponent {
 
   handleSubmit = e => {
     this.setState({ submitRecipe: true });
-
+    
     const recipe = {
       title: this.state.recipeTitle,
       description: this.state.recipeDescription,
       recipeIngredients: this.props.myRecipe.ingredients,
-      steps: this.props.myRecipe.steps
+      steps: this.props.myRecipe.steps,
+      image: this.props.myRecipe.image
     };
+
     this.props.addRecipe(recipe);
 
     e.preventDefault();
