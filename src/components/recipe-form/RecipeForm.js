@@ -22,7 +22,15 @@ import Select from "@material-ui/core/Select";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
+import { FilePond, registerPlugin } from "react-filepond";
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
+import "filepond/dist/filepond.min.css";
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+
+registerPlugin(FilePondPluginImagePreview, FilePondPluginImageExifOrientation);
 
 function renderIngredientAmountType(state, handleChange) {
   const amountType = parseInt(state.amountType);
@@ -53,6 +61,12 @@ function renderIngredientAmountType(state, handleChange) {
   return <div />;
 }
 
+function renderUploadProgress(uploadingImage, image) {
+  if (uploadingImage) return <CircularProgress />;
+
+  return <img src={image} alt="finished dish" />;
+}
+
 export default function RecipeForm(props) {
   const {
     classes,
@@ -68,6 +82,7 @@ export default function RecipeForm(props) {
     handleStepOpen,
     handleStepClose,
     handleStepAdd,
+    handleStepDelete,
     handleCancelSubmit,
     handleIngredientDelete,
     closeAlert,
@@ -75,6 +90,7 @@ export default function RecipeForm(props) {
   } = props;
 
   const ingredientAmountType = renderIngredientAmountType(state, handleChange);
+  const uploadProgress = renderUploadProgress(state.uploadingImage, myRecipe.image);
 
   return (
     <Paper>
@@ -125,7 +141,9 @@ export default function RecipeForm(props) {
               <ListItemText>{ingredient.amountNumber}</ListItemText>
               <ListItemText>{ingredient.unit}</ListItemText>
               <ListItemText>{ingredient.name}</ListItemText>
-              <ListItemSecondaryAction onClick={() => handleIngredientDelete(ingredient.ingredientId)}>
+              <ListItemSecondaryAction
+                onClick={() => handleIngredientDelete(ingredient.ingredientId)}
+              >
                 <IconButton aria-label="Delete">
                   <DeleteIcon />
                 </IconButton>
@@ -134,21 +152,26 @@ export default function RecipeForm(props) {
           ))}
         </List>
 
-        <img
-            src={myRecipe.image}
-            alt='finished dish'
-            />
+        {uploadProgress}
 
-     <Button
+        <FilePond
+          allowMultiple={false}
+          onupdatefiles={(files) => handleImageUpload(files)}
+        />
+{/* 
+        <Button
           variant="contained"
           color="secondary"
           className={classes.button}
-          component='label'
+          component="label"
         >
-        Upload image
-          <input type='file' style={{ display: 'none' }} onChange={handleImageUpload} /> 
-        </Button>     
-
+          Upload image
+          <input
+            type="file"
+            style={{ display: "none" }}
+            onChange={handleImageUpload}
+          />
+        </Button> */}
 
         <Typography variant="h6">Steps</Typography>
         <Button
@@ -163,12 +186,15 @@ export default function RecipeForm(props) {
           {myRecipe.steps.map((step, index) => (
             <ListItem key={index} disableGutters={true} divider>
               <ListItemText>{step.description}</ListItemText>
+              <ListItemSecondaryAction onClick={() => handleStepDelete(index)}>
+                <IconButton aria-label="Delete">
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
             </ListItem>
           ))}
         </List>
 
-
-          
         <Button
           variant="contained"
           color="primary"
@@ -185,7 +211,6 @@ export default function RecipeForm(props) {
         >
           Cancel
         </Button>
-
 
         <Dialog
           fullScreen
@@ -300,17 +325,19 @@ export default function RecipeForm(props) {
           </DialogActions>
         </Dialog>
 
-        <Dialog
-          open={state.alertIngredientAlreadyPresent}
-          onClose={closeAlert}
-        >
+        <Dialog open={state.alertIngredientAlreadyPresent} onClose={closeAlert}>
           <DialogContent>
             <DialogContentText>
-              The selected ingredient is already present in the recipe. If you want to change the details of this ingredient please click on the ingredient in the recipe overview.
+              The selected ingredient is already present in the recipe. If you
+              want to change the details of this ingredient please click on the
+              ingredient in the recipe overview.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => closeAlert("alertIngredientAlreadyPresent")} color="primary">
+            <Button
+              onClick={() => closeAlert("alertIngredientAlreadyPresent")}
+              color="primary"
+            >
               Ok
             </Button>
           </DialogActions>

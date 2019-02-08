@@ -8,6 +8,7 @@ export const SET_RECIPE_IMAGE = "SET_RECIPE_IMAGE";
 export const ADD_NEW_INGREDIENT = "ADD_NEW_INGREDIENT";
 export const ADD_NEW_STEP = "ADD_NEW_STEP";
 export const DELETE_INGREDIENT = "DELETE_INGREDIENT";
+export const DELETE_STEP = "DELETE_STEP";
 export const ADD_NEW_RECIPE_TO_MY_RECIPES = "ADD_NEW_RECIPE_TO_MY_RECIPES";
 export const ADD_IMAGE_TO_RECIPE = "ADD_IMAGE_TO_RECIPE";
 
@@ -38,6 +39,10 @@ const addNewStep = step => {
   return { type: ADD_NEW_STEP, payload: step };
 };
 
+const deleteStep = indexStepArray => {
+  return { type: DELETE_STEP, payload: indexStepArray };
+}
+
 const addNewRecipeToMyRecipes = recipe => {
   return { type: ADD_NEW_RECIPE_TO_MY_RECIPES, payload: recipe };
 };
@@ -58,8 +63,8 @@ export const uploadImage = image => async (dispatch, getState) => {
     .post(`${baseUrl}/images/upload`)
     .field("userId", user)
     .attach('file', image)
-    .then(result => {console.log(result)
-      dispatch(addImageToRecipe(result.body.imageUrl))})
+    .then(result =>
+      dispatch(addImageToRecipe(result.body.imageUrl)))
     .catch(err => console.error(err));
 };
 
@@ -76,7 +81,7 @@ export const addRecipe = recipe => async (dispatch, getState) => {
     .send({ ...recipe, userId: user })
     .then(result => (recipeId = result.body.id))
     .catch(err => console.error(err));
-  console.log(recipe)
+
   if (recipe.recipeIngredients)
     await recipe.recipeIngredients.map(ingredient =>
       request
@@ -154,6 +159,19 @@ export const addStepToRecipe = step => (dispatch, getState) => {
   if (isExpired(jwt)) return dispatch(logout());
 
   return dispatch(addNewStep(step));
+};
+
+export const removeStepFromRecipe = indexStepArray => (
+  dispatch,
+  getState
+) => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  if (isExpired(jwt)) return dispatch(logout());
+
+  return dispatch(deleteStep(indexStepArray));
 };
 
 export const getRandomRecipe = () => async (dispatch, getState) => {

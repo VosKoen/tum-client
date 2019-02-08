@@ -12,6 +12,7 @@ import {
   addIngredientToRecipe,
   removeIngredientFromRecipe,
   addStepToRecipe,
+  removeStepFromRecipe,
   addRecipe,
   uploadImage
 } from "../../actions/recipes";
@@ -183,9 +184,11 @@ class RecipeFormContainer extends React.PureComponent {
   handleStepOpen = () => {
     this.setState({ stepOpen: true, stepDescription: "" });
   };
+
   handleStepClose = () => {
     this.setState({ stepOpen: false });
   };
+
   handleStepAdd = () => {
     const step = {
       description: this.state.stepDescription
@@ -195,9 +198,13 @@ class RecipeFormContainer extends React.PureComponent {
     this.handleStepClose();
   };
 
+  handleStepDelete = indexStepArray => {
+    this.props.removeStepFromRecipe(indexStepArray);
+  };
+
   handleSubmit = e => {
     this.setState({ submitRecipe: true });
-    
+
     const recipe = {
       title: this.state.recipeTitle,
       description: this.state.recipeDescription,
@@ -235,10 +242,17 @@ class RecipeFormContainer extends React.PureComponent {
     });
   };
 
-  handleImageUpload = async e => {
-    const image = e.target.files[0];
+  // handleImageUpload = async e => {
+  //   const image = e.target.files[0];
+  //   this.setState({ uploadingImage: true });
+  //   await this.props.uploadImage(image)
+  //   this.setState({ uploadingImage: false });
+  // };
+
+  handleImageUpload = async files => {
     this.setState({ uploadingImage: true });
-    await this.props.uploadImage(image)
+
+    await files.map(fileItem => this.props.uploadImage(fileItem.file));
     this.setState({ uploadingImage: false });
   };
 
@@ -273,6 +287,7 @@ class RecipeFormContainer extends React.PureComponent {
         handleStepOpen={this.handleStepOpen}
         handleStepClose={this.handleStepClose}
         handleStepAdd={this.handleStepAdd}
+        handleStepDelete={this.handleStepDelete}
         handleCancelSubmit={this.handleCancelSubmit}
         handleIngredientDelete={this.handleIngredientDelete}
         closeAlert={this.closeAlert}
@@ -315,6 +330,7 @@ export default withStyles(styles)(
       addIngredientToRecipe,
       removeIngredientFromRecipe,
       addStepToRecipe,
+      removeStepFromRecipe,
       addRecipe,
       uploadImage
     }

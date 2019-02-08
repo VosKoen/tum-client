@@ -2,6 +2,7 @@ import {
   ADD_NEW_INGREDIENT,
   ADD_NEW_STEP,
   DELETE_INGREDIENT,
+  DELETE_STEP,
   ADD_IMAGE_TO_RECIPE
 } from "../actions/recipes";
 import { imagePlaceholder } from "../constants";
@@ -9,7 +10,7 @@ import { imagePlaceholder } from "../constants";
 const initialState = {
   ingredients: [],
   steps: [],
-  image: imagePlaceholder,
+  image: imagePlaceholder
 };
 
 export default (state = initialState, action = []) => {
@@ -30,8 +31,13 @@ export default (state = initialState, action = []) => {
       );
       return { ...state, ingredients };
 
+    case DELETE_STEP:
+      const steps = [...state.steps];
+      steps.splice(action.payload, 1);
+      return { ...state, steps };
+
     case ADD_IMAGE_TO_RECIPE:
-        return {...state, image: action.payload}
+      return { ...state, image: action.payload };
 
     default:
       return state;
