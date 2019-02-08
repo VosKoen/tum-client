@@ -8,7 +8,14 @@ import parse from "autosuggest-highlight/parse";
 import { ingredientNames } from "../../constants";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
-import { addIngredientToRecipe } from "../../actions/recipes";
+import {
+  addIngredientToRecipe,
+  removeIngredientFromRecipe,
+  addStepToRecipe,
+  removeStepFromRecipe,
+  addRecipe,
+  uploadImage
+} from "../../actions/recipes";
 import { Redirect } from "react-router-dom";
 
 function renderInputComponent(inputProps) {
@@ -86,7 +93,14 @@ class RecipeFormContainer extends React.PureComponent {
     nosuggestions: false,
     ingredientSelected: false,
     amountNumber: "",
-    unit: ""
+    unit: "",
+    stepOpen: false,
+    cancelSubmit: false,
+    submitRecipe: false,
+    recipeTitle: "",
+    recipeDescription: "",
+    alertIngredientAlreadyPresent: false,
+    uploadingImage: false
   };
 
   handleIngredientSelected = value => {
@@ -121,10 +135,6 @@ class RecipeFormContainer extends React.PureComponent {
     });
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
-  };
-
   handleChange = event => {
     const { name, value } = event.target;
     this.setState({
@@ -133,14 +143,15 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleIngredientOpen = () => {
-    this.setState({ ingredientOpen: true,
+    this.setState({
+      ingredientOpen: true,
       suggestions: [],
       ingredient: "",
       nosuggestions: false,
       ingredientSelected: false,
       amountNumber: "",
       unit: ""
-     });
+    });
   };
 
   handleIngredientClose = () => {
@@ -148,18 +159,67 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleIngredientAdd = () => {
-
     const ingredient = {
       ingredientId: ingredientNames.find(
         ingredient => ingredient.name === this.state.ingredient
       ).id,
       amountType: this.state.amountType,
+      amountNumber: this.state.amountNumber,
       unit: this.state.unit,
       name: this.state.ingredient
     };
 
-    this.props.addIngredientToRecipe(ingredient);
+    const alert = this.props.addIngredientToRecipe(ingredient);
+    if (alert) {
+      return this.openAlert(alert);
+    }
+
     this.handleIngredientClose();
+  };
+
+  handleIngredientDelete = ingredientId => {
+    this.props.removeIngredientFromRecipe(ingredientId);
+  };
+
+  handleStepOpen = () => {
+    this.setState({ stepOpen: true, stepDescription: "" });
+  };
+
+  handleStepClose = () => {
+    this.setState({ stepOpen: false });
+  };
+
+  handleStepAdd = () => {
+    const step = {
+      description: this.state.stepDescription
+    };
+
+    this.props.addStepToRecipe(step);
+    this.handleStepClose();
+  };
+
+  handleStepDelete = indexStepArray => {
+    this.props.removeStepFromRecipe(indexStepArray);
+  };
+
+  handleSubmit = e => {
+    this.setState({ submitRecipe: true });
+
+    const recipe = {
+      title: this.state.recipeTitle,
+      description: this.state.recipeDescription,
+      recipeIngredients: this.props.myRecipe.ingredients,
+      steps: this.props.myRecipe.steps,
+      image: this.props.myRecipe.image
+    };
+
+    this.props.addRecipe(recipe);
+
+    e.preventDefault();
+  };
+
+  handleCancelSubmit = () => {
+    this.setState({ cancelSubmit: true });
   };
 
   handleAutosuggestChange = name => (event, { newValue }) => {
@@ -168,6 +228,32 @@ class RecipeFormContainer extends React.PureComponent {
     this.setState({
       [name]: newValue
     });
+  };
+
+  closeAlert = alertName => {
+    this.setState({
+      [alertName]: false
+    });
+  };
+
+  openAlert = alertName => {
+    this.setState({
+      [alertName]: true
+    });
+  };
+
+  // handleImageUpload = async e => {
+  //   const image = e.target.files[0];
+  //   this.setState({ uploadingImage: true });
+  //   await this.props.uploadImage(image)
+  //   this.setState({ uploadingImage: false });
+  // };
+
+  handleImageUpload = async files => {
+    this.setState({ uploadingImage: true });
+
+    await files.map(fileItem => this.props.uploadImage(fileItem.file));
+    this.setState({ uploadingImage: false });
   };
 
   render() {
@@ -182,7 +268,9 @@ class RecipeFormContainer extends React.PureComponent {
       renderSuggestion
     };
 
-    if (!this.props.user) return <Redirect to="/logon" />
+    if (!this.props.user) return <Redirect to="/logon" />;
+    if (this.state.cancelSubmit === true || this.state.submitRecipe === true)
+      return <Redirect to="/my-recipes" />;
 
     return (
       <RecipeForm
@@ -196,6 +284,14 @@ class RecipeFormContainer extends React.PureComponent {
         handleIngredientClose={this.handleIngredientClose}
         handleAutosuggestChange={this.handleAutosuggestChange}
         handleIngredientAdd={this.handleIngredientAdd}
+        handleStepOpen={this.handleStepOpen}
+        handleStepClose={this.handleStepClose}
+        handleStepAdd={this.handleStepAdd}
+        handleStepDelete={this.handleStepDelete}
+        handleCancelSubmit={this.handleCancelSubmit}
+        handleIngredientDelete={this.handleIngredientDelete}
+        closeAlert={this.closeAlert}
+        handleImageUpload={this.handleImageUpload}
       />
     );
   }
@@ -230,6 +326,13 @@ const mapStateToProps = state => ({
 export default withStyles(styles)(
   connect(
     mapStateToProps,
-    { addIngredientToRecipe }
+    {
+      addIngredientToRecipe,
+      removeIngredientFromRecipe,
+      addStepToRecipe,
+      removeStepFromRecipe,
+      addRecipe,
+      uploadImage
+    }
   )(RecipeFormContainer)
 );

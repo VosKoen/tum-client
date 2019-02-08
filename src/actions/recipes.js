@@ -2,11 +2,15 @@ import * as request from "superagent";
 import { baseUrl } from "../constants";
 import { logout } from "./users";
 import { isExpired, userId } from "../jwt";
-
 export const SET_RANDOM_RECIPE = "SET_RANDOM_RECIPE";
 export const SET_MY_RECIPES = "SET_MY_RECIPES";
 export const SET_RECIPE_IMAGE = "SET_RECIPE_IMAGE";
 export const ADD_NEW_INGREDIENT = "ADD_NEW_INGREDIENT";
+export const ADD_NEW_STEP = "ADD_NEW_STEP";
+export const DELETE_INGREDIENT = "DELETE_INGREDIENT";
+export const DELETE_STEP = "DELETE_STEP";
+export const ADD_NEW_RECIPE_TO_MY_RECIPES = "ADD_NEW_RECIPE_TO_MY_RECIPES";
+export const ADD_IMAGE_TO_RECIPE = "ADD_IMAGE_TO_RECIPE";
 
 const setRandomRecipe = recipe => {
   return { type: SET_RANDOM_RECIPE, payload: recipe };
@@ -21,8 +25,99 @@ const setRecipeImage = imageUrl => {
 };
 
 const addNewIngredient = ingredient => {
-
   return { type: ADD_NEW_INGREDIENT, payload: ingredient };
+};
+
+const deleteIngredient = id => {
+  return {
+    type: DELETE_INGREDIENT,
+    payload: id
+  };
+};
+
+const addNewStep = step => {
+  return { type: ADD_NEW_STEP, payload: step };
+};
+
+const deleteStep = indexStepArray => {
+  return { type: DELETE_STEP, payload: indexStepArray };
+}
+
+const addNewRecipeToMyRecipes = recipe => {
+  return { type: ADD_NEW_RECIPE_TO_MY_RECIPES, payload: recipe };
+};
+
+const addImageToRecipe = image => {
+  return { type: ADD_IMAGE_TO_RECIPE, payload: image };
+};
+
+export const uploadImage = image => async (dispatch, getState) => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  const user = userId(jwt);
+
+
+  await request
+    .post(`${baseUrl}/images/upload`)
+    .field("userId", user)
+    .attach('file', image)
+    .then(result =>
+      dispatch(addImageToRecipe(result.body.imageUrl)))
+    .catch(err => console.error(err));
+};
+
+export const addRecipe = recipe => async (dispatch, getState) => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  const user = userId(jwt);
+  let recipeId
+
+  await request
+    .post(`${baseUrl}/recipes`)
+    .send({ ...recipe, userId: user })
+    .then(result => (recipeId = result.body.id))
+    .catch(err => console.error(err));
+
+  if (recipe.recipeIngredients)
+    await recipe.recipeIngredients.map(ingredient =>
+      request
+        .post(
+          `${baseUrl}/recipes/${recipeId}/ingredients/${
+            ingredient.ingredientId
+          }`
+        )
+        .send({
+          amount: ingredient.amountNumber,
+          amountType: ingredient.amountType
+        })
+        .catch(err => console.error(err))
+    );
+
+  if (recipe.steps)
+    await recipe.steps.map((step, index) =>
+      request
+        .post(`${baseUrl}/recipes/${recipeId}/steps`)
+        .send({
+          order: index,
+          description: step.description
+        })
+        .catch(err => console.error(err))
+    );
+
+if (recipe.image)
+await 
+request
+  .post(`${baseUrl}/recipes/${recipeId}/images`)
+  .send({
+    imageUrl: recipe.image
+  })
+  .catch(err => console.error(err));
+
+  return dispatch(addNewRecipeToMyRecipes(recipe));
 };
 
 export const addIngredientToRecipe = ingredient => (dispatch, getState) => {
@@ -31,8 +126,52 @@ export const addIngredientToRecipe = ingredient => (dispatch, getState) => {
   const jwt = state.user.jwt;
 
   if (isExpired(jwt)) return dispatch(logout());
-  
-  dispatch(addNewIngredient(ingredient));
+
+  if (
+    state.myRecipe.ingredients.find(
+      existingIngredient =>
+        existingIngredient.ingredientId === ingredient.ingredientId
+    )
+  ) {
+    return "alertIngredientAlreadyPresent";
+  }
+  return dispatch(addNewIngredient(ingredient));
+};
+
+export const removeIngredientFromRecipe = ingredientId => (
+  dispatch,
+  getState
+) => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  if (isExpired(jwt)) return dispatch(logout());
+
+  return dispatch(deleteIngredient(ingredientId));
+};
+
+export const addStepToRecipe = step => (dispatch, getState) => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  if (isExpired(jwt)) return dispatch(logout());
+
+  return dispatch(addNewStep(step));
+};
+
+export const removeStepFromRecipe = indexStepArray => (
+  dispatch,
+  getState
+) => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  if (isExpired(jwt)) return dispatch(logout());
+
+  return dispatch(deleteStep(indexStepArray));
 };
 
 export const getRandomRecipe = () => async (dispatch, getState) => {

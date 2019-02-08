@@ -19,9 +19,20 @@ import FormControl from "@material-ui/core/FormControl";
 import { amountTypes } from "../../constants";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
+import { FilePond, registerPlugin } from "react-filepond";
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
+import "filepond/dist/filepond.min.css";
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+
+registerPlugin(FilePondPluginImagePreview, FilePondPluginImageExifOrientation);
 
 function renderIngredientAmountType(state, handleChange) {
-
   const amountType = parseInt(state.amountType);
   const selectedAmountType = amountTypes.find(type => type.id === amountType);
 
@@ -50,6 +61,12 @@ function renderIngredientAmountType(state, handleChange) {
   return <div />;
 }
 
+function renderUploadProgress(uploadingImage, image) {
+  if (uploadingImage) return <CircularProgress />;
+
+  return <img src={image} alt="finished dish" />;
+}
+
 export default function RecipeForm(props) {
   const {
     classes,
@@ -61,10 +78,19 @@ export default function RecipeForm(props) {
     handleIngredientClose,
     autosuggestProps,
     handleAutosuggestChange,
-    handleIngredientAdd
+    handleIngredientAdd,
+    handleStepOpen,
+    handleStepClose,
+    handleStepAdd,
+    handleStepDelete,
+    handleCancelSubmit,
+    handleIngredientDelete,
+    closeAlert,
+    handleImageUpload
   } = props;
 
   const ingredientAmountType = renderIngredientAmountType(state, handleChange);
+  const uploadProgress = renderUploadProgress(state.uploadingImage, myRecipe.image);
 
   return (
     <Paper>
@@ -103,6 +129,89 @@ export default function RecipeForm(props) {
         >
           Add new ingredient
         </Button>
+
+        <List>
+          {myRecipe.ingredients.map(ingredient => (
+            <ListItem
+              key={ingredient.ingredientId}
+              disableGutters={true}
+              onClick={() => console.log("Clicked item!")}
+              divider
+            >
+              <ListItemText>{ingredient.amountNumber}</ListItemText>
+              <ListItemText>{ingredient.unit}</ListItemText>
+              <ListItemText>{ingredient.name}</ListItemText>
+              <ListItemSecondaryAction
+                onClick={() => handleIngredientDelete(ingredient.ingredientId)}
+              >
+                <IconButton aria-label="Delete">
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+
+        {uploadProgress}
+
+        <FilePond
+          allowMultiple={false}
+          onupdatefiles={(files) => handleImageUpload(files)}
+        />
+{/* 
+        <Button
+          variant="contained"
+          color="secondary"
+          className={classes.button}
+          component="label"
+        >
+          Upload image
+          <input
+            type="file"
+            style={{ display: "none" }}
+            onChange={handleImageUpload}
+          />
+        </Button> */}
+
+        <Typography variant="h6">Steps</Typography>
+        <Button
+          variant="contained"
+          color="secondary"
+          className={classes.button}
+          onClick={handleStepOpen}
+        >
+          Add new step
+        </Button>
+        <List>
+          {myRecipe.steps.map((step, index) => (
+            <ListItem key={index} disableGutters={true} divider>
+              <ListItemText>{step.description}</ListItemText>
+              <ListItemSecondaryAction onClick={() => handleStepDelete(index)}>
+                <IconButton aria-label="Delete">
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+
+        <Button
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          type="submit"
+        >
+          Submit recipe
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          onClick={handleCancelSubmit}
+        >
+          Cancel
+        </Button>
+
         <Dialog
           fullScreen
           open={state.ingredientOpen}
@@ -138,43 +247,41 @@ export default function RecipeForm(props) {
             ) : (
               ""
             )}
-{            state.ingredientSelected ?
+            {state.ingredientSelected ? (
+              <div>
+                <FormControl component="fieldset">
+                  <RadioGroup
+                    aria-label="amount-type"
+                    name="amountType"
+                    value={state.amountType}
+                    onChange={handleChange}
+                  >
+                    {amountTypes.map((amountType, index) => (
+                      <FormControlLabel
+                        key={index}
+                        value={amountType.id.toString()}
+                        control={<Radio />}
+                        label={amountType.name}
+                      />
+                    ))}
+                  </RadioGroup>
+                </FormControl>
+                <TextField
+                  id="amount-number"
+                  name="amountNumber"
+                  value={state.amountNumber}
+                  onChange={handleChange}
+                  type="number"
+                  margin="normal"
+                  required
+                />
 
-<div>
-            <FormControl component="fieldset">
-              <RadioGroup
-                aria-label="amount-type"
-                name="amountType"
-                value={state.amountType}
-                onChange={handleChange}
-              >
-                {amountTypes.map((amountType, index) => (
-                  <FormControlLabel
-                    key={index}
-                    value={amountType.id.toString()}
-                    control={<Radio />}
-                    label={amountType.name}
-                  />
-                ))}
-              </RadioGroup>
-            </FormControl>
-            <TextField
-              id="amount-number"
-              name="amountNumber"
-              value={state.amountNumber}
-              onChange={handleChange}
-              type="number"
-              margin="normal"
-              required
-            />
-            
-            {ingredientAmountType}
-            <Typography>{state.ingredient}</Typography>
-            </div>
-            :
-            <div />
-          }
-                
+                {ingredientAmountType}
+                <Typography>{state.ingredient}</Typography>
+              </div>
+            ) : (
+              <div />
+            )}
           </DialogContent>
           <DialogActions>
             <Button onClick={handleIngredientAdd} color="primary">
@@ -185,38 +292,56 @@ export default function RecipeForm(props) {
             </Button>
           </DialogActions>
         </Dialog>
-        <List>
-          {myRecipe.ingredients.map(ingredient => (
-            <ListItem key={ingredient.ingredientId} disableGutters={true}>
-              <ListItemText>{ingredient.name}</ListItemText>
-            </ListItem>
-          ))}
-        </List>
 
-        <Typography variant="h6">Steps</Typography>
-        <Button
-          variant="contained"
-          color="secondary"
-          className={classes.button}
+        <Dialog
+          open={state.stepOpen}
+          onClose={handleStepClose}
+          aria-labelledby="responsive-dialog-title"
         >
-          Add new step
-        </Button>
-        <List>
-          {myRecipe.steps.map(step => (
-            <ListItem key={step.id} disableGutters={true}>
-              <ListItemText>{step.description}</ListItemText>
-            </ListItem>
-          ))}
-        </List>
+          <DialogTitle>{"Add new step"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Please describe this cooking step.
+            </DialogContentText>
+            <TextField
+              autoFocus
+              id="step"
+              label="Cooking step"
+              name="stepDescription"
+              value={state.stepDescription}
+              onChange={handleChange}
+              multiline
+              rowsMax="5"
+              fullWidth
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleStepAdd} color="primary">
+              Add step
+            </Button>
+            <Button onClick={handleStepClose} color="primary">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-        <Button
-          variant="contained"
-          color="primary"
-          className={classes.button}
-          type="submit"
-        >
-          Submit recipe
-        </Button>
+        <Dialog open={state.alertIngredientAlreadyPresent} onClose={closeAlert}>
+          <DialogContent>
+            <DialogContentText>
+              The selected ingredient is already present in the recipe. If you
+              want to change the details of this ingredient please click on the
+              ingredient in the recipe overview.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => closeAlert("alertIngredientAlreadyPresent")}
+              color="primary"
+            >
+              Ok
+            </Button>
+          </DialogActions>
+        </Dialog>
       </form>
     </Paper>
   );

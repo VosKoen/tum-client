@@ -1,18 +1,43 @@
-import { ADD_NEW_INGREDIENT } from "../actions/recipes";
+import {
+  ADD_NEW_INGREDIENT,
+  ADD_NEW_STEP,
+  DELETE_INGREDIENT,
+  DELETE_STEP,
+  ADD_IMAGE_TO_RECIPE
+} from "../actions/recipes";
+import { imagePlaceholder } from "../constants";
 
 const initialState = {
-  title: null,
-  description: null,
   ingredients: [],
-  steps: []
+  steps: [],
+  image: imagePlaceholder
 };
 
 export default (state = initialState, action = []) => {
   switch (action.type) {
     case ADD_NEW_INGREDIENT:
-      const stateWithNewIngredient = { ...state }
+      const stateWithNewIngredient = { ...state };
       stateWithNewIngredient.ingredients.push(action.payload);
       return stateWithNewIngredient;
+
+    case ADD_NEW_STEP:
+      const stateWithNewStep = { ...state };
+      stateWithNewStep.steps.push(action.payload);
+      return stateWithNewStep;
+
+    case DELETE_INGREDIENT:
+      const ingredients = state.ingredients.filter(
+        ingredient => ingredient.ingredientId !== action.payload
+      );
+      return { ...state, ingredients };
+
+    case DELETE_STEP:
+      const steps = [...state.steps];
+      steps.splice(action.payload, 1);
+      return { ...state, steps };
+
+    case ADD_IMAGE_TO_RECIPE:
+      return { ...state, image: action.payload };
 
     default:
       return state;
