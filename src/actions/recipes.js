@@ -58,6 +58,7 @@ export const uploadImage = image => async (dispatch, getState) => {
 
   const user = userId(jwt);
 
+  console.log(image)
 
   await request
     .post(`${baseUrl}/images/upload`)

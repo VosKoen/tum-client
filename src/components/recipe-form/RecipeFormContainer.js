@@ -100,7 +100,8 @@ class RecipeFormContainer extends React.PureComponent {
     recipeTitle: "",
     recipeDescription: "",
     alertIngredientAlreadyPresent: false,
-    uploadingImage: false
+    imageFiles: [],
+    imageResized: false
   };
 
   handleIngredientSelected = value => {
@@ -249,11 +250,65 @@ class RecipeFormContainer extends React.PureComponent {
   //   this.setState({ uploadingImage: false });
   // };
 
-  handleImageUpload = async files => {
-    this.setState({ uploadingImage: true });
+  handleImageAdd = files => {
+    this.resizeImage(files[0].file);
 
-    await files.map(fileItem => this.props.uploadImage(fileItem.file));
-    this.setState({ uploadingImage: false });
+    this.setState({
+      imageFiles: files.map(fileItem => {
+        return fileItem.file;
+      }),
+      imageResized: false
+    });
+
+    //Resize image
+
+    //Upload the files in the background
+    // files.map(fileItem => this.props.uploadImage(fileItem.file));
+  };
+
+  storeResizedImage = resizedImage => {
+    this.setState({
+      resizedImage,
+      imageResized: true
+    });
+
+    this.props.uploadImage(resizedImage)
+  };
+
+  resizeImage = image => {
+    const maxWidth = 350;
+    const fileName = image.name;
+    const reader = new FileReader();
+    reader.readAsDataURL(image);
+
+    reader.onload = async event => {
+      const img = new Image();
+      img.src = event.target.result;
+
+      if (img.width <= maxWidth) return;
+      const width = maxWidth;
+      const height = img.height*(width/img.width);
+
+      img.onload = () => {
+        const elem = document.createElement("canvas");
+        elem.width = width;
+        elem.height = height;
+        const ctx = elem.getContext("2d");
+        // img.width and img.height will give the original dimensions
+        ctx.drawImage(img, 0, 0, width, height);
+        ctx.canvas.toBlob(
+          blob => {
+            const resizedImage = new File([blob], fileName, {
+              type: "image/jpeg",
+              lastModified: Date.now()
+            });
+            this.storeResizedImage(resizedImage);
+          },
+          "image/jpeg",
+          1
+        );
+      };
+    };
   };
 
   render() {
@@ -291,7 +346,7 @@ class RecipeFormContainer extends React.PureComponent {
         handleCancelSubmit={this.handleCancelSubmit}
         handleIngredientDelete={this.handleIngredientDelete}
         closeAlert={this.closeAlert}
-        handleImageUpload={this.handleImageUpload}
+        handleImageAdd={this.handleImageAdd}
       />
     );
   }

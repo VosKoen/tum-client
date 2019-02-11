@@ -22,15 +22,15 @@ import Select from "@material-ui/core/Select";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
-import CircularProgress from "@material-ui/core/CircularProgress";
 
 import { FilePond, registerPlugin } from "react-filepond";
-import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
-import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
-import "filepond/dist/filepond.min.css";
-import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import FilePondPluginImagePreview from "filepond-plugin-image-preview";
+import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 
-registerPlugin(FilePondPluginImagePreview, FilePondPluginImageExifOrientation);
+import "filepond/dist/filepond.min.css";
+import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
+
+registerPlugin(FilePondPluginImagePreview, FilePondPluginImageExifOrientation) ;
 
 function renderIngredientAmountType(state, handleChange) {
   const amountType = parseInt(state.amountType);
@@ -61,12 +61,6 @@ function renderIngredientAmountType(state, handleChange) {
   return <div />;
 }
 
-function renderUploadProgress(uploadingImage, image) {
-  if (uploadingImage) return <CircularProgress />;
-
-  return <img src={image} alt="finished dish" />;
-}
-
 export default function RecipeForm(props) {
   const {
     classes,
@@ -86,11 +80,10 @@ export default function RecipeForm(props) {
     handleCancelSubmit,
     handleIngredientDelete,
     closeAlert,
-    handleImageUpload
+    handleImageAdd
   } = props;
 
   const ingredientAmountType = renderIngredientAmountType(state, handleChange);
-  const uploadProgress = renderUploadProgress(state.uploadingImage, myRecipe.image);
 
   return (
     <Paper>
@@ -118,6 +111,11 @@ export default function RecipeForm(props) {
           margin="normal"
           variant="outlined"
           required
+        />
+        <FilePond
+          files={state.imageFiles}
+          allowMultiple={false}
+          onupdatefiles={files => handleImageAdd(files)}
         />
 
         <Typography variant="h6">Ingredients</Typography>
@@ -151,14 +149,7 @@ export default function RecipeForm(props) {
             </ListItem>
           ))}
         </List>
-
-        {uploadProgress}
-
-        <FilePond
-          allowMultiple={false}
-          onupdatefiles={(files) => handleImageUpload(files)}
-        />
-{/* 
+        {/* 
         <Button
           variant="contained"
           color="secondary"

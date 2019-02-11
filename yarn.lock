@@ -3953,6 +3953,11 @@ filepond-plugin-image-preview@^4.0.1:
   resolved "https://registry.yarnpkg.com/filepond-plugin-image-preview/-/filepond-plugin-image-preview-4.0.1.tgz#c94206ede6b6213a6cfa2de2a7547af0ca681431"
   integrity sha512-EYul+89+9vyS60zfYi0oUAC3H98z4KOI42TPiFnsCo+CzQu07UDA93etIIZW1Zc/Bad+fqDaXkayi9oxM6W08Q==
 
+filepond-plugin-image-resize@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/filepond-plugin-image-resize/-/filepond-plugin-image-resize-2.0.2.tgz#be29db736f2467f9b8457f9731ae08cd1b0b762b"
+  integrity sha512-UjM+dru03/OtWNSYql+sBj3bQJGnU19nwfCFeH8rXZj5pUzvxY0myjjQ0GQllugkGQld4igEGMyBeTJOjx0LsQ==
+
 filepond-plugin-image-transform@^3.2.2:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/filepond-plugin-image-transform/-/filepond-plugin-image-transform-3.2.2.tgz#fef06b692c7e6bb93b18c4cb062194b6cbb98d1d"
