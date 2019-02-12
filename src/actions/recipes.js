@@ -41,7 +41,7 @@ const addNewStep = step => {
 
 const deleteStep = indexStepArray => {
   return { type: DELETE_STEP, payload: indexStepArray };
-}
+};
 
 const addNewRecipeToMyRecipes = recipe => {
   return { type: ADD_NEW_RECIPE_TO_MY_RECIPES, payload: recipe };
@@ -54,18 +54,13 @@ const addImageToRecipe = image => {
 export const uploadImage = image => async (dispatch, getState) => {
   const state = getState();
   if (!state.user) return null;
-  const jwt = state.user.jwt;
-
-  const user = userId(jwt);
-
-  console.log(image)
 
   await request
     .post(`${baseUrl}/images/upload`)
-    .field("userId", user)
-    .attach('file', image)
-    .then(result =>
-      dispatch(addImageToRecipe(result.body.imageUrl)))
+    .attach("file", image)
+    .then(result => {
+      dispatch(addImageToRecipe(result.body.imageUrl));
+    })
     .catch(err => console.error(err));
 };
 
@@ -75,7 +70,7 @@ export const addRecipe = recipe => async (dispatch, getState) => {
   const jwt = state.user.jwt;
 
   const user = userId(jwt);
-  let recipeId
+  let recipeId;
 
   await request
     .post(`${baseUrl}/recipes`)
@@ -109,14 +104,13 @@ export const addRecipe = recipe => async (dispatch, getState) => {
         .catch(err => console.error(err))
     );
 
-if (recipe.image)
-await 
-request
-  .post(`${baseUrl}/recipes/${recipeId}/images`)
-  .send({
-    imageUrl: recipe.image
-  })
-  .catch(err => console.error(err));
+  if (recipe.image)
+    await request
+      .post(`${baseUrl}/recipes/${recipeId}/images`)
+      .send({
+        imageUrl: recipe.image
+      })
+      .catch(err => console.error(err));
 
   return dispatch(addNewRecipeToMyRecipes(recipe));
 };
@@ -162,10 +156,7 @@ export const addStepToRecipe = step => (dispatch, getState) => {
   return dispatch(addNewStep(step));
 };
 
-export const removeStepFromRecipe = indexStepArray => (
-  dispatch,
-  getState
-) => {
+export const removeStepFromRecipe = indexStepArray => (dispatch, getState) => {
   const state = getState();
   if (!state.user) return null;
   const jwt = state.user.jwt;

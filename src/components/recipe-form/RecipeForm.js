@@ -30,7 +30,10 @@ import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orien
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 
-registerPlugin(FilePondPluginImagePreview, FilePondPluginImageExifOrientation) ;
+import Dropzone from "react-dropzone";
+import classNames from 'classnames'
+
+registerPlugin(FilePondPluginImagePreview, FilePondPluginImageExifOrientation);
 
 function renderIngredientAmountType(state, handleChange) {
   const amountType = parseInt(state.amountType);
@@ -112,11 +115,29 @@ export default function RecipeForm(props) {
           variant="outlined"
           required
         />
-        <FilePond
-          files={state.imageFiles}
-          allowMultiple={false}
-          onupdatefiles={files => handleImageAdd(files)}
-        />
+
+        <Dropzone onDrop={handleImageAdd}>
+          {({ getRootProps, getInputProps, isDragActive }) => {
+            return (
+              <div
+                {...getRootProps()}
+                className={classNames("dropzone", {
+                  "dropzone--isActive": isDragActive
+                })}
+              >
+                <input {...getInputProps()} />
+                {isDragActive ? (
+                  <p>Drop files here...</p>
+                ) : (
+                  <p>
+                    Try dropping some files here, or click to select files to
+                    upload.
+                  </p>
+                )}
+              </div>
+            );
+          }}
+        </Dropzone>
 
         <Typography variant="h6">Ingredients</Typography>
         <Button

@@ -5,7 +5,7 @@ import RecipeForm from "./RecipeForm";
 import deburr from "lodash/deburr";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import { ingredientNames } from "../../constants";
+import { ingredientNames, maxWidth } from "../../constants";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import {
@@ -100,8 +100,7 @@ class RecipeFormContainer extends React.PureComponent {
     recipeTitle: "",
     recipeDescription: "",
     alertIngredientAlreadyPresent: false,
-    imageFiles: [],
-    imageResized: false
+    imageFiles: []
   };
 
   handleIngredientSelected = value => {
@@ -243,72 +242,70 @@ class RecipeFormContainer extends React.PureComponent {
     });
   };
 
-  // handleImageUpload = async e => {
-  //   const image = e.target.files[0];
-  //   this.setState({ uploadingImage: true });
-  //   await this.props.uploadImage(image)
-  //   this.setState({ uploadingImage: false });
+  // handleImageAdd = files => {
+  //   if (files[0]) this.resizeImage(files[0].file);
   // };
 
-  handleImageAdd = files => {
-    this.resizeImage(files[0].file);
-
-    this.setState({
-      imageFiles: files.map(fileItem => {
-        return fileItem.file;
-      }),
-      imageResized: false
-    });
-
-    //Resize image
-
-    //Upload the files in the background
-    // files.map(fileItem => this.props.uploadImage(fileItem.file));
+  handleImageAdd = (acceptedFiles, rejectedFiles) => {
+    console.log(acceptedFiles[0])
+    this.resizeImage(acceptedFiles[0]);
+    
   };
 
-  storeResizedImage = resizedImage => {
+  storeImage = image => {
     this.setState({
-      resizedImage,
-      imageResized: true
+      imageFiles: [image]
     });
-
-    this.props.uploadImage(resizedImage)
+    this.props.uploadImage(image);
   };
 
-  resizeImage = image => {
-    const maxWidth = 350;
+  resizeImage = async image => {
+
     const fileName = image.name;
     const reader = new FileReader();
     reader.readAsDataURL(image);
 
     reader.onload = async event => {
+      console.log("started reader onload");
       const img = new Image();
       img.src = event.target.result;
 
-      if (img.width <= maxWidth) return;
-      const width = maxWidth;
-      const height = img.height*(width/img.width);
-
       img.onload = () => {
+        console.log(img.width, img.height)
+        let width
+        let height
+        if (img.width <= maxWidth) {
+          width = img.width;
+          height = img.height;
+        }
+        else {
+        width = maxWidth;
+        height = img.height * (width / img.width);
+      }
+
+
         const elem = document.createElement("canvas");
         elem.width = width;
         elem.height = height;
         const ctx = elem.getContext("2d");
-        // img.width and img.height will give the original dimensions
+
         ctx.drawImage(img, 0, 0, width, height);
+        console.log(elem.width, elem.height)
         ctx.canvas.toBlob(
           blob => {
             const resizedImage = new File([blob], fileName, {
               type: "image/jpeg",
               lastModified: Date.now()
             });
-            this.storeResizedImage(resizedImage);
+            this.storeImage(resizedImage);
           },
           "image/jpeg",
           1
         );
       };
     };
+
+
   };
 
   render() {
