@@ -23,17 +23,8 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 
-import { FilePond, registerPlugin } from "react-filepond";
-import FilePondPluginImagePreview from "filepond-plugin-image-preview";
-import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
-
-import "filepond/dist/filepond.min.css";
-import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
-
 import Dropzone from "react-dropzone";
 import classNames from 'classnames'
-
-registerPlugin(FilePondPluginImagePreview, FilePondPluginImageExifOrientation);
 
 function renderIngredientAmountType(state, handleChange) {
   const amountType = parseInt(state.amountType);

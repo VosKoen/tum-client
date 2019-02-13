@@ -5,7 +5,7 @@ import RecipeForm from "./RecipeForm";
 import deburr from "lodash/deburr";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import { ingredientNames, maxWidth } from "../../constants";
+import { maxWidth } from "../../constants";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import {
@@ -14,8 +14,11 @@ import {
   addStepToRecipe,
   removeStepFromRecipe,
   addRecipe,
-  uploadImage
+  uploadImage,
 } from "../../actions/recipes";
+import {
+  getIngredientList
+} from "../../actions/ingredients";
 import { Redirect } from "react-router-dom";
 
 function renderInputComponent(inputProps) {
@@ -61,14 +64,14 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
   );
 }
 
-function getSuggestions(value) {
+function getSuggestions(value, ingredientList) {
   const inputValue = deburr(value.trim()).toLowerCase();
   const inputLength = inputValue.length;
   let count = 0;
 
   return inputLength === 0
     ? []
-    : ingredientNames.filter(suggestion => {
+    : ingredientList.filter(suggestion => {
         const keep =
           count < 5 &&
           suggestion.name.slice(0, inputLength).toLowerCase() === inputValue;
@@ -103,9 +106,14 @@ class RecipeFormContainer extends React.PureComponent {
     imageFiles: []
   };
 
+  componentDidMount= () => {
+    
+    this.props.getIngredientList();
+  }
+
   handleIngredientSelected = value => {
     let ingredientSelected = false;
-    const suggestions = getSuggestions(value);
+    const suggestions = getSuggestions(value, this.props.ingredients);
 
     if (
       suggestions.length > 0 &&
@@ -121,7 +129,7 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleSuggestionsFetchRequested = ({ value }) => {
-    const suggestions = getSuggestions(value);
+    const suggestions = getSuggestions(value, this.props.ingredients);
 
     this.setState({
       suggestions,
@@ -160,7 +168,7 @@ class RecipeFormContainer extends React.PureComponent {
 
   handleIngredientAdd = () => {
     const ingredient = {
-      ingredientId: ingredientNames.find(
+      ingredientId: this.props.ingredients.find(
         ingredient => ingredient.name === this.state.ingredient
       ).id,
       amountType: this.state.amountType,
@@ -372,7 +380,8 @@ const styles = theme => ({
 
 const mapStateToProps = state => ({
   myRecipe: state.myRecipe,
-  user: state.user
+  user: state.user,
+  ingredients: state.ingredients
 });
 
 export default withStyles(styles)(
@@ -384,7 +393,8 @@ export default withStyles(styles)(
       addStepToRecipe,
       removeStepFromRecipe,
       addRecipe,
-      uploadImage
+      uploadImage,
+      getIngredientList
     }
   )(RecipeFormContainer)
 );

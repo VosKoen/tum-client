@@ -1,8 +1,7 @@
 export const baseUrl = "http://localhost:4000";
 export const localStorageJwtKey = "currentUserJwt";
 
-export const imageUrl = ""
-export const imagePlaceholder = "https://ik.imagekit.io/foxAppDevImages/image-placeholder-350x350_SyVxCduEV.png"
+export const imagePlaceholder = "https://res.cloudinary.com/fox-app-development/image/upload/v1550050963/tum/image-placeholder-350x350.png"
 export const maxWidth = 800
 // Constants which should be retrieved somehow from the database
 
@@ -24,17 +23,3 @@ export const amountTypes = [
     }
   ];
 
-export const ingredientNames = [
-  {
-    id: 1,
-    name: "Spaghetti"
-  },
-  {
-    id: 2,
-    name: "Tomatoes"
-  },
-  {
-    id: 3,
-    name: "Eggs"
-  }
-];
