@@ -2,10 +2,12 @@ import * as request from "superagent";
 import { baseUrl } from "../constants";
 import { logout } from "./users";
 import { isExpired, userId } from "../jwt";
+import { setRecipeUserRating } from "./ratings";
+
 export const SET_RANDOM_RECIPE = "SET_RANDOM_RECIPE";
 export const SET_MY_RECIPES = "SET_MY_RECIPES";
 export const SET_RECIPE_IMAGE = "SET_RECIPE_IMAGE";
-export const SET_IS_SELECTED_RECIPE = "SET_IS_SELECTED_RECIPE"
+export const SET_IS_SELECTED_RECIPE = "SET_IS_SELECTED_RECIPE";
 export const ADD_NEW_INGREDIENT = "ADD_NEW_INGREDIENT";
 export const ADD_NEW_STEP = "ADD_NEW_STEP";
 export const DELETE_INGREDIENT = "DELETE_INGREDIENT";
@@ -64,13 +66,11 @@ export const selectRecipe = recipeId => (dispatch, getState) => {
 
   const user = userId(jwt);
 
- request
-  .post(`${baseUrl}/users/${user}/recipes/${recipeId}`)
-  .then(_ => 
-    dispatch(setIsSelectedRecipe())
-  )
-  .catch(err => console.error(err));
-}
+  request
+    .post(`${baseUrl}/users/${user}/recipes/${recipeId}`)
+    .then(_ => dispatch(setIsSelectedRecipe()))
+    .catch(err => console.error(err));
+};
 
 export const uploadImage = image => async (dispatch, getState) => {
   const state = getState();
@@ -193,7 +193,7 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
   const jwt = state.user.jwt;
 
   if (isExpired(jwt)) return dispatch(logout());
-
+  const user = userId(jwt);
   let recipeId;
 
   await request
@@ -207,6 +207,11 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
   request
     .get(`${baseUrl}/recipes/${recipeId}/images/random`)
     .then(result => dispatch(setRecipeImage(result.body.imageUrl)))
+    .catch(err => console.error(err));
+
+  request
+    .get(`${baseUrl}/recipes/${recipeId}/users/${user}/ratings`)
+    .then(result => dispatch(setRecipeUserRating(result.body)))
     .catch(err => console.error(err));
 };
 

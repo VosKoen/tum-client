@@ -4,8 +4,8 @@ import { logout } from "./users";
 import { isExpired, userId } from "../jwt";
 export const SET_RECIPE_USER_RATING = "SET_RECIPE_USER_RATING";
 
-const setRecipeUserRating = rating => {
-  return { type: SET_RECIPE_USER_RATING, payload: rating };
+export const setRecipeUserRating = recipeIsLiked => {
+  return { type: SET_RECIPE_USER_RATING, payload: recipeIsLiked };
 };
 
 export const setRating = (recipeId, recipeIsLiked) => (dispatch, getState) => {
@@ -19,6 +19,7 @@ export const setRating = (recipeId, recipeIsLiked) => (dispatch, getState) => {
   request
     .post(`${baseUrl}/recipes/${recipeId}/users/${user}/ratings`)
     .send({ recipeIsLiked })
-    .then(result => dispatch(setRecipeUserRating(result.body.rating)))
+    .then(result => 
+      dispatch(setRecipeUserRating(result.body.recipeIsLiked)))
     .catch(err => console.error(err));
 };

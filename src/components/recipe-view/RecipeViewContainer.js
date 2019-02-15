@@ -24,7 +24,7 @@ class RecipeViewContainer extends React.PureComponent {
   };
 
   handleRating = (recipeId, recipeIsLiked) => {
-      this.props.setRating(recipeId, recipeIsLiked);
+    this.props.setRating(recipeId, recipeIsLiked);
   };
 
   renderRecipeSelectButtons = () => {
@@ -56,6 +56,7 @@ class RecipeViewContainer extends React.PureComponent {
       return (
         <div>
           <IconButton
+            disabled={this.props.recipe.recipeIsLiked === true}
             aria-label="Thumbs up"
             color="primary"
             onClick={() => this.handleRating(this.props.recipe.id, true)}
@@ -63,6 +64,7 @@ class RecipeViewContainer extends React.PureComponent {
             <ThumbUpIcon />
           </IconButton>
           <IconButton
+            disabled={this.props.recipe.recipeIsLiked === false}
             aria-label="Thumbs down"
             color="primary"
             onClick={() => this.handleRating(this.props.recipe.id, false)}
