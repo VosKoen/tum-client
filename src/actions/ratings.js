@@ -9,20 +9,16 @@ const setRecipeUserRating = rating => {
 };
 
 export const setRating = (recipeId, recipeIsLiked) => (dispatch, getState) => {
-    const state = getState();
-    if (!state.user) return null;
-    const jwt = state.user.jwt;
-  
-    if (isExpired(jwt)) return dispatch(logout());
-    const user = userId(jwt);
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
 
-    console.log(recipeIsLiked)
-    request
+  if (isExpired(jwt)) return dispatch(logout());
+  const user = userId(jwt);
+
+  request
     .post(`${baseUrl}/recipes/${recipeId}/users/${user}/ratings`)
-    .send({recipeIsLiked})
-    .then(result => 
-      dispatch(setRecipeUserRating(result.body.rating))
-    )
+    .send({ recipeIsLiked })
+    .then(result => dispatch(setRecipeUserRating(result.body.rating)))
     .catch(err => console.error(err));
-
 };

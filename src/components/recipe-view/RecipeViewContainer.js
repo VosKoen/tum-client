@@ -24,7 +24,6 @@ class RecipeViewContainer extends React.PureComponent {
   };
 
   handleRating = (recipeId, recipeIsLiked) => {
-    if (recipeIsLiked !== this.props.recipe.positiveRating)
       this.props.setRating(recipeId, recipeIsLiked);
   };
 
