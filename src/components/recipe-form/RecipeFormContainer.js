@@ -14,11 +14,9 @@ import {
   addStepToRecipe,
   removeStepFromRecipe,
   addRecipe,
-  uploadImage,
+  uploadImage
 } from "../../actions/recipes";
-import {
-  getIngredientList
-} from "../../actions/ingredients";
+import { getIngredientList } from "../../actions/ingredients";
 import { Redirect } from "react-router-dom";
 
 function renderInputComponent(inputProps) {
@@ -106,10 +104,9 @@ class RecipeFormContainer extends React.PureComponent {
     imageFiles: []
   };
 
-  componentDidMount= () => {
-    
+  componentDidMount = () => {
     this.props.getIngredientList();
-  }
+  };
 
   handleIngredientSelected = value => {
     let ingredientSelected = false;
@@ -255,9 +252,7 @@ class RecipeFormContainer extends React.PureComponent {
   // };
 
   handleImageAdd = (acceptedFiles, rejectedFiles) => {
-    console.log(acceptedFiles[0])
     this.resizeImage(acceptedFiles[0]);
-    
   };
 
   storeImage = image => {
@@ -268,29 +263,24 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   resizeImage = async image => {
-
     const fileName = image.name;
     const reader = new FileReader();
     reader.readAsDataURL(image);
 
     reader.onload = async event => {
-      console.log("started reader onload");
       const img = new Image();
       img.src = event.target.result;
 
       img.onload = () => {
-        console.log(img.width, img.height)
-        let width
-        let height
+        let width;
+        let height;
         if (img.width <= maxWidth) {
           width = img.width;
           height = img.height;
+        } else {
+          width = maxWidth;
+          height = img.height * (width / img.width);
         }
-        else {
-        width = maxWidth;
-        height = img.height * (width / img.width);
-      }
-
 
         const elem = document.createElement("canvas");
         elem.width = width;
@@ -298,7 +288,7 @@ class RecipeFormContainer extends React.PureComponent {
         const ctx = elem.getContext("2d");
 
         ctx.drawImage(img, 0, 0, width, height);
-        console.log(elem.width, elem.height)
+        console.log(elem.width, elem.height);
         ctx.canvas.toBlob(
           blob => {
             const resizedImage = new File([blob], fileName, {
@@ -312,8 +302,6 @@ class RecipeFormContainer extends React.PureComponent {
         );
       };
     };
-
-
   };
 
   render() {

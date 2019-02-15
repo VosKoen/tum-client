@@ -6,8 +6,12 @@ import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 
+
 export default function RecipeView(props) {
-  const { classes, recipe } = props;
+  const { classes, recipe, renderRecipeSelectButtons, renderRecipeRating } = props;
+
+
+
   if (recipe.title)
     return (
       <Card className={classes.card}>
@@ -19,14 +23,9 @@ export default function RecipeView(props) {
             title={recipe.title}
           />
           <div className={classes.descriptionContent}>
-            {/* <CardHeader title={recipe.title} /> */}
-            <Typography variant="h4">
-              {recipe.title}
-              </Typography>
+            <Typography variant="h4">{recipe.title}</Typography>
             <CardContent className={classes.descriptionContent}>
-              {/* <Typography variant="h6" align="left">
-            Description
-          </Typography> */}
+
               <Typography component="p" align="left">
                 {recipe.description}
               </Typography>
@@ -34,6 +33,10 @@ export default function RecipeView(props) {
           </div>
         </div>
         <CardContent>
+
+{renderRecipeSelectButtons()}
+{renderRecipeRating()}
+  
           <Typography variant="h6" align="left">
             Ingredients
           </Typography>
