@@ -23,6 +23,8 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 
+import {alertIngredientAlreadyPresent} from '../../actions/recipes'
+
 import Dropzone from "react-dropzone";
 import classNames from 'classnames'
 
@@ -117,6 +119,7 @@ export default function RecipeForm(props) {
                 })}
               >
                 <input {...getInputProps()} />
+                <img src={myRecipe.image} alt='finished-dish'/>
                 {isDragActive ? (
                   <p>Drop files here...</p>
                 ) : (
@@ -328,7 +331,7 @@ export default function RecipeForm(props) {
           </DialogActions>
         </Dialog>
 
-        <Dialog open={state.alertIngredientAlreadyPresent} onClose={closeAlert}>
+        <Dialog open={state.alertIngredientAlreadyPresent} onClose={() => closeAlert(alertIngredientAlreadyPresent)}>
           <DialogContent>
             <DialogContentText>
               The selected ingredient is already present in the recipe. If you
@@ -338,7 +341,7 @@ export default function RecipeForm(props) {
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={() => closeAlert("alertIngredientAlreadyPresent")}
+              onClick={() => closeAlert(alertIngredientAlreadyPresent)}
               color="primary"
             >
               Ok

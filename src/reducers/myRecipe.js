@@ -3,7 +3,8 @@ import {
   ADD_NEW_STEP,
   DELETE_INGREDIENT,
   DELETE_STEP,
-  ADD_IMAGE_TO_RECIPE
+  ADD_IMAGE_TO_RECIPE,
+  RESET_MY_RECIPE
 } from "../actions/recipes";
 import { imagePlaceholder } from "../constants";
 
@@ -13,7 +14,7 @@ const initialState = {
   image: imagePlaceholder
 };
 
-export default (state = initialState, action = []) => {
+export default (state = JSON.parse(JSON.stringify(initialState)), action = []) => {
   switch (action.type) {
     case ADD_NEW_INGREDIENT:
       const stateWithNewIngredient = { ...state };
@@ -38,6 +39,9 @@ export default (state = initialState, action = []) => {
 
     case ADD_IMAGE_TO_RECIPE:
       return { ...state, image: action.payload };
+
+    case RESET_MY_RECIPE:
+        return JSON.parse(JSON.stringify(initialState))
 
     default:
       return state;

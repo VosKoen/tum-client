@@ -13,6 +13,7 @@ class MyRecipesViewContainer extends React.PureComponent {
 
   componentDidMount() {
     if (this.props.user) this.props.getMyRecipes();
+    
   }
 
   handleClickRecipe = async recipeId => {

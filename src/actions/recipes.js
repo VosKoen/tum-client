@@ -15,6 +15,11 @@ export const DELETE_INGREDIENT = "DELETE_INGREDIENT";
 export const DELETE_STEP = "DELETE_STEP";
 export const ADD_NEW_RECIPE_TO_MY_RECIPES = "ADD_NEW_RECIPE_TO_MY_RECIPES";
 export const ADD_IMAGE_TO_RECIPE = "ADD_IMAGE_TO_RECIPE";
+export const SET_DELETE_RECIPE_SUCCESS = "SET_DELETE_RECIPE_SUCCESS";
+export const RESET_MY_RECIPE = "RESET_MY_RECIPE";
+
+//Alerts
+export const alertIngredientAlreadyPresent = "alertIngredientAlreadyPresent";
 
 const setRandomRecipe = recipe => {
   return { type: SET_RANDOM_RECIPE, payload: recipe };
@@ -55,12 +60,24 @@ const addNewRecipeToMyRecipes = recipe => {
   return { type: ADD_NEW_RECIPE_TO_MY_RECIPES, payload: recipe };
 };
 
+const resetMyRecipe = () => {
+  return { type: RESET_MY_RECIPE, payload: null };
+};
+
 const addImageToRecipe = image => {
   return { type: ADD_IMAGE_TO_RECIPE, payload: image };
 };
 
 const setIsSelectedRecipe = () => {
   return { type: SET_IS_SELECTED_RECIPE, payload: null };
+};
+
+const setDeleteRecipeSuccess = () => {
+  return { type: SET_DELETE_RECIPE_SUCCESS, payload: null };
+};
+
+export const resetRecipeForm = () => dispatch => {
+  return dispatch(resetMyRecipe());
 };
 
 export const selectRecipe = recipeId => (dispatch, getState) => {
@@ -96,7 +113,7 @@ export const openRecipe = recipeId => async (dispatch, getState) => {
     .get(`${baseUrl}/recipes/${recipeId}/images/random`)
     .then(result => dispatch(setRecipeImage(result.body.imageUrl)))
     .catch(err => console.error(err));
-}
+};
 
 export const uploadImage = image => async (dispatch, getState) => {
   const state = getState();
@@ -159,6 +176,7 @@ export const addRecipe = recipe => async (dispatch, getState) => {
       })
       .catch(err => console.error(err));
 
+  recipe.id = recipeId;
   return dispatch(addNewRecipeToMyRecipes(recipe));
 };
 
@@ -175,7 +193,7 @@ export const addIngredientToRecipe = ingredient => (dispatch, getState) => {
         existingIngredient.ingredientId === ingredient.ingredientId
     )
   ) {
-    return "alertIngredientAlreadyPresent";
+    return alertIngredientAlreadyPresent;
   }
   return dispatch(addNewIngredient(ingredient));
 };
@@ -257,3 +275,23 @@ export const getMyRecipes = () => (dispatch, getState) => {
     })
     .catch(err => console.error(err));
 };
+
+export const deleteRecipe = recipeId => async (dispatch, getState) => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  if (isExpired(jwt)) return dispatch(logout());
+
+  await request
+    .delete(`${baseUrl}/recipes/${recipeId}`)
+    .then(result => {
+      if (result.statusCode === 204) dispatch(setDeleteRecipeSuccess());
+    })
+    .catch(err => console.error(err));
+};
+
+export const prefillRecipeForm = () => (dispatch) => {
+  
+
+}

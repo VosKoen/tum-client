@@ -14,7 +14,8 @@ import {
   addStepToRecipe,
   removeStepFromRecipe,
   addRecipe,
-  uploadImage
+  uploadImage,
+  resetRecipeForm
 } from "../../actions/recipes";
 import { getIngredientList } from "../../actions/ingredients";
 import { Redirect } from "react-router-dom";
@@ -219,12 +220,16 @@ class RecipeFormContainer extends React.PureComponent {
     };
 
     this.props.addRecipe(recipe);
+    this.props.resetRecipeForm();
 
     e.preventDefault();
   };
 
   handleCancelSubmit = () => {
+
     this.setState({ cancelSubmit: true });
+
+    this.props.resetRecipeForm();
   };
 
   handleAutosuggestChange = name => (event, { newValue }) => {
@@ -288,7 +293,6 @@ class RecipeFormContainer extends React.PureComponent {
         const ctx = elem.getContext("2d");
 
         ctx.drawImage(img, 0, 0, width, height);
-        console.log(elem.width, elem.height);
         ctx.canvas.toBlob(
           blob => {
             const resizedImage = new File([blob], fileName, {
@@ -382,7 +386,8 @@ export default withStyles(styles)(
       removeStepFromRecipe,
       addRecipe,
       uploadImage,
-      getIngredientList
+      getIngredientList,
+      resetRecipeForm
     }
   )(RecipeFormContainer)
 );
