@@ -5,6 +5,7 @@ import { isExpired, userId } from "../jwt";
 import { setRecipeUserRating } from "./ratings";
 
 export const SET_RANDOM_RECIPE = "SET_RANDOM_RECIPE";
+export const SET_OPENED_RECIPE = "SET_OPENED_RECIPE";
 export const SET_MY_RECIPES = "SET_MY_RECIPES";
 export const SET_RECIPE_IMAGE = "SET_RECIPE_IMAGE";
 export const SET_IS_SELECTED_RECIPE = "SET_IS_SELECTED_RECIPE";
@@ -17,6 +18,10 @@ export const ADD_IMAGE_TO_RECIPE = "ADD_IMAGE_TO_RECIPE";
 
 const setRandomRecipe = recipe => {
   return { type: SET_RANDOM_RECIPE, payload: recipe };
+};
+
+const setOpenedRecipe = recipe => {
+  return { type: SET_OPENED_RECIPE, payload: recipe };
 };
 
 const setMyRecipes = recipes => {
@@ -71,6 +76,27 @@ export const selectRecipe = recipeId => (dispatch, getState) => {
     .then(_ => dispatch(setIsSelectedRecipe()))
     .catch(err => console.error(err));
 };
+
+export const openRecipe = recipeId => async (dispatch, getState) => {
+  const state = getState();
+
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  if (isExpired(jwt)) return dispatch(logout());
+
+  await request
+    .get(`${baseUrl}/recipes/${recipeId}`)
+    .then(result => {
+      dispatch(setOpenedRecipe(result.body));
+    })
+    .catch(err => console.error(err));
+
+  request
+    .get(`${baseUrl}/recipes/${recipeId}/images/random`)
+    .then(result => dispatch(setRecipeImage(result.body.imageUrl)))
+    .catch(err => console.error(err));
+}
 
 export const uploadImage = image => async (dispatch, getState) => {
   const state = getState();
@@ -197,7 +223,7 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
   let recipeId;
 
   await request
-    .get(`${baseUrl}/recipes/random`)
+    .get(`${baseUrl}/random-recipe`)
     .then(result => {
       recipeId = result.body.id;
       dispatch(setRandomRecipe(result.body));

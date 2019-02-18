@@ -8,10 +8,13 @@ import Fab from "@material-ui/core/Fab";
 import IconButton from "@material-ui/core/IconButton";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 import { setRating } from "../../actions/ratings";
 
 class RecipeViewContainer extends React.PureComponent {
   componentDidMount() {
+    if(!this.props.recipe.isOpenedRecipe)
     this.props.getRandomRecipe();
   }
 
@@ -27,8 +30,15 @@ class RecipeViewContainer extends React.PureComponent {
     this.props.setRating(recipeId, recipeIsLiked);
   };
 
+  handleEditRecipe = () => {
+    
+  };
+  handleDeleteRecipe = () => {
+    
+  };
+
   renderRecipeSelectButtons = () => {
-    if (!this.props.recipe.isSelectedRecipe)
+    if (!this.props.recipe.isSelectedRecipe && !this.props.recipe.isOpenedRecipe)
       return (
         <div>
           <Fab
@@ -75,6 +85,29 @@ class RecipeViewContainer extends React.PureComponent {
       );
   };
 
+
+  renderEditDeleteButtons = () => {
+    if (this.props.recipe.isOpenedRecipe)
+    return (
+      <div>
+        <IconButton
+          aria-label="edit recipe"
+          color="primary"
+          onClick={this.handleEditRecipe}
+        >
+          <EditIcon />
+        </IconButton>
+        <IconButton
+          aria-label="delete recipe"
+          color="primary"
+          onClick={this.handleDeleteRecipe}
+        >
+          <DeleteIcon />
+        </IconButton>
+      </div>
+    );
+};
+
   render() {
     const { classes } = this.props;
     if (!this.props.user) return <Redirect to="/logon" />;
@@ -85,6 +118,7 @@ class RecipeViewContainer extends React.PureComponent {
           classes={classes}
           renderRecipeSelectButtons={this.renderRecipeSelectButtons}
           renderRecipeRating={this.renderRecipeRating}
+          renderEditDeleteButtons={this.renderEditDeleteButtons}
         />
       </div>
     );

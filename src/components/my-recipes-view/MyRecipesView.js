@@ -9,7 +9,7 @@ import Fab from '@material-ui/core/Fab';
 import { Link } from "react-router-dom";
 
 export default function MyRecipesView(props) {
-  const { classes, myRecipes } = props;
+  const { classes, myRecipes, handleClickRecipe } = props;
   
   if (!myRecipes) return (<div>Loading...</div>)
   return (
@@ -26,7 +26,7 @@ export default function MyRecipesView(props) {
       </div>
     <List>
       {myRecipes.map((recipe,index) => (
-        <ListItem key={index} disableGutters={true} divider>
+        <ListItem key={index} disableGutters={true} divider button onClick={() => handleClickRecipe(recipe.id)}>
           <ListItemText primary={recipe.title} />
         </ListItem>
       ))}

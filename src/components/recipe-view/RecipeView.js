@@ -8,7 +8,7 @@ import ListItem from "@material-ui/core/ListItem";
 
 
 export default function RecipeView(props) {
-  const { classes, recipe, renderRecipeSelectButtons, renderRecipeRating } = props;
+  const { classes, recipe, renderRecipeSelectButtons, renderRecipeRating, renderEditDeleteButtons } = props;
 
 
 
@@ -36,6 +36,7 @@ export default function RecipeView(props) {
 
 {renderRecipeSelectButtons()}
 {renderRecipeRating()}
+{renderEditDeleteButtons()}
   
           <Typography variant="h6" align="left">
             Ingredients

@@ -4,34 +4,47 @@ import MyRecipesView from "./MyRecipesView";
 import { withStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
 
-import { getMyRecipes } from "../../actions/recipes";
+import { getMyRecipes, openRecipe } from "../../actions/recipes";
 
 class MyRecipesViewContainer extends React.PureComponent {
+  state = {
+    recipeOpened: false
+  };
+
   componentDidMount() {
-    if(this.props.user)
-    this.props.getMyRecipes();
+    if (this.props.user) this.props.getMyRecipes();
   }
+
+  handleClickRecipe = async recipeId => {
+    await this.props.openRecipe(recipeId);
+    this.setState({
+      recipeOpened: true
+    });
+  };
 
   render() {
     const { classes, myRecipes } = this.props;
     if (!this.props.user) return <Redirect to="/logon" />;
+    if (this.state.recipeOpened) return <Redirect to="/" />;
 
     return (
-
-        <MyRecipesView myRecipes={myRecipes} classes={classes} />
-
+      <MyRecipesView
+        myRecipes={myRecipes}
+        classes={classes}
+        handleClickRecipe={this.handleClickRecipe}
+      />
     );
   }
 }
 
 const styles = theme => ({
   myRecipes: {
-    width: '80%',
-    margin: 'auto'
+    width: "80%",
+    margin: "auto"
   },
   myRecipesHeader: {
     display: "flex",
-    justifyContent: 'space-between'
+    justifyContent: "space-between"
   }
 });
 
@@ -43,6 +56,6 @@ const mapStateToProps = state => ({
 export default withStyles(styles)(
   connect(
     mapStateToProps,
-    { getMyRecipes }
+    { getMyRecipes, openRecipe }
   )(MyRecipesViewContainer)
 );
