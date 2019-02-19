@@ -23,10 +23,10 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 
-import {alertIngredientAlreadyPresent} from '../../actions/recipes'
+import { alertIngredientAlreadyPresent } from "../../actions/recipes";
 
 import Dropzone from "react-dropzone";
-import classNames from 'classnames'
+import classNames from "classnames";
 
 function renderIngredientAmountType(state, handleChange) {
   const amountType = parseInt(state.amountType);
@@ -76,7 +76,9 @@ export default function RecipeForm(props) {
     handleCancelSubmit,
     handleIngredientDelete,
     closeAlert,
-    handleImageAdd
+    handleImageAdd,
+    handleIngredientSelect,
+    handleIngredientChange
   } = props;
 
   const ingredientAmountType = renderIngredientAmountType(state, handleChange);
@@ -119,7 +121,7 @@ export default function RecipeForm(props) {
                 })}
               >
                 <input {...getInputProps()} />
-                <img src={myRecipe.image} alt='finished-dish'/>
+                <img src={myRecipe.image} alt="finished-dish" />
                 {isDragActive ? (
                   <p>Drop files here...</p>
                 ) : (
@@ -144,12 +146,13 @@ export default function RecipeForm(props) {
         </Button>
 
         <List>
-          {myRecipe.ingredients.map(ingredient => (
+          {myRecipe.ingredients.map((ingredient, index)=> (
             <ListItem
               key={ingredient.id}
               disableGutters={true}
-              onClick={() => console.log("Clicked item!")}
+              onClick={() => handleIngredientSelect(index)}
               divider
+              button
             >
               <ListItemText>{ingredient.amountNumber}</ListItemText>
               <ListItemText>{ingredient.unit}</ListItemText>
@@ -164,21 +167,6 @@ export default function RecipeForm(props) {
             </ListItem>
           ))}
         </List>
-        {/* 
-        <Button
-          variant="contained"
-          color="secondary"
-          className={classes.button}
-          component="label"
-        >
-          Upload image
-          <input
-            type="file"
-            style={{ display: "none" }}
-            onChange={handleImageUpload}
-          />
-        </Button> */}
-
         <Typography variant="h6">Steps</Typography>
         <Button
           variant="contained"
@@ -190,7 +178,7 @@ export default function RecipeForm(props) {
         </Button>
         <List>
           {myRecipe.steps.map((step, index) => (
-            <ListItem key={index} disableGutters={true} divider>
+            <ListItem key={index} disableGutters={true} divider button>
               <ListItemText>{step.description}</ListItemText>
               <ListItemSecondaryAction onClick={() => handleStepDelete(index)}>
                 <IconButton aria-label="Delete">
@@ -290,9 +278,16 @@ export default function RecipeForm(props) {
             )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleIngredientAdd} color="primary">
-              Add ingredient
-            </Button>
+            {state.isIngredientEditMode ? (
+              <Button onClick={() => handleIngredientChange()} color="primary">
+                Submit change
+              </Button>
+            ) : (
+              <Button onClick={handleIngredientAdd} color="primary">
+                Add ingredient
+              </Button>
+            )}
+
             <Button onClick={handleIngredientClose} color="primary">
               Cancel
             </Button>
@@ -331,7 +326,10 @@ export default function RecipeForm(props) {
           </DialogActions>
         </Dialog>
 
-        <Dialog open={state.alertIngredientAlreadyPresent} onClose={() => closeAlert(alertIngredientAlreadyPresent)}>
+        <Dialog
+          open={state.alertIngredientAlreadyPresent}
+          onClose={() => closeAlert(alertIngredientAlreadyPresent)}
+        >
           <DialogContent>
             <DialogContentText>
               The selected ingredient is already present in the recipe. If you

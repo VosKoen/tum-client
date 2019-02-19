@@ -15,7 +15,8 @@ import {
   removeStepFromRecipe,
   addRecipe,
   uploadImage,
-  resetRecipeForm
+  resetRecipeForm,
+  changeRecipeIngredient
 } from "../../actions/recipes";
 import { getIngredientList } from "../../actions/ingredients";
 import { Redirect } from "react-router-dom";
@@ -162,12 +163,29 @@ class RecipeFormContainer extends React.PureComponent {
       nosuggestions: false,
       ingredientSelected: false,
       amountNumber: "",
-      unit: ""
+      unit: "",
+      isIngredientEditMode: false
     });
   };
 
   handleIngredientClose = () => {
     this.setState({ ingredientOpen: false, ingredient: "" });
+  };
+
+  handleIngredientSelect = arrayIndex => {
+    const selectedIngredient = this.props.myRecipe.ingredients[arrayIndex];
+    this.setState({
+      ingredientOpen: true,
+      suggestions: [],
+      ingredient: selectedIngredient.name,
+      nosuggestions: false,
+      ingredientSelected: true,
+      amountNumber: selectedIngredient.amountNumber,
+      amountType: selectedIngredient.amountType.toString(),
+      unit: "",
+      isIngredientEditMode: true,
+      arrayIndexSelectedIngredient: arrayIndex
+    });
   };
 
   handleIngredientAdd = () => {
@@ -182,6 +200,28 @@ class RecipeFormContainer extends React.PureComponent {
     };
 
     const alert = this.props.addIngredientToRecipe(ingredient);
+    if (alert) {
+      return this.openAlert(alert);
+    }
+
+    this.handleIngredientClose();
+  };
+
+  handleIngredientChange = () => {
+    const ingredient = {
+      id: this.props.ingredients.find(
+        ingredient => ingredient.name === this.state.ingredient
+      ).id,
+      amountType: this.state.amountType,
+      amountNumber: this.state.amountNumber,
+      unit: this.state.unit,
+      name: this.state.ingredient
+    };
+
+    const alert = this.props.changeRecipeIngredient(
+      ingredient,
+      this.state.arrayIndexSelectedIngredient
+    );
     if (alert) {
       return this.openAlert(alert);
     }
@@ -349,6 +389,8 @@ class RecipeFormContainer extends React.PureComponent {
         handleIngredientDelete={this.handleIngredientDelete}
         closeAlert={this.closeAlert}
         handleImageAdd={this.handleImageAdd}
+        handleIngredientSelect={this.handleIngredientSelect}
+        handleIngredientChange={this.handleIngredientChange}
       />
     );
   }
@@ -393,7 +435,8 @@ export default withStyles(styles)(
       addRecipe,
       uploadImage,
       getIngredientList,
-      resetRecipeForm
+      resetRecipeForm,
+      changeRecipeIngredient
     }
   )(RecipeFormContainer)
 );

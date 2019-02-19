@@ -14,7 +14,8 @@ export default function Navbar(props) {
     handleClick,
     handleClose,
     handleClickLogout,
-    anchorEl
+    anchorEl,
+    handleClickRandomRecipe
   } = props;
   return (
     <AppBar position="static">
@@ -39,7 +40,7 @@ export default function Navbar(props) {
             <MenuItem onClick={handleClose}>My recipes</MenuItem>
           </Link>
           <Link to={"/"} style={{ textDecoration: 'none' }}>
-            <MenuItem onClick={handleClose}>Cook!</MenuItem>
+            <MenuItem onClick={handleClickRandomRecipe}>Cook!</MenuItem>
           </Link>
           <MenuItem onClick={handleClickLogout}>Logout</MenuItem>
         </Menu>

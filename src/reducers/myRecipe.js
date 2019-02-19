@@ -6,7 +6,8 @@ import {
   ADD_IMAGE_TO_RECIPE,
   RESET_MY_RECIPE,
   SET_EDIT_MODE_YES,
-  PREFILL_RECIPE_TO_EDIT
+  PREFILL_RECIPE_TO_EDIT,
+  CHANGE_INGREDIENT
 } from "../actions/recipes";
 import { imagePlaceholder } from "../constants";
 
@@ -42,6 +43,13 @@ export default (
       const steps = [...state.steps];
       steps.splice(action.payload, 1);
       return { ...state, steps };
+
+    case CHANGE_INGREDIENT:
+      const newIngredientArray = [...state.ingredients];
+      newIngredientArray[action.payload.arrayIndex] =
+        action.payload.newIngredient;
+
+      return { ...state, ingredients: newIngredientArray };
 
     case ADD_IMAGE_TO_RECIPE:
       return { ...state, image: action.payload };

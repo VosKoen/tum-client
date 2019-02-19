@@ -19,6 +19,7 @@ export const SET_DELETE_RECIPE_SUCCESS = "SET_DELETE_RECIPE_SUCCESS";
 export const RESET_MY_RECIPE = "RESET_MY_RECIPE";
 export const SET_EDIT_MODE_YES = "SET_EDIT_MODE_YES";
 export const PREFILL_RECIPE_TO_EDIT = "PREFILL_RECIPE_TO_EDIT";
+export const CHANGE_INGREDIENT = "CHANGE_INGREDIENT";
 
 //Alerts
 export const alertIngredientAlreadyPresent = "alertIngredientAlreadyPresent";
@@ -41,6 +42,10 @@ const setRecipeImage = imageUrl => {
 
 const addNewIngredient = ingredient => {
   return { type: ADD_NEW_INGREDIENT, payload: ingredient };
+};
+
+const changeIngredient = (newIngredient, arrayIndex) => {
+  return { type: CHANGE_INGREDIENT, payload: { newIngredient, arrayIndex} };
 };
 
 const deleteIngredient = id => {
@@ -151,11 +156,7 @@ export const addRecipe = recipe => async (dispatch, getState) => {
   if (recipe.ingredients)
     await recipe.ingredients.map(ingredient =>
       request
-        .post(
-          `${baseUrl}/recipes/${recipeId}/ingredients/${
-            ingredient.id
-          }`
-        )
+        .post(`${baseUrl}/recipes/${recipeId}/ingredients/${ingredient.id}`)
         .send({
           amount: ingredient.amountNumber,
           amountType: ingredient.amountType
@@ -195,8 +196,7 @@ export const addIngredientToRecipe = ingredient => (dispatch, getState) => {
 
   if (
     state.myRecipe.ingredients.find(
-      existingIngredient =>
-        existingIngredient.id === ingredient.id
+      existingIngredient => existingIngredient.id === ingredient.id
     )
   ) {
     return alertIngredientAlreadyPresent;
@@ -204,10 +204,30 @@ export const addIngredientToRecipe = ingredient => (dispatch, getState) => {
   return dispatch(addNewIngredient(ingredient));
 };
 
-export const removeIngredientFromRecipe = id => (
+export const changeRecipeIngredient = (newIngredient, arrayIndex) => (
   dispatch,
   getState
 ) => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  if (isExpired(jwt)) return dispatch(logout());
+
+  if (
+    state.myRecipe.ingredients.filter(
+      (existingIngredient, index) =>
+        existingIngredient.id === newIngredient.id && index !== arrayIndex
+    ).length === 1
+  ) {
+
+    return alertIngredientAlreadyPresent;
+  }
+  return dispatch(changeIngredient(newIngredient, arrayIndex));
+
+};
+
+export const removeIngredientFromRecipe = id => (dispatch, getState) => {
   const state = getState();
   if (!state.user) return null;
   const jwt = state.user.jwt;

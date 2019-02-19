@@ -32,7 +32,7 @@ class RecipeViewContainer extends React.PureComponent {
   };
 
   componentDidMount() {
-    if (!this.props.recipe.isOpenedRecipe) this.props.getRandomRecipe();
+    if (!this.props.recipe.id) this.props.getRandomRecipe();
   }
 
   handleRejection = () => {
