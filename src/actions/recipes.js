@@ -17,6 +17,8 @@ export const ADD_NEW_RECIPE_TO_MY_RECIPES = "ADD_NEW_RECIPE_TO_MY_RECIPES";
 export const ADD_IMAGE_TO_RECIPE = "ADD_IMAGE_TO_RECIPE";
 export const SET_DELETE_RECIPE_SUCCESS = "SET_DELETE_RECIPE_SUCCESS";
 export const RESET_MY_RECIPE = "RESET_MY_RECIPE";
+export const SET_EDIT_MODE_YES = "SET_EDIT_MODE_YES";
+export const PREFILL_RECIPE_TO_EDIT = "PREFILL_RECIPE_TO_EDIT";
 
 //Alerts
 export const alertIngredientAlreadyPresent = "alertIngredientAlreadyPresent";
@@ -76,8 +78,12 @@ const setDeleteRecipeSuccess = () => {
   return { type: SET_DELETE_RECIPE_SUCCESS, payload: null };
 };
 
-export const resetRecipeForm = () => dispatch => {
-  return dispatch(resetMyRecipe());
+const setEditModeYes = () => {
+  return { type: SET_EDIT_MODE_YES, payload: null };
+};
+
+const prefillRecipeToEdit = recipe => {
+  return { type: PREFILL_RECIPE_TO_EDIT, payload: recipe };
 };
 
 export const selectRecipe = recipeId => (dispatch, getState) => {
@@ -142,12 +148,12 @@ export const addRecipe = recipe => async (dispatch, getState) => {
     .then(result => (recipeId = result.body.id))
     .catch(err => console.error(err));
 
-  if (recipe.recipeIngredients)
-    await recipe.recipeIngredients.map(ingredient =>
+  if (recipe.ingredients)
+    await recipe.ingredients.map(ingredient =>
       request
         .post(
           `${baseUrl}/recipes/${recipeId}/ingredients/${
-            ingredient.ingredientId
+            ingredient.id
           }`
         )
         .send({
@@ -190,7 +196,7 @@ export const addIngredientToRecipe = ingredient => (dispatch, getState) => {
   if (
     state.myRecipe.ingredients.find(
       existingIngredient =>
-        existingIngredient.ingredientId === ingredient.ingredientId
+        existingIngredient.id === ingredient.id
     )
   ) {
     return alertIngredientAlreadyPresent;
@@ -198,7 +204,7 @@ export const addIngredientToRecipe = ingredient => (dispatch, getState) => {
   return dispatch(addNewIngredient(ingredient));
 };
 
-export const removeIngredientFromRecipe = ingredientId => (
+export const removeIngredientFromRecipe = id => (
   dispatch,
   getState
 ) => {
@@ -208,7 +214,7 @@ export const removeIngredientFromRecipe = ingredientId => (
 
   if (isExpired(jwt)) return dispatch(logout());
 
-  return dispatch(deleteIngredient(ingredientId));
+  return dispatch(deleteIngredient(id));
 };
 
 export const addStepToRecipe = step => (dispatch, getState) => {
@@ -291,7 +297,13 @@ export const deleteRecipe = recipeId => async (dispatch, getState) => {
     .catch(err => console.error(err));
 };
 
-export const prefillRecipeForm = () => (dispatch) => {
-  
+export const resetRecipeForm = () => dispatch => {
+  return dispatch(resetMyRecipe());
+};
 
-}
+export const openEditRecipeForm = () => (dispatch, getState) => {
+  const state = getState();
+
+  dispatch(setEditModeYes());
+  return dispatch(prefillRecipeToEdit(state.recipe));
+};

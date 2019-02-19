@@ -4,17 +4,23 @@ import {
   DELETE_INGREDIENT,
   DELETE_STEP,
   ADD_IMAGE_TO_RECIPE,
-  RESET_MY_RECIPE
+  RESET_MY_RECIPE,
+  SET_EDIT_MODE_YES,
+  PREFILL_RECIPE_TO_EDIT
 } from "../actions/recipes";
 import { imagePlaceholder } from "../constants";
 
 const initialState = {
   ingredients: [],
   steps: [],
-  image: imagePlaceholder
+  image: imagePlaceholder,
+  editMode: false
 };
 
-export default (state = JSON.parse(JSON.stringify(initialState)), action = []) => {
+export default (
+  state = JSON.parse(JSON.stringify(initialState)),
+  action = []
+) => {
   switch (action.type) {
     case ADD_NEW_INGREDIENT:
       const stateWithNewIngredient = { ...state };
@@ -28,7 +34,7 @@ export default (state = JSON.parse(JSON.stringify(initialState)), action = []) =
 
     case DELETE_INGREDIENT:
       const ingredients = state.ingredients.filter(
-        ingredient => ingredient.ingredientId !== action.payload
+        ingredient => ingredient.id !== action.payload
       );
       return { ...state, ingredients };
 
@@ -41,7 +47,17 @@ export default (state = JSON.parse(JSON.stringify(initialState)), action = []) =
       return { ...state, image: action.payload };
 
     case RESET_MY_RECIPE:
-        return JSON.parse(JSON.stringify(initialState))
+      return JSON.parse(JSON.stringify(initialState));
+
+    case SET_EDIT_MODE_YES:
+      return { ...state, editMode: true };
+
+    case PREFILL_RECIPE_TO_EDIT:
+      return {
+        ...state,
+        ingredients: action.payload.ingredients,
+        steps: action.payload.steps
+      };
 
     default:
       return state;

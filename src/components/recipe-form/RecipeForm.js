@@ -146,7 +146,7 @@ export default function RecipeForm(props) {
         <List>
           {myRecipe.ingredients.map(ingredient => (
             <ListItem
-              key={ingredient.ingredientId}
+              key={ingredient.id}
               disableGutters={true}
               onClick={() => console.log("Clicked item!")}
               divider
@@ -155,7 +155,7 @@ export default function RecipeForm(props) {
               <ListItemText>{ingredient.unit}</ListItemText>
               <ListItemText>{ingredient.name}</ListItemText>
               <ListItemSecondaryAction
-                onClick={() => handleIngredientDelete(ingredient.ingredientId)}
+                onClick={() => handleIngredientDelete(ingredient.id)}
               >
                 <IconButton aria-label="Delete">
                   <DeleteIcon />

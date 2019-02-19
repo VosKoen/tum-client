@@ -3,7 +3,12 @@ import { connect } from "react-redux";
 import RecipeView from "./RecipeView";
 import { withStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
-import { getRandomRecipe, selectRecipe, deleteRecipe, prefillRecipeForm } from "../../actions/recipes";
+import {
+  getRandomRecipe,
+  selectRecipe,
+  deleteRecipe,
+  openEditRecipeForm
+} from "../../actions/recipes";
 import Fab from "@material-ui/core/Fab";
 import IconButton from "@material-ui/core/IconButton";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
@@ -43,14 +48,14 @@ class RecipeViewContainer extends React.PureComponent {
   };
 
   handleEditRecipe = () => {
-    this.props.prefillRecipeForm()
+    this.props.openEditRecipeForm();
     this.setState({
       redirectToRecipeForm: true
-    }); 
+    });
   };
 
   handleDeleteRecipe = () => {
-    this.props.deleteRecipe(this.props.recipe.id)
+    this.props.deleteRecipe(this.props.recipe.id);
     this.closeAlert(alertDeleteAreYouSure);
   };
 
@@ -61,7 +66,6 @@ class RecipeViewContainer extends React.PureComponent {
   };
 
   openAlert = alertName => {
-
     this.setState({
       [alertName]: true
     });
@@ -141,38 +145,38 @@ class RecipeViewContainer extends React.PureComponent {
   };
 
   renderDeleteAlert = () => {
-
-      return (
-        <Dialog
-          open={this.state.alertDeleteAreYouSure}
-          onClose={() => this.closeAlert(alertDeleteAreYouSure)}
-        >
-          <DialogContent>
-            <DialogContentText>
-              Are you sure you want to delete this recipe? Once deleted a recipe
-              cannot be restored.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleDeleteRecipe} color="primary">
-              Yes, delete
-            </Button>
-            <Button
-              onClick={() => this.closeAlert(alertDeleteAreYouSure)}
-              color="primary"
-              autoFocus
-            >
-              No, cancel
-            </Button>
-          </DialogActions>
-        </Dialog>
-      );
+    return (
+      <Dialog
+        open={this.state.alertDeleteAreYouSure}
+        onClose={() => this.closeAlert(alertDeleteAreYouSure)}
+      >
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this recipe? Once deleted a recipe
+            cannot be restored.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleDeleteRecipe} color="primary">
+            Yes, delete
+          </Button>
+          <Button
+            onClick={() => this.closeAlert(alertDeleteAreYouSure)}
+            color="primary"
+            autoFocus
+          >
+            No, cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
   };
 
   render() {
     const { classes } = this.props;
     if (!this.props.user) return <Redirect to="/logon" />;
-    if (this.props.recipe.deleteRecipeSuccess) return <Redirect to="/my-recipes" />;
+    if (this.props.recipe.deleteRecipeSuccess)
+      return <Redirect to="/my-recipes" />;
     if (this.state.redirectToRecipeForm) return <Redirect to="/recipe-form" />;
     return (
       <div>
@@ -214,6 +218,12 @@ const mapStateToProps = state => ({
 export default withStyles(styles)(
   connect(
     mapStateToProps,
-    { getRandomRecipe, selectRecipe, setRating, deleteRecipe, prefillRecipeForm }
+    {
+      getRandomRecipe,
+      selectRecipe,
+      setRating,
+      deleteRecipe,
+      openEditRecipeForm
+    }
   )(RecipeViewContainer)
 );

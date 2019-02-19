@@ -107,6 +107,12 @@ class RecipeFormContainer extends React.PureComponent {
 
   componentDidMount = () => {
     this.props.getIngredientList();
+
+    if (this.props.myRecipe.editMode)
+      this.setState({
+        recipeTitle: this.props.recipe.title,
+        recipeDescription: this.props.recipe.description
+      });
   };
 
   handleIngredientSelected = value => {
@@ -166,7 +172,7 @@ class RecipeFormContainer extends React.PureComponent {
 
   handleIngredientAdd = () => {
     const ingredient = {
-      ingredientId: this.props.ingredients.find(
+      id: this.props.ingredients.find(
         ingredient => ingredient.name === this.state.ingredient
       ).id,
       amountType: this.state.amountType,
@@ -183,8 +189,8 @@ class RecipeFormContainer extends React.PureComponent {
     this.handleIngredientClose();
   };
 
-  handleIngredientDelete = ingredientId => {
-    this.props.removeIngredientFromRecipe(ingredientId);
+  handleIngredientDelete = id => {
+    this.props.removeIngredientFromRecipe(id);
   };
 
   handleStepOpen = () => {
@@ -226,7 +232,6 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleCancelSubmit = () => {
-
     this.setState({ cancelSubmit: true });
 
     this.props.resetRecipeForm();
@@ -373,7 +378,8 @@ const styles = theme => ({
 const mapStateToProps = state => ({
   myRecipe: state.myRecipe,
   user: state.user,
-  ingredients: state.ingredients
+  ingredients: state.ingredients,
+  recipe: state.recipe
 });
 
 export default withStyles(styles)(
