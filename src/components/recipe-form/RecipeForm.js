@@ -78,7 +78,9 @@ export default function RecipeForm(props) {
     closeAlert,
     handleImageAdd,
     handleIngredientSelect,
-    handleIngredientChange
+    handleIngredientChange,
+    handleStepSelect,
+    handleStepChange
   } = props;
 
   const ingredientAmountType = renderIngredientAmountType(state, handleChange);
@@ -146,7 +148,7 @@ export default function RecipeForm(props) {
         </Button>
 
         <List>
-          {myRecipe.ingredients.map((ingredient, index)=> (
+          {myRecipe.ingredients.map((ingredient, index) => (
             <ListItem
               key={ingredient.id}
               disableGutters={true}
@@ -178,7 +180,7 @@ export default function RecipeForm(props) {
         </Button>
         <List>
           {myRecipe.steps.map((step, index) => (
-            <ListItem key={index} disableGutters={true} divider button>
+            <ListItem key={index} disableGutters={true} onClick={() => handleStepSelect(index)} divider button>
               <ListItemText>{step.description}</ListItemText>
               <ListItemSecondaryAction onClick={() => handleStepDelete(index)}>
                 <IconButton aria-label="Delete">
@@ -279,8 +281,8 @@ export default function RecipeForm(props) {
           </DialogContent>
           <DialogActions>
             {state.isIngredientEditMode ? (
-              <Button onClick={() => handleIngredientChange()} color="primary">
-                Submit change
+              <Button onClick={handleIngredientChange} color="primary">
+                Change ingredient
               </Button>
             ) : (
               <Button onClick={handleIngredientAdd} color="primary">
@@ -317,9 +319,16 @@ export default function RecipeForm(props) {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleStepAdd} color="primary">
-              Add step
-            </Button>
+            {state.isStepEditMode ? (
+              <Button onClick={handleStepChange} color="primary">
+                Change step
+              </Button>
+            ) : (
+              <Button onClick={handleStepAdd} color="primary">
+                Add step
+              </Button>
+            )}
+
             <Button onClick={handleStepClose} color="primary">
               Cancel
             </Button>

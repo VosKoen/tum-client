@@ -16,7 +16,8 @@ import {
   addRecipe,
   uploadImage,
   resetRecipeForm,
-  changeRecipeIngredient
+  changeRecipeIngredient,
+  changeRecipeStep
 } from "../../actions/recipes";
 import { getIngredientList } from "../../actions/ingredients";
 import { Redirect } from "react-router-dom";
@@ -234,11 +235,25 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleStepOpen = () => {
-    this.setState({ stepOpen: true, stepDescription: "" });
+    this.setState({
+      stepOpen: true,
+      stepDescription: "",
+      isStepEditMode: false
+    });
   };
 
   handleStepClose = () => {
     this.setState({ stepOpen: false });
+  };
+
+  handleStepSelect = arrayIndex => {
+    const selectedStep = this.props.myRecipe.steps[arrayIndex];
+    this.setState({
+      stepOpen: true,
+      stepDescription: selectedStep.description,
+      isStepEditMode: true,
+      arrayIndexSelectedStep: arrayIndex
+    });
   };
 
   handleStepAdd = () => {
@@ -247,6 +262,15 @@ class RecipeFormContainer extends React.PureComponent {
     };
 
     this.props.addStepToRecipe(step);
+    this.handleStepClose();
+  };
+
+  handleStepChange = () => {
+    const step = {
+      description: this.state.stepDescription
+    };
+
+    this.props.changeRecipeStep(step, this.state.arrayIndexSelectedStep);
     this.handleStepClose();
   };
 
@@ -391,6 +415,8 @@ class RecipeFormContainer extends React.PureComponent {
         handleImageAdd={this.handleImageAdd}
         handleIngredientSelect={this.handleIngredientSelect}
         handleIngredientChange={this.handleIngredientChange}
+        handleStepSelect={this.handleStepSelect}
+        handleStepChange={this.handleStepChange}
       />
     );
   }
@@ -436,7 +462,8 @@ export default withStyles(styles)(
       uploadImage,
       getIngredientList,
       resetRecipeForm,
-      changeRecipeIngredient
+      changeRecipeIngredient,
+      changeRecipeStep
     }
   )(RecipeFormContainer)
 );

@@ -20,6 +20,7 @@ export const RESET_MY_RECIPE = "RESET_MY_RECIPE";
 export const SET_EDIT_MODE_YES = "SET_EDIT_MODE_YES";
 export const PREFILL_RECIPE_TO_EDIT = "PREFILL_RECIPE_TO_EDIT";
 export const CHANGE_INGREDIENT = "CHANGE_INGREDIENT";
+export const CHANGE_STEP = "CHANGE_STEP";
 
 //Alerts
 export const alertIngredientAlreadyPresent = "alertIngredientAlreadyPresent";
@@ -45,7 +46,7 @@ const addNewIngredient = ingredient => {
 };
 
 const changeIngredient = (newIngredient, arrayIndex) => {
-  return { type: CHANGE_INGREDIENT, payload: { newIngredient, arrayIndex} };
+  return { type: CHANGE_INGREDIENT, payload: { newIngredient, arrayIndex } };
 };
 
 const deleteIngredient = id => {
@@ -57,6 +58,10 @@ const deleteIngredient = id => {
 
 const addNewStep = step => {
   return { type: ADD_NEW_STEP, payload: step };
+};
+
+const changeStep = (newStep, arrayIndex) => {
+  return { type: CHANGE_STEP, payload: { newStep, arrayIndex } };
 };
 
 const deleteStep = indexStepArray => {
@@ -220,11 +225,9 @@ export const changeRecipeIngredient = (newIngredient, arrayIndex) => (
         existingIngredient.id === newIngredient.id && index !== arrayIndex
     ).length === 1
   ) {
-
     return alertIngredientAlreadyPresent;
   }
   return dispatch(changeIngredient(newIngredient, arrayIndex));
-
 };
 
 export const removeIngredientFromRecipe = id => (dispatch, getState) => {
@@ -245,6 +248,19 @@ export const addStepToRecipe = step => (dispatch, getState) => {
   if (isExpired(jwt)) return dispatch(logout());
 
   return dispatch(addNewStep(step));
+};
+
+export const changeRecipeStep = (newStep, arrayIndex) => (
+  dispatch,
+  getState
+) => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  if (isExpired(jwt)) return dispatch(logout());
+
+  return dispatch(changeStep(newStep, arrayIndex));
 };
 
 export const removeStepFromRecipe = indexStepArray => (dispatch, getState) => {
