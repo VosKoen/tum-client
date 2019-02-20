@@ -36,7 +36,7 @@ export default (
 
     case DELETE_INGREDIENT:
       const ingredients = state.ingredients.filter(
-        ingredient => ingredient.id !== action.payload
+        ingredient => ingredient.ingredientId !== action.payload
       );
       return { ...state, ingredients };
 
@@ -71,7 +71,8 @@ export default (
       return {
         ...state,
         ingredients: action.payload.ingredients,
-        steps: action.payload.steps
+        steps: action.payload.steps,
+        id: action.payload.id 
       };
 
     default:

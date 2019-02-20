@@ -9,7 +9,7 @@ import Fab from '@material-ui/core/Fab';
 import { Link } from "react-router-dom";
 
 export default function MyRecipesView(props) {
-  const { classes, myRecipes, handleClickRecipe } = props;
+  const { classes, myRecipes, handleClickRecipe, handleClickNewRecipe } = props;
   
   if (!myRecipes) return (<div>Loading...</div>)
   return (
@@ -19,7 +19,7 @@ export default function MyRecipesView(props) {
       Recipes
       </Typography>
       <Link to={"/recipe-form"} style={{ textDecoration: 'none' }}>
-      <Fab color="primary" aria-label="Add">
+      <Fab color="primary" aria-label="Add" onClick={handleClickNewRecipe}>
         <AddIcon />
       </Fab>
       </Link>

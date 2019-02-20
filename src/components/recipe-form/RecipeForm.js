@@ -148,9 +148,9 @@ export default function RecipeForm(props) {
         </Button>
 
         <List>
-          {myRecipe.ingredients.map((ingredient, index) => (
+          {myRecipe.ingredients.map((ingredient, index) =>  (
             <ListItem
-              key={ingredient.id}
+              key={ingredient.ingredientId}
               disableGutters={true}
               onClick={() => handleIngredientSelect(index)}
               divider
@@ -160,7 +160,7 @@ export default function RecipeForm(props) {
               <ListItemText>{ingredient.unit}</ListItemText>
               <ListItemText>{ingredient.name}</ListItemText>
               <ListItemSecondaryAction
-                onClick={() => handleIngredientDelete(ingredient.id)}
+                onClick={() => handleIngredientDelete(ingredient.ingredientId)}
               >
                 <IconButton aria-label="Delete">
                   <DeleteIcon />
@@ -190,14 +190,19 @@ export default function RecipeForm(props) {
             </ListItem>
           ))}
         </List>
-
         <Button
           variant="contained"
           color="primary"
           className={classes.button}
           type="submit"
         >
-          Submit recipe
+        {
+myRecipe.editMode
+?
+"Save changes"
+:
+"Submit recipe"
+}
         </Button>
         <Button
           variant="contained"

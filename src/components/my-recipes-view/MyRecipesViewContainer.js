@@ -4,7 +4,11 @@ import MyRecipesView from "./MyRecipesView";
 import { withStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
 
-import { getMyRecipes, openRecipe } from "../../actions/recipes";
+import {
+  getMyRecipes,
+  openRecipe,
+  resetRecipeForm
+} from "../../actions/recipes";
 
 class MyRecipesViewContainer extends React.PureComponent {
   state = {
@@ -13,7 +17,6 @@ class MyRecipesViewContainer extends React.PureComponent {
 
   componentDidMount() {
     if (this.props.user) this.props.getMyRecipes();
-    
   }
 
   handleClickRecipe = async recipeId => {
@@ -21,6 +24,10 @@ class MyRecipesViewContainer extends React.PureComponent {
     this.setState({
       recipeOpened: true
     });
+  };
+
+  handleClickNewRecipe = () => {
+    this.props.resetRecipeForm();
   };
 
   render() {
@@ -33,6 +40,7 @@ class MyRecipesViewContainer extends React.PureComponent {
         myRecipes={myRecipes}
         classes={classes}
         handleClickRecipe={this.handleClickRecipe}
+        handleClickNewRecipe={this.handleClickNewRecipe}
       />
     );
   }
@@ -57,6 +65,6 @@ const mapStateToProps = state => ({
 export default withStyles(styles)(
   connect(
     mapStateToProps,
-    { getMyRecipes, openRecipe }
+    { getMyRecipes, openRecipe, resetRecipeForm }
   )(MyRecipesViewContainer)
 );

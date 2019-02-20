@@ -17,7 +17,8 @@ import {
   uploadImage,
   resetRecipeForm,
   changeRecipeIngredient,
-  changeRecipeStep
+  changeRecipeStep,
+  saveChangesRecipe
 } from "../../actions/recipes";
 import { getIngredientList } from "../../actions/ingredients";
 import { Redirect } from "react-router-dom";
@@ -191,7 +192,7 @@ class RecipeFormContainer extends React.PureComponent {
 
   handleIngredientAdd = () => {
     const ingredient = {
-      id: this.props.ingredients.find(
+      ingredientId: this.props.ingredients.find(
         ingredient => ingredient.name === this.state.ingredient
       ).id,
       amountType: this.state.amountType,
@@ -210,7 +211,7 @@ class RecipeFormContainer extends React.PureComponent {
 
   handleIngredientChange = () => {
     const ingredient = {
-      id: this.props.ingredients.find(
+      ingredientId: this.props.ingredients.find(
         ingredient => ingredient.name === this.state.ingredient
       ).id,
       amountType: this.state.amountType,
@@ -266,9 +267,9 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleStepChange = () => {
-    const step = {
-      description: this.state.stepDescription
-    };
+    const step = this.props.myRecipe.steps[this.state.arrayIndexSelectedStep];
+    step.description = this.state.stepDescription;
+  
 
     this.props.changeRecipeStep(step, this.state.arrayIndexSelectedStep);
     this.handleStepClose();
@@ -286,10 +287,15 @@ class RecipeFormContainer extends React.PureComponent {
       description: this.state.recipeDescription,
       recipeIngredients: this.props.myRecipe.ingredients,
       steps: this.props.myRecipe.steps,
-      image: this.props.myRecipe.image
+      image: this.props.myRecipe.image,
+      id: this.props.myRecipe.id
     };
 
-    this.props.addRecipe(recipe);
+    if (this.props.myRecipe.editMode) {
+      this.props.saveChangesRecipe(recipe)
+    } else {
+      this.props.addRecipe(recipe);
+    }
     this.props.resetRecipeForm();
 
     e.preventDefault();
@@ -463,7 +469,8 @@ export default withStyles(styles)(
       getIngredientList,
       resetRecipeForm,
       changeRecipeIngredient,
-      changeRecipeStep
+      changeRecipeStep,
+      saveChangesRecipe
     }
   )(RecipeFormContainer)
 );

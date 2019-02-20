@@ -158,12 +158,12 @@ export const addRecipe = recipe => async (dispatch, getState) => {
     .then(result => (recipeId = result.body.id))
     .catch(err => console.error(err));
 
-  if (recipe.ingredients)
-    await recipe.ingredients.map(ingredient =>
+  if (recipe.recipeIngredients)
+    await recipe.recipeIngredients.map(ingredient =>
       request
-        .post(`${baseUrl}/recipes/${recipeId}/ingredients/${ingredient.id}`)
+        .post(`${baseUrl}/recipes/${recipeId}/ingredients/${ingredient.ingredientId}`)
         .send({
-          amount: ingredient.amountNumber,
+          amountNumber: ingredient.amountNumber,
           amountType: ingredient.amountType
         })
         .catch(err => console.error(err))
@@ -192,6 +192,18 @@ export const addRecipe = recipe => async (dispatch, getState) => {
   return dispatch(addNewRecipeToMyRecipes(recipe));
 };
 
+export const saveChangesRecipe = recipe => async () => {
+
+  console.log(recipe)
+  await request
+    .put(`${baseUrl}/recipes/${recipe.id}`)
+    .send(recipe)
+    .then(result => console.log(result))
+    .catch(err => console.error(err));
+
+  return undefined;
+};
+
 export const addIngredientToRecipe = ingredient => (dispatch, getState) => {
   const state = getState();
   if (!state.user) return null;
@@ -201,7 +213,7 @@ export const addIngredientToRecipe = ingredient => (dispatch, getState) => {
 
   if (
     state.myRecipe.ingredients.find(
-      existingIngredient => existingIngredient.id === ingredient.id
+      existingIngredient => existingIngredient.ingredientId === ingredient.ingredientId
     )
   ) {
     return alertIngredientAlreadyPresent;
@@ -222,7 +234,7 @@ export const changeRecipeIngredient = (newIngredient, arrayIndex) => (
   if (
     state.myRecipe.ingredients.filter(
       (existingIngredient, index) =>
-        existingIngredient.id === newIngredient.id && index !== arrayIndex
+        existingIngredient.ingredientId === newIngredient.ingredientId && index !== arrayIndex
     ).length === 1
   ) {
     return alertIngredientAlreadyPresent;
