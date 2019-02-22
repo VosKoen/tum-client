@@ -8,7 +8,8 @@ import {
   SET_EDIT_MODE_YES,
   PREFILL_RECIPE_TO_EDIT,
   CHANGE_INGREDIENT,
-  CHANGE_STEP
+  CHANGE_STEP,
+  SET_PLACEHOLDER_IMAGE
 } from "../actions/recipes";
 import { imagePlaceholder } from "../constants";
 
@@ -74,6 +75,9 @@ export default (
         steps: action.payload.steps,
         id: action.payload.id 
       };
+
+      case SET_PLACEHOLDER_IMAGE:
+      return {...state, image: imagePlaceholder}
 
     default:
       return state;

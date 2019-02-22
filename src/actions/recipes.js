@@ -21,6 +21,7 @@ export const SET_EDIT_MODE_YES = "SET_EDIT_MODE_YES";
 export const PREFILL_RECIPE_TO_EDIT = "PREFILL_RECIPE_TO_EDIT";
 export const CHANGE_INGREDIENT = "CHANGE_INGREDIENT";
 export const CHANGE_STEP = "CHANGE_STEP";
+export const SET_PLACEHOLDER_IMAGE = "SET_PLACEHOLDER_IMAGE";
 
 //Alerts
 export const alertIngredientAlreadyPresent = "alertIngredientAlreadyPresent";
@@ -96,6 +97,10 @@ const prefillRecipeToEdit = recipe => {
   return { type: PREFILL_RECIPE_TO_EDIT, payload: recipe };
 };
 
+const setPlaceholerImage = () => {
+  return { type: SET_PLACEHOLDER_IMAGE, payload: null };
+};
+
 export const selectRecipe = recipeId => (dispatch, getState) => {
   const state = getState();
 
@@ -161,7 +166,11 @@ export const addRecipe = recipe => async (dispatch, getState) => {
   if (recipe.recipeIngredients)
     await recipe.recipeIngredients.map(ingredient =>
       request
-        .post(`${baseUrl}/recipes/${recipeId}/ingredients/${ingredient.ingredientId}`)
+        .post(
+          `${baseUrl}/recipes/${recipeId}/ingredients/${
+            ingredient.ingredientId
+          }`
+        )
         .send({
           amountNumber: ingredient.amountNumber,
           amountType: ingredient.amountType
@@ -193,8 +202,7 @@ export const addRecipe = recipe => async (dispatch, getState) => {
 };
 
 export const saveChangesRecipe = recipe => async () => {
-
-  console.log(recipe)
+  console.log(recipe);
   await request
     .put(`${baseUrl}/recipes/${recipe.id}`)
     .send(recipe)
@@ -213,7 +221,8 @@ export const addIngredientToRecipe = ingredient => (dispatch, getState) => {
 
   if (
     state.myRecipe.ingredients.find(
-      existingIngredient => existingIngredient.ingredientId === ingredient.ingredientId
+      existingIngredient =>
+        existingIngredient.ingredientId === ingredient.ingredientId
     )
   ) {
     return alertIngredientAlreadyPresent;
@@ -234,7 +243,8 @@ export const changeRecipeIngredient = (newIngredient, arrayIndex) => (
   if (
     state.myRecipe.ingredients.filter(
       (existingIngredient, index) =>
-        existingIngredient.ingredientId === newIngredient.ingredientId && index !== arrayIndex
+        existingIngredient.ingredientId === newIngredient.ingredientId &&
+        index !== arrayIndex
     ).length === 1
   ) {
     return alertIngredientAlreadyPresent;
@@ -354,4 +364,8 @@ export const openEditRecipeForm = () => (dispatch, getState) => {
 
   dispatch(setEditModeYes());
   return dispatch(prefillRecipeToEdit(state.recipe));
+};
+
+export const resetPlaceholderImage = () => dispatch => {
+  return dispatch(setPlaceholerImage());
 };

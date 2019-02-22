@@ -22,6 +22,7 @@ import Select from "@material-ui/core/Select";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
+import ClearIcon from "@material-ui/icons/Clear";
 
 import { alertIngredientAlreadyPresent } from "../../actions/recipes";
 
@@ -80,7 +81,8 @@ export default function RecipeForm(props) {
     handleIngredientSelect,
     handleIngredientChange,
     handleStepSelect,
-    handleStepChange
+    handleStepChange,
+    handleImageRemove
   } = props;
 
   const ingredientAmountType = renderIngredientAmountType(state, handleChange);
@@ -116,26 +118,33 @@ export default function RecipeForm(props) {
         <Dropzone onDrop={handleImageAdd}>
           {({ getRootProps, getInputProps, isDragActive }) => {
             return (
-              <div
-                {...getRootProps()}
-                className={classNames("dropzone", {
-                  "dropzone--isActive": isDragActive
-                })}
-              >
-                <input {...getInputProps()} />
-                <img src={myRecipe.image} alt="finished-dish" />
-                {isDragActive ? (
-                  <p>Drop files here...</p>
-                ) : (
-                  <p>
-                    Try dropping some files here, or click to select files to
-                    upload.
-                  </p>
-                )}
+              <div className={classes.dropzoneRoot}>
+                <div className={classes.dropzoneContainer}>
+                  <div
+                    {...getRootProps()}
+                    className={classNames("dropzone", {
+                      "dropzone--isActive": isDragActive
+                    })}
+                  >
+                    <input {...getInputProps()} />
+                    <img src={myRecipe.image} alt="finished-dish" />
+                  </div>
+                  <IconButton
+                    className={classes.clearImageButton}
+                    aria-label="Remove image"
+                    onClick={handleImageRemove}
+                  >
+                    <ClearIcon />
+                  </IconButton>
+                </div>
               </div>
             );
           }}
         </Dropzone>
+        <Typography>
+          Drop your image file above or click on the image area above to select
+          a file for upload
+        </Typography>
 
         <Typography variant="h6">Ingredients</Typography>
         <Button
@@ -148,7 +157,7 @@ export default function RecipeForm(props) {
         </Button>
 
         <List>
-          {myRecipe.ingredients.map((ingredient, index) =>  (
+          {myRecipe.ingredients.map((ingredient, index) => (
             <ListItem
               key={ingredient.ingredientId}
               disableGutters={true}
@@ -180,7 +189,13 @@ export default function RecipeForm(props) {
         </Button>
         <List>
           {myRecipe.steps.map((step, index) => (
-            <ListItem key={index} disableGutters={true} onClick={() => handleStepSelect(index)} divider button>
+            <ListItem
+              key={index}
+              disableGutters={true}
+              onClick={() => handleStepSelect(index)}
+              divider
+              button
+            >
               <ListItemText>{step.description}</ListItemText>
               <ListItemSecondaryAction onClick={() => handleStepDelete(index)}>
                 <IconButton aria-label="Delete">
@@ -196,13 +211,7 @@ export default function RecipeForm(props) {
           className={classes.button}
           type="submit"
         >
-        {
-myRecipe.editMode
-?
-"Save changes"
-:
-"Submit recipe"
-}
+          {myRecipe.editMode ? "Save changes" : "Submit recipe"}
         </Button>
         <Button
           variant="contained"

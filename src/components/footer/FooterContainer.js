@@ -9,7 +9,7 @@ class FooterContainer extends React.PureComponent {
   render() {
     return (
       <div>
-          Footer Container
+
       </div>
     );
   }

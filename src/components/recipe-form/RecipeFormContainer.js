@@ -5,7 +5,7 @@ import RecipeForm from "./RecipeForm";
 import deburr from "lodash/deburr";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import { maxWidth } from "../../constants";
+import { maxImageWidth } from "../../constants";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import {
@@ -18,7 +18,8 @@ import {
   resetRecipeForm,
   changeRecipeIngredient,
   changeRecipeStep,
-  saveChangesRecipe
+  saveChangesRecipe,
+  resetPlaceholderImage
 } from "../../actions/recipes";
 import { getIngredientList } from "../../actions/ingredients";
 import { Redirect } from "react-router-dom";
@@ -269,7 +270,6 @@ class RecipeFormContainer extends React.PureComponent {
   handleStepChange = () => {
     const step = this.props.myRecipe.steps[this.state.arrayIndexSelectedStep];
     step.description = this.state.stepDescription;
-  
 
     this.props.changeRecipeStep(step, this.state.arrayIndexSelectedStep);
     this.handleStepClose();
@@ -292,7 +292,7 @@ class RecipeFormContainer extends React.PureComponent {
     };
 
     if (this.props.myRecipe.editMode) {
-      this.props.saveChangesRecipe(recipe)
+      this.props.saveChangesRecipe(recipe);
     } else {
       this.props.addRecipe(recipe);
     }
@@ -327,12 +327,9 @@ class RecipeFormContainer extends React.PureComponent {
     });
   };
 
-  // handleImageAdd = files => {
-  //   if (files[0]) this.resizeImage(files[0].file);
-  // };
-
   handleImageAdd = (acceptedFiles, rejectedFiles) => {
     this.resizeImage(acceptedFiles[0]);
+    console.log(acceptedFiles[0])
   };
 
   storeImage = image => {
@@ -354,11 +351,11 @@ class RecipeFormContainer extends React.PureComponent {
       img.onload = () => {
         let width;
         let height;
-        if (img.width <= maxWidth) {
+        if (img.width <= maxImageWidth) {
           width = img.width;
           height = img.height;
         } else {
-          width = maxWidth;
+          width = maxImageWidth;
           height = img.height * (width / img.width);
         }
 
@@ -382,6 +379,11 @@ class RecipeFormContainer extends React.PureComponent {
       };
     };
   };
+
+  handleImageRemove = () => {
+    this.props.resetPlaceholderImage();
+  }
+
 
   render() {
     const { classes, myRecipe } = this.props;
@@ -423,6 +425,7 @@ class RecipeFormContainer extends React.PureComponent {
         handleIngredientChange={this.handleIngredientChange}
         handleStepSelect={this.handleStepSelect}
         handleStepChange={this.handleStepChange}
+        handleImageRemove={this.handleImageRemove}
       />
     );
   }
@@ -446,6 +449,21 @@ const styles = theme => ({
     margin: 0,
     padding: 0,
     listStyleType: "none"
+  },
+  dropzoneRoot: {
+    display: "flex",
+    justifyContent: "center"
+  },
+  dropzoneContainer: {
+    display: "flex",
+    justifyContent: "center",
+    margin: 0,
+    position: "relative"
+  },
+  clearImageButton: {
+    position: "absolute",
+    right: "5px",
+    top: "5px"
   }
 });
 
@@ -470,7 +488,8 @@ export default withStyles(styles)(
       resetRecipeForm,
       changeRecipeIngredient,
       changeRecipeStep,
-      saveChangesRecipe
+      saveChangesRecipe,
+      resetPlaceholderImage
     }
   )(RecipeFormContainer)
 );
