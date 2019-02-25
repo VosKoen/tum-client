@@ -16,7 +16,7 @@ import { imagePlaceholder } from "../constants";
 const initialState = {
   ingredients: [],
   steps: [],
-  image: imagePlaceholder,
+  imageUrl: imagePlaceholder,
   editMode: false
 };
 
@@ -24,6 +24,7 @@ export default (
   state = JSON.parse(JSON.stringify(initialState)),
   action = []
 ) => {
+
   switch (action.type) {
     case ADD_NEW_INGREDIENT:
       const stateWithNewIngredient = { ...state };
@@ -60,7 +61,7 @@ export default (
       return { ...state, steps: newStepArray };
 
     case ADD_IMAGE_TO_RECIPE:
-      return { ...state, image: action.payload };
+      return { ...state, imageUrl: action.payload };
 
     case RESET_MY_RECIPE:
       return JSON.parse(JSON.stringify(initialState));
@@ -73,11 +74,12 @@ export default (
         ...state,
         ingredients: action.payload.ingredients,
         steps: action.payload.steps,
-        id: action.payload.id 
+        id: action.payload.id,
+        imageUrl: action.payload.imageUrl
       };
 
       case SET_PLACEHOLDER_IMAGE:
-      return {...state, image: imagePlaceholder}
+      return {...state, imageUrl: imagePlaceholder}
 
     default:
       return state;

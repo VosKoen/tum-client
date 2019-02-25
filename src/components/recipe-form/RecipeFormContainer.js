@@ -5,7 +5,7 @@ import RecipeForm from "./RecipeForm";
 import deburr from "lodash/deburr";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import { maxImageWidth } from "../../constants";
+import { maxImageWidth, units } from "../../constants";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import {
@@ -196,9 +196,9 @@ class RecipeFormContainer extends React.PureComponent {
       ingredientId: this.props.ingredients.find(
         ingredient => ingredient.name === this.state.ingredient
       ).id,
-      amountType: this.state.amountType,
+      amountType: parseInt(this.state.amountType),
       amountNumber: this.state.amountNumber,
-      unit: this.state.unit,
+      amountTypeUnit: units.find(unit => unit.shorthand === this.state.unit).id,
       name: this.state.ingredient
     };
 
@@ -211,13 +211,14 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleIngredientChange = () => {
+
     const ingredient = {
       ingredientId: this.props.ingredients.find(
         ingredient => ingredient.name === this.state.ingredient
       ).id,
-      amountType: this.state.amountType,
+      amountType: parseInt(this.state.amountType),
       amountNumber: this.state.amountNumber,
-      unit: this.state.unit,
+      amountTypeUnit: units.find(unit => unit.shorthand === this.state.unit).id,
       name: this.state.ingredient
     };
 
@@ -329,7 +330,7 @@ class RecipeFormContainer extends React.PureComponent {
 
   handleImageAdd = (acceptedFiles, rejectedFiles) => {
     this.resizeImage(acceptedFiles[0]);
-    console.log(acceptedFiles[0])
+
   };
 
   storeImage = image => {

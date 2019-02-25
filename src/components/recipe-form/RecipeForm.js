@@ -17,7 +17,6 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import { amountTypes } from "../../constants";
-import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
@@ -31,12 +30,13 @@ import classNames from "classnames";
 
 function renderIngredientAmountType(state, handleChange) {
   const amountType = parseInt(state.amountType);
-  const selectedAmountType = amountTypes.find(type => type.id === amountType);
+  const selectedAmountType = amountTypes.find(type => {
+    return type.id === amountType;
+  });
 
   if (state.amountType !== undefined && selectedAmountType.units.length > 0)
     return (
       <FormControl>
-        <InputLabel>{selectedAmountType.name}</InputLabel>
         <Select
           native
           value={state.unit}
@@ -46,6 +46,8 @@ function renderIngredientAmountType(state, handleChange) {
             id: "unit"
           }}
         >
+          {" "}
+          <option value="" disabled />
           {selectedAmountType.units.map(unit => (
             <option key={unit} value={unit}>
               {unit}
@@ -127,7 +129,7 @@ export default function RecipeForm(props) {
                     })}
                   >
                     <input {...getInputProps()} />
-                    <img src={myRecipe.image} alt="finished-dish" />
+                    <img src={myRecipe.imageUrl} alt="finished-dish" />
                   </div>
                   <IconButton
                     className={classes.clearImageButton}

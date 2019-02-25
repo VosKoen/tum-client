@@ -77,8 +77,8 @@ const resetMyRecipe = () => {
   return { type: RESET_MY_RECIPE, payload: null };
 };
 
-const addImageToRecipe = image => {
-  return { type: ADD_IMAGE_TO_RECIPE, payload: image };
+const addImageToRecipe = imageUrl => {
+  return { type: ADD_IMAGE_TO_RECIPE, payload: imageUrl };
 };
 
 const setIsSelectedRecipe = () => {
@@ -173,7 +173,8 @@ export const addRecipe = recipe => async (dispatch, getState) => {
         )
         .send({
           amountNumber: ingredient.amountNumber,
-          amountType: ingredient.amountType
+          amountType: ingredient.amountType,
+          amountTypeUnit: ingredient.amountTypeUnit
         })
         .catch(err => console.error(err))
     );
@@ -189,11 +190,11 @@ export const addRecipe = recipe => async (dispatch, getState) => {
         .catch(err => console.error(err))
     );
 
-  if (recipe.image)
+  if (recipe.imageUrl)
     await request
       .post(`${baseUrl}/recipes/${recipeId}/images`)
       .send({
-        imageUrl: recipe.image
+        imageUrl: recipe.imageUrl
       })
       .catch(err => console.error(err));
 
@@ -201,8 +202,8 @@ export const addRecipe = recipe => async (dispatch, getState) => {
   return dispatch(addNewRecipeToMyRecipes(recipe));
 };
 
+//TODO tidy up
 export const saveChangesRecipe = recipe => async () => {
-  console.log(recipe);
   await request
     .put(`${baseUrl}/recipes/${recipe.id}`)
     .send(recipe)
