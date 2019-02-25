@@ -12,7 +12,8 @@ import {
 
 class MyRecipesViewContainer extends React.PureComponent {
   state = {
-    recipeOpened: false
+    recipeOpened: false,
+    addNewRecipeClicked: false
   };
 
   componentDidMount() {
@@ -28,12 +29,14 @@ class MyRecipesViewContainer extends React.PureComponent {
 
   handleClickNewRecipe = () => {
     this.props.resetRecipeForm();
+    this.setState({ addNewRecipeClicked: true });
   };
 
   render() {
     const { classes, myRecipes } = this.props;
     if (!this.props.user) return <Redirect to="/logon" />;
     if (this.state.recipeOpened) return <Redirect to="/" />;
+    if (this.state.addNewRecipeClicked) return <Redirect to="/recipe-form" />;
 
     return (
       <MyRecipesView
@@ -48,12 +51,14 @@ class MyRecipesViewContainer extends React.PureComponent {
 
 const styles = theme => ({
   myRecipes: {
-    width: "80%",
-    margin: "auto"
+    width: "95%",
+    margin: "auto",
+    padding: theme.spacing.unit * 2,
+    textAlign: "left"
   },
-  myRecipesHeader: {
-    display: "flex",
-    justifyContent: "space-between"
+  myRecipesHeader: {},
+  buttonAddRecipeContainer: {
+    textAlign: "right"
   }
 });
 

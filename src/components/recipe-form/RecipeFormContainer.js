@@ -288,7 +288,7 @@ class RecipeFormContainer extends React.PureComponent {
       description: this.state.recipeDescription,
       recipeIngredients: this.props.myRecipe.ingredients,
       steps: this.props.myRecipe.steps,
-      image: this.props.myRecipe.image,
+      recipeImages: [{imageUrl: this.props.myRecipe.imageUrl}],
       id: this.props.myRecipe.id
     };
 

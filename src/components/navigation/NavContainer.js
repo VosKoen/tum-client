@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import Navbar from "./Navbar";
 import { withStyles } from "@material-ui/core/styles";
-import { logout } from "../../actions/users";
+import { logoutUser } from "../../actions/users";
 import { getRandomRecipe } from "../../actions/recipes";
 
 class NavContainer extends React.PureComponent {
@@ -18,8 +18,8 @@ class NavContainer extends React.PureComponent {
     this.setState({ anchorEl: null });
   };
 
-  handleClickLogout = () => {
-    this.props.dispatch(logout());
+  handleClickLogout = ()  => {
+    this.props.logoutUser();
     this.handleClose();
   };
 
@@ -62,6 +62,6 @@ const mapStateToProps = state => ({
 export default withStyles(styles)(
   connect(
     mapStateToProps,
-    { getRandomRecipe }
+    { getRandomRecipe, logoutUser }
   )(NavContainer)
 );

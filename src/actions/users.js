@@ -39,7 +39,7 @@ export const resetUserSignup = () => ({
 export const login = (email, password) => dispatch =>
   request
     .post(`${baseUrl}/logins`)
-		.send({ email, password })
+    .send({ email, password })
     .then(result => dispatch(userLoginSuccess(result.body)))
     .catch(err => {
       if (err.status === 400) {
@@ -47,8 +47,8 @@ export const login = (email, password) => dispatch =>
       } else {
         console.error(err);
       }
-		})
-		.then(result => dispatch(resetUserSignup()));
+    })
+    .then(result => dispatch(resetUserSignup()));
 
 export const signup = (email, password) => dispatch =>
   request
@@ -64,3 +64,7 @@ export const signup = (email, password) => dispatch =>
         console.error(err);
       }
     });
+
+export const logoutUser = () => dispatch => {
+  return dispatch(logout());
+};

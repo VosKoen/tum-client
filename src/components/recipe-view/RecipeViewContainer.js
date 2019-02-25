@@ -21,6 +21,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import Button from "@material-ui/core/Button";
+import { Grid } from "@material-ui/core";
 
 //Alert definitions
 export const alertDeleteAreYouSure = "alertDeleteAreYouSure";
@@ -77,70 +78,108 @@ class RecipeViewContainer extends React.PureComponent {
       !this.props.recipe.isOpenedRecipe
     )
       return (
-        <div>
-          <Fab
-            variant="extended"
-            aria-label="Cook"
-            color="primary"
-            onClick={this.handleConfirmation}
+        <Grid container direction="row" spacing={16}>
+          <Grid
+            item
+            xs={6}
+            className={this.props.classes.recipeActionButtonLeft}
           >
-            Cook!
-          </Fab>
-          <Fab
-            variant="extended"
-            aria-label="Next recipe"
-            color="primary"
-            onClick={this.handleRejection}
+            <Fab
+              variant="extended"
+              aria-label="Cook"
+              color="primary"
+              onClick={this.handleConfirmation}
+            >
+              Cook!
+            </Fab>
+          </Grid>
+          <Grid
+            item
+            xs={6}
+            className={this.props.classes.recipeActionButtonRight}
           >
-            Not today
-          </Fab>
-        </div>
+            <Fab
+              variant="extended"
+              aria-label="Next recipe"
+              color="primary"
+              onClick={this.handleRejection}
+            >
+              Not today
+            </Fab>
+          </Grid>
+        </Grid>
       );
   };
 
   renderRecipeRating = () => {
     if (this.props.recipe.isSelectedRecipe)
       return (
-        <div>
-          <IconButton
-            disabled={this.props.recipe.recipeIsLiked === true}
-            aria-label="Thumbs up"
-            color="primary"
-            onClick={() => this.handleRating(this.props.recipe.id, true)}
+        <Grid container direction="row" spacing={16}>
+          <Grid
+            item
+            xs={6}
+            className={this.props.classes.recipeActionButtonLeft}
           >
-            <ThumbUpIcon />
-          </IconButton>
-          <IconButton
-            disabled={this.props.recipe.recipeIsLiked === false}
-            aria-label="Thumbs down"
-            color="primary"
-            onClick={() => this.handleRating(this.props.recipe.id, false)}
+            <IconButton
+              disabled={this.props.recipe.recipeIsLiked === true}
+              aria-label="Thumbs up"
+              color="primary"
+              onClick={() => this.handleRating(this.props.recipe.id, true)}
+              className={this.props.classes.ratingButton}
+            >
+              <ThumbUpIcon />
+            </IconButton>
+          </Grid>
+          <Grid
+            item
+            xs={6}
+            className={this.props.classes.recipeActionButtonRight}
           >
-            <ThumbDownIcon />
-          </IconButton>
-        </div>
+            <IconButton
+              disabled={this.props.recipe.recipeIsLiked === false}
+              aria-label="Thumbs down"
+              color="primary"
+              onClick={() => this.handleRating(this.props.recipe.id, false)}
+              className={this.props.classes.ratingButton}
+            >
+              <ThumbDownIcon />
+            </IconButton>
+          </Grid>
+        </Grid>
       );
   };
 
   renderEditDeleteButtons = () => {
     if (this.props.recipe.isOpenedRecipe)
       return (
-        <div>
-          <IconButton
-            aria-label="edit recipe"
-            color="primary"
-            onClick={this.handleEditRecipe}
+        <Grid container direction="row" spacing={16}>
+          <Grid
+            item
+            xs={6}
+            className={this.props.classes.recipeActionButtonLeft}
           >
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            aria-label="delete recipe"
-            color="primary"
-            onClick={() => this.openAlert(alertDeleteAreYouSure)}
+            <IconButton
+              aria-label="edit recipe"
+              color="primary"
+              onClick={this.handleEditRecipe}
+            >
+              <EditIcon />
+            </IconButton>
+          </Grid>
+          <Grid
+            item
+            xs={6}
+            className={this.props.classes.recipeActionButtonRight}
           >
-            <DeleteIcon />
-          </IconButton>
-        </div>
+            <IconButton
+              aria-label="delete recipe"
+              color="primary"
+              onClick={() => this.openAlert(alertDeleteAreYouSure)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Grid>
+        </Grid>
       );
   };
 
@@ -195,19 +234,28 @@ class RecipeViewContainer extends React.PureComponent {
 
 const styles = theme => ({
   card: {
-    maxWidth: "80%",
-    margin: "auto"
+    maxWidth: "95%",
+    margin: "auto",
+    padding: theme.spacing.unit * 2
   },
   recipeImage: {
-    maxWidth: "50%",
-    height: "100%"
   },
-  recipeDescription: {
-    display: "flex"
-  },
+  recipeDescription: {},
   descriptionContent: {},
   recipeIngredients: {},
-  recipeSteps: {}
+  recipeSteps: {},
+  recipeActionButtonLeft: {
+    textAlign: "right",
+  },
+  recipeActionButtonRight: {
+    textAlign: "left",
+  },
+  ratingButton: {
+    "&:disabled": {
+      backgroundColor: "lightgreen",
+      color: "red"
+    }
+  }
 });
 
 const mapStateToProps = state => ({

@@ -202,8 +202,9 @@ export const addRecipe = recipe => async (dispatch, getState) => {
   return dispatch(addNewRecipeToMyRecipes(recipe));
 };
 
-//TODO tidy up
-export const saveChangesRecipe = recipe => async () => {
+
+export const saveChangesRecipe = recipe => async (dispatch) => {
+
   await request
     .put(`${baseUrl}/recipes/${recipe.id}`)
     .send(recipe)
