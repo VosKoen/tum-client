@@ -20,10 +20,9 @@ export default function RecipeView(props) {
     return (
       <Card className={classes.card}>
         <Grid container spacing={16}>
-          <Grid item xs={12} sm={6} className={classes.recipeDescription}>
+          <Grid item xs={12} sm={6}>
             <CardMedia
               component="img"
-              className={classes.recipeImage}
               src={recipe.imageUrl}
               title={recipe.title}
             />
@@ -31,7 +30,7 @@ export default function RecipeView(props) {
           <Grid item xs={12} sm={6}>
           {renderEditDeleteButtons()}
             <Typography variant="h5">{recipe.title}</Typography>
-            <CardContent className={classes.descriptionContent}>
+            <CardContent>
               <Typography component="p" align="left">
                 {recipe.description}
               </Typography>
@@ -51,10 +50,9 @@ export default function RecipeView(props) {
               <ListItem key={ingredient.ingredientId} disableGutters={true}>
                 <Typography
                   component="p"
-                  className={classes.recipeIngredients}
                   align="left"
                 >
-                  {ingredient.name}
+                  {ingredient.amountNumber} {ingredient.amountTypeUnit} {ingredient.name} 
                 </Typography>
               </ListItem>
             ))}
@@ -67,7 +65,6 @@ export default function RecipeView(props) {
               <ListItem key={step.id} disableGutters={true}>
                 <Typography
                   component="p"
-                  className={classes.recipeSteps}
                   align="left"
                 >
                   {step.description}

@@ -238,23 +238,17 @@ const styles = theme => ({
     margin: "auto",
     padding: theme.spacing.unit * 2
   },
-  recipeImage: {
-  },
-  recipeDescription: {},
-  descriptionContent: {},
-  recipeIngredients: {},
-  recipeSteps: {},
   recipeActionButtonLeft: {
-    textAlign: "right",
+    textAlign: "right"
   },
   recipeActionButtonRight: {
-    textAlign: "left",
+    textAlign: "left"
   },
   ratingButton: {
     "&:disabled": {
-      backgroundColor: "lightgreen",
       color: "red"
-    }
+    },
+    color: "lightcoral"
   }
 });
 

@@ -22,6 +22,7 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ClearIcon from "@material-ui/icons/Clear";
+import { Grid } from "@material-ui/core";
 
 import { alertIngredientAlreadyPresent } from "../../actions/recipes";
 
@@ -90,142 +91,171 @@ export default function RecipeForm(props) {
   const ingredientAmountType = renderIngredientAmountType(state, handleChange);
 
   return (
-    <Paper>
+    <Paper className={classes.paper}>
       <form onSubmit={handleSubmit}>
-        <TextField
-          id="recipe-title"
-          name="recipeTitle"
-          label="Recipe title"
-          className={classes.textField}
-          value={state.recipeTitle}
-          onChange={handleChange}
-          margin="normal"
-          variant="outlined"
-          required
-        />
-        <TextField
-          id="recipe-description"
-          name="recipeDescription"
-          label="Description"
-          multiline
-          rowsMax="8"
-          value={state.recipeDescription}
-          onChange={handleChange}
-          className={classes.textField}
-          margin="normal"
-          variant="outlined"
-          required
-        />
-
-        <Dropzone onDrop={handleImageAdd}>
-          {({ getRootProps, getInputProps, isDragActive }) => {
-            return (
-              <div className={classes.dropzoneRoot}>
-                <div className={classes.dropzoneContainer}>
-                  <div
-                    {...getRootProps()}
-                    className={classNames("dropzone", {
-                      "dropzone--isActive": isDragActive
-                    })}
-                  >
-                    <input {...getInputProps()} />
-                    <img src={myRecipe.imageUrl} alt="finished-dish" />
+        <Grid container spacing={16}>
+          <Grid item xs={12} sm={6}>
+            <Dropzone onDrop={handleImageAdd}>
+              {({ getRootProps, getInputProps, isDragActive }) => {
+                return (
+                  <div className={classes.dropzoneRoot}>
+                    <div className={classes.dropzoneContainer}>
+                      <div
+                        {...getRootProps()}
+                        className={classNames("dropzone", {
+                          "dropzone--isActive": isDragActive
+                        })}
+                      >
+                        <input {...getInputProps()} />
+                        <img src={myRecipe.imageUrl} alt="finished-dish" />
+                      </div>
+                      <IconButton
+                        className={classes.clearImageButton}
+                        aria-label="Remove image"
+                        onClick={handleImageRemove}
+                      >
+                        <ClearIcon />
+                      </IconButton>
+                    </div>
                   </div>
-                  <IconButton
-                    className={classes.clearImageButton}
-                    aria-label="Remove image"
-                    onClick={handleImageRemove}
-                  >
-                    <ClearIcon />
-                  </IconButton>
-                </div>
-              </div>
-            );
-          }}
-        </Dropzone>
-        <Typography>
-          Drop your image file above or click on the image area above to select
-          a file for upload
-        </Typography>
+                );
+              }}
+            </Dropzone>
+            <Typography>
+              Drop your image file above or click on the image area above to
+              select a file for upload
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id="recipe-title"
+              name="recipeTitle"
+              label="Recipe title"
+              value={state.recipeTitle}
+              onChange={handleChange}
+              margin="normal"
+              variant="outlined"
+              required
+              fullWidth
+            />
 
-        <Typography variant="h6">Ingredients</Typography>
-        <Button
-          variant="contained"
-          color="secondary"
-          className={classes.button}
-          onClick={handleIngredientOpen}
-        >
-          Add new ingredient
-        </Button>
+            <TextField
+              id="recipe-description"
+              name="recipeDescription"
+              label="Description"
+              multiline
+              rows="11"
+              value={state.recipeDescription}
+              onChange={handleChange}
+              margin="normal"
+              variant="outlined"
+              required
+              fullWidth
+            />
+          </Grid>
+        </Grid>
 
-        <List>
-          {myRecipe.ingredients.map((ingredient, index) => (
-            <ListItem
-              key={ingredient.ingredientId}
-              disableGutters={true}
-              onClick={() => handleIngredientSelect(index)}
-              divider
-              button
-            >
-              <ListItemText>{ingredient.amountNumber}</ListItemText>
-              <ListItemText>{ingredient.unit}</ListItemText>
-              <ListItemText>{ingredient.name}</ListItemText>
-              <ListItemSecondaryAction
-                onClick={() => handleIngredientDelete(ingredient.ingredientId)}
+        <Grid container spacing={16}>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="h6" align="left">
+              Ingredients
+            </Typography>
+            <Grid container justify="flex-start">
+              <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+                onClick={handleIngredientOpen}
               >
-                <IconButton aria-label="Delete">
-                  <DeleteIcon />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
-        </List>
-        <Typography variant="h6">Steps</Typography>
-        <Button
-          variant="contained"
-          color="secondary"
-          className={classes.button}
-          onClick={handleStepOpen}
-        >
-          Add new step
-        </Button>
-        <List>
-          {myRecipe.steps.map((step, index) => (
-            <ListItem
-              key={index}
-              disableGutters={true}
-              onClick={() => handleStepSelect(index)}
-              divider
-              button
+                Add new ingredient
+              </Button>
+            </Grid>
+            <List>
+              {myRecipe.ingredients.map((ingredient, index) => (
+                <ListItem
+                  key={ingredient.ingredientId}
+                  disableGutters={true}
+                  onClick={() => handleIngredientSelect(index)}
+                  divider
+                  button
+                >
+                  <ListItemText>{ingredient.amountNumber}</ListItemText>
+                  <ListItemText>{ingredient.unit}</ListItemText>
+                  <ListItemText>{ingredient.name}</ListItemText>
+                  <ListItemSecondaryAction
+                    onClick={() =>
+                      handleIngredientDelete(ingredient.ingredientId)
+                    }
+                  >
+                    <IconButton aria-label="Delete">
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ))}
+            </List>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="h6" align="left">
+              Steps
+            </Typography>
+            <Grid container justify="flex-start">
+              <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+                onClick={handleStepOpen}
+              >
+                Add new step
+              </Button>
+            </Grid>
+            <List>
+              {myRecipe.steps.map((step, index) => (
+                <ListItem
+                  key={index}
+                  disableGutters={true}
+                  onClick={() => handleStepSelect(index)}
+                  divider
+                  button
+                >
+                  <ListItemText>{step.description}</ListItemText>
+                  <ListItemSecondaryAction
+                    onClick={() => handleStepDelete(index)}
+                  >
+                    <IconButton aria-label="Delete">
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ))}
+            </List>
+          </Grid>
+        </Grid>
+        <Grid container justify="flex-start" spacing={16}>
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              type="submit"
             >
-              <ListItemText>{step.description}</ListItemText>
-              <ListItemSecondaryAction onClick={() => handleStepDelete(index)}>
-                <IconButton aria-label="Delete">
-                  <DeleteIcon />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
-        </List>
-        <Button
-          variant="contained"
-          color="primary"
-          className={classes.button}
-          type="submit"
-        >
-          {myRecipe.editMode ? "Save changes" : "Submit recipe"}
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          className={classes.button}
-          onClick={handleCancelSubmit}
-        >
-          Cancel
-        </Button>
+              {myRecipe.editMode ? "Save changes" : "Submit recipe"}
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              onClick={handleCancelSubmit}
+            >
+              Cancel
+            </Button>
+          </Grid>
+        </Grid>
 
         <Dialog
-          fullScreen
+          className={classes.ingredientDialog}
           open={state.ingredientOpen}
           onClose={handleIngredientClose}
           aria-labelledby="responsive-dialog-title"
@@ -241,7 +271,7 @@ export default function RecipeForm(props) {
                 onChange: handleAutosuggestChange("ingredient")
               }}
               theme={{
-                container: classes.container,
+                container: classes.autosuggestContainer,
                 suggestionsContainerOpen: classes.suggestionsContainerOpen,
                 suggestionsList: classes.suggestionsList,
                 suggestion: classes.suggestion
@@ -260,39 +290,58 @@ export default function RecipeForm(props) {
               ""
             )}
             {state.ingredientSelected ? (
-              <div>
-                <FormControl component="fieldset">
-                  <RadioGroup
-                    aria-label="amount-type"
-                    name="amountType"
-                    value={state.amountType}
-                    onChange={handleChange}
-                  >
-                    {amountTypes.map((amountType, index) => (
-                      <FormControlLabel
-                        key={index}
-                        value={amountType.id.toString()}
-                        control={<Radio />}
-                        label={amountType.name}
+              <Grid container direction="column">
+                <Grid item>
+                  <FormControl component="fieldset">
+                    <RadioGroup
+                      aria-label="amount-type"
+                      name="amountType"
+                      value={state.amountType}
+                      onChange={handleChange}
+                    >
+                      {amountTypes.map((amountType, index) => (
+                        <FormControlLabel
+                          key={index}
+                          value={amountType.id.toString()}
+                          control={<Radio />}
+                          label={amountType.name}
+                        />
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                </Grid>
+                <Grid item>
+                  <Grid container spacing={8}>
+                    <Grid item>
+                      <TextField
+                        id="amount-number"
+                        name="amountNumber"
+                        value={state.amountNumber}
+                        onChange={handleChange}
+                        type="number"
+                        required
                       />
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-                <TextField
-                  id="amount-number"
-                  name="amountNumber"
-                  value={state.amountNumber}
-                  onChange={handleChange}
-                  type="number"
-                  margin="normal"
-                  required
-                />
-
-                {ingredientAmountType}
-                <Typography>{state.ingredient}</Typography>
-              </div>
+                    </Grid>
+                    <Grid item>{ingredientAmountType}</Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
             ) : (
-              <div />
+              <div>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+              </div>
             )}
           </DialogContent>
           <DialogActions>

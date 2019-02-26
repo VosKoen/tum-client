@@ -192,13 +192,14 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleIngredientAdd = () => {
+
     const ingredient = {
       ingredientId: this.props.ingredients.find(
         ingredient => ingredient.name === this.state.ingredient
       ).id,
       amountType: parseInt(this.state.amountType),
       amountNumber: this.state.amountNumber,
-      amountTypeUnit: units.find(unit => unit.shorthand === this.state.unit).id,
+      amountTypeUnit: (this.state.unit && units.find(unit => unit.shorthand === this.state.unit).id),
       name: this.state.ingredient
     };
 
@@ -433,7 +434,12 @@ class RecipeFormContainer extends React.PureComponent {
 }
 
 const styles = theme => ({
-  container: {
+  paper: {
+    maxWidth: "95%",
+    margin: "auto",
+    padding: theme.spacing.unit * 2
+  },
+  autosuggestContainer: {
     position: "relative"
   },
   suggestionsContainerOpen: {
@@ -465,7 +471,7 @@ const styles = theme => ({
     position: "absolute",
     right: "5px",
     top: "5px"
-  }
+  },
 });
 
 const mapStateToProps = state => ({
