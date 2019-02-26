@@ -22,7 +22,7 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ClearIcon from "@material-ui/icons/Clear";
-import { Grid } from "@material-ui/core";
+import { Grid, CardMedia } from "@material-ui/core";
 
 import { alertIngredientAlreadyPresent } from "../../actions/recipes";
 
@@ -107,7 +107,11 @@ export default function RecipeForm(props) {
                         })}
                       >
                         <input {...getInputProps()} />
-                        <img src={myRecipe.imageUrl} alt="finished-dish" />
+                        <CardMedia
+                          component="img"
+                          src={myRecipe.imageUrl}
+                          title="finished-dish"
+                        />
                       </div>
                       <IconButton
                         className={classes.clearImageButton}
@@ -157,18 +161,24 @@ export default function RecipeForm(props) {
 
         <Grid container spacing={16}>
           <Grid item xs={12} sm={6}>
-            <Typography variant="h6" align="left">
-              Ingredients
-            </Typography>
-            <Grid container justify="flex-start">
-              <Button
-                variant="contained"
-                color="secondary"
-                className={classes.button}
-                onClick={handleIngredientOpen}
-              >
-                Add new ingredient
-              </Button>
+            <Grid container justify={"flex-start"} spacing={16}>
+              <Grid item>
+                <Typography variant="h6" align="left">
+                  Ingredients
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Grid container justify="flex-start">
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={handleIngredientOpen}
+                  >
+                    Add new ingredient
+                  </Button>
+                </Grid>
+              </Grid>
             </Grid>
             <List>
               {myRecipe.ingredients.map((ingredient, index) => (
@@ -196,18 +206,24 @@ export default function RecipeForm(props) {
             </List>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Typography variant="h6" align="left">
-              Steps
-            </Typography>
-            <Grid container justify="flex-start">
-              <Button
-                variant="contained"
-                color="secondary"
-                className={classes.button}
-                onClick={handleStepOpen}
-              >
-                Add new step
-              </Button>
+            <Grid container justify={"flex-start"} spacing={16}>
+              <Grid item>
+                <Typography variant="h6" align="left">
+                  Steps
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Grid container justify="flex-start">
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={handleStepOpen}
+                  >
+                    Add new step
+                  </Button>
+                </Grid>
+              </Grid>
             </Grid>
             <List>
               {myRecipe.steps.map((step, index) => (
@@ -350,7 +366,15 @@ export default function RecipeForm(props) {
                 Change ingredient
               </Button>
             ) : (
-              <Button onClick={handleIngredientAdd} color="primary">
+              <Button
+                onClick={handleIngredientAdd}
+                color="primary"
+                disabled={
+                  !state.ingredientSelected ||
+                  !state.amountType ||
+                  !state.amountNumber
+                }
+              >
                 Add ingredient
               </Button>
             )}
@@ -374,7 +398,6 @@ export default function RecipeForm(props) {
             <TextField
               autoFocus
               id="step"
-              label="Cooking step"
               name="stepDescription"
               value={state.stepDescription}
               onChange={handleChange}
@@ -385,11 +408,19 @@ export default function RecipeForm(props) {
           </DialogContent>
           <DialogActions>
             {state.isStepEditMode ? (
-              <Button onClick={handleStepChange} color="primary">
+              <Button
+                onClick={handleStepChange}
+                color="primary"
+                disabled={!state.stepDescription}
+              >
                 Change step
               </Button>
             ) : (
-              <Button onClick={handleStepAdd} color="primary">
+              <Button
+                onClick={handleStepAdd}
+                color="primary"
+                disabled={!state.stepDescription}
+              >
                 Add step
               </Button>
             )}

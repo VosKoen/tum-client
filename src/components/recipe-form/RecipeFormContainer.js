@@ -23,6 +23,16 @@ import {
 } from "../../actions/recipes";
 import { getIngredientList } from "../../actions/ingredients";
 import { Redirect } from "react-router-dom";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import Button from "@material-ui/core/Button";
+
+//Alert definitions
+import { alertIngredientAlreadyPresent } from "../../actions/recipes";
+const alertNoSteps = "alertNoSteps";
+const alertNoIngredients = "alertNoIngredients";
 
 function renderInputComponent(inputProps) {
   const { classes, inputRef = () => {}, ref, ...other } = inputProps;
@@ -105,7 +115,9 @@ class RecipeFormContainer extends React.PureComponent {
     submitRecipe: false,
     recipeTitle: "",
     recipeDescription: "",
-    alertIngredientAlreadyPresent: false,
+    [alertIngredientAlreadyPresent]: false,
+    [alertNoSteps]: false,
+    [alertNoIngredients]: false,
     imageFiles: []
   };
 
@@ -192,14 +204,15 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleIngredientAdd = () => {
-
     const ingredient = {
       ingredientId: this.props.ingredients.find(
         ingredient => ingredient.name === this.state.ingredient
       ).id,
       amountType: parseInt(this.state.amountType),
       amountNumber: this.state.amountNumber,
-      amountTypeUnit: (this.state.unit && units.find(unit => unit.shorthand === this.state.unit).id),
+      amountTypeUnit:
+        this.state.unit &&
+        units.find(unit => unit.shorthand === this.state.unit).id,
       name: this.state.ingredient
     };
 
@@ -212,7 +225,6 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleIngredientChange = () => {
-
     const ingredient = {
       ingredientId: this.props.ingredients.find(
         ingredient => ingredient.name === this.state.ingredient
@@ -282,6 +294,19 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleSubmit = e => {
+    e.preventDefault();
+
+    //Alerts
+    if (this.props.myRecipe.ingredients.length === 0) {
+      this.openAlert(alertNoIngredients);
+      return undefined;
+    }
+
+    if (this.props.myRecipe.steps.length === 0) {
+      this.openAlert(alertNoSteps);
+      return undefined;
+    }
+
     this.setState({ submitRecipe: true });
 
     const recipe = {
@@ -289,7 +314,7 @@ class RecipeFormContainer extends React.PureComponent {
       description: this.state.recipeDescription,
       recipeIngredients: this.props.myRecipe.ingredients,
       steps: this.props.myRecipe.steps,
-      recipeImages: [{imageUrl: this.props.myRecipe.imageUrl}],
+      recipeImages: [{ imageUrl: this.props.myRecipe.imageUrl }],
       id: this.props.myRecipe.id
     };
 
@@ -299,8 +324,6 @@ class RecipeFormContainer extends React.PureComponent {
       this.props.addRecipe(recipe);
     }
     this.props.resetRecipeForm();
-
-    e.preventDefault();
   };
 
   handleCancelSubmit = () => {
@@ -331,7 +354,6 @@ class RecipeFormContainer extends React.PureComponent {
 
   handleImageAdd = (acceptedFiles, rejectedFiles) => {
     this.resizeImage(acceptedFiles[0]);
-
   };
 
   storeImage = image => {
@@ -384,8 +406,45 @@ class RecipeFormContainer extends React.PureComponent {
 
   handleImageRemove = () => {
     this.props.resetPlaceholderImage();
-  }
+  };
 
+  renderNoStepsAlert = () => {
+    return (
+      <Dialog
+        open={this.state.alertNoSteps}
+        onClose={() => this.closeAlert(alertNoSteps)}
+      >
+        <DialogContent>
+          <DialogContentText>
+            Please add at least one step to the recipe before submitting
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.closeAlert(alertNoSteps)}>Ok</Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
+
+  renderNoIngredientsAlert = () => {
+    return (
+      <Dialog
+        open={this.state.alertNoIngredients}
+        onClose={() => this.closeAlert(alertNoIngredients)}
+      >
+        <DialogContent>
+          <DialogContentText>
+            Please add at least one ingredient to the recipe before submitting
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.closeAlert(alertNoIngredients)}>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
 
   render() {
     const { classes, myRecipe } = this.props;
@@ -404,31 +463,35 @@ class RecipeFormContainer extends React.PureComponent {
       return <Redirect to="/my-recipes" />;
 
     return (
-      <RecipeForm
-        classes={classes}
-        handleSubmit={this.handleSubmit}
-        handleChange={this.handleChange}
-        state={this.state}
-        myRecipe={myRecipe}
-        autosuggestProps={autosuggestProps}
-        handleIngredientOpen={this.handleIngredientOpen}
-        handleIngredientClose={this.handleIngredientClose}
-        handleAutosuggestChange={this.handleAutosuggestChange}
-        handleIngredientAdd={this.handleIngredientAdd}
-        handleStepOpen={this.handleStepOpen}
-        handleStepClose={this.handleStepClose}
-        handleStepAdd={this.handleStepAdd}
-        handleStepDelete={this.handleStepDelete}
-        handleCancelSubmit={this.handleCancelSubmit}
-        handleIngredientDelete={this.handleIngredientDelete}
-        closeAlert={this.closeAlert}
-        handleImageAdd={this.handleImageAdd}
-        handleIngredientSelect={this.handleIngredientSelect}
-        handleIngredientChange={this.handleIngredientChange}
-        handleStepSelect={this.handleStepSelect}
-        handleStepChange={this.handleStepChange}
-        handleImageRemove={this.handleImageRemove}
-      />
+      <div>
+        <RecipeForm
+          classes={classes}
+          handleSubmit={this.handleSubmit}
+          handleChange={this.handleChange}
+          state={this.state}
+          myRecipe={myRecipe}
+          autosuggestProps={autosuggestProps}
+          handleIngredientOpen={this.handleIngredientOpen}
+          handleIngredientClose={this.handleIngredientClose}
+          handleAutosuggestChange={this.handleAutosuggestChange}
+          handleIngredientAdd={this.handleIngredientAdd}
+          handleStepOpen={this.handleStepOpen}
+          handleStepClose={this.handleStepClose}
+          handleStepAdd={this.handleStepAdd}
+          handleStepDelete={this.handleStepDelete}
+          handleCancelSubmit={this.handleCancelSubmit}
+          handleIngredientDelete={this.handleIngredientDelete}
+          closeAlert={this.closeAlert}
+          handleImageAdd={this.handleImageAdd}
+          handleIngredientSelect={this.handleIngredientSelect}
+          handleIngredientChange={this.handleIngredientChange}
+          handleStepSelect={this.handleStepSelect}
+          handleStepChange={this.handleStepChange}
+          handleImageRemove={this.handleImageRemove}
+        />
+        {this.renderNoStepsAlert()}
+        {this.renderNoIngredientsAlert()}
+      </div>
     );
   }
 }
@@ -471,7 +534,7 @@ const styles = theme => ({
     position: "absolute",
     right: "5px",
     top: "5px"
-  },
+  }
 });
 
 const mapStateToProps = state => ({
