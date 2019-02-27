@@ -3,13 +3,11 @@ import reducer from "./reducers";
 import { storeJwt } from "./middleware";
 import ReduxThunk from "redux-thunk";
 
-// const devTools =
-//   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
+const composeEnhancers =
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const enhancer = compose(
+const enhancer = composeEnhancers(
   applyMiddleware(ReduxThunk, storeJwt)
-  // ,
-  // devTools
 );
 
 const store = createStore(reducer, enhancer);
