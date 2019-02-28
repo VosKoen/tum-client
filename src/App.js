@@ -13,6 +13,8 @@ import MyRecipesViewContainer from "./components/my-recipes-view/MyRecipesViewCo
 //TODO: Check connection database and show something in case of no connection
 
 class App extends Component {
+  componentDidMount() {}
+
   render() {
     return (
       <Router>

@@ -144,12 +144,12 @@ export const uploadImage = image => async (dispatch, getState) => {
     .catch(err => console.error(err));
 };
 
-export const addRecipe = recipe => async (getState) => {
-  const state = getState();
-  if (!state.user) return null;
-  const jwt = state.user.jwt;
+export const addRecipe = (recipe, user) => async () => {
+  // const state = getState();
+  // if (!state.user) return null;
+  // const jwt = state.user.jwt;
 
-  const user = userId(jwt);
+  // const user = userId(jwt);
   let recipeId;
 
   await request

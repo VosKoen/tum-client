@@ -9,7 +9,6 @@ import CssBaseline from "@material-ui/core/CssBaseline/CssBaseline";
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import {theme} from "./theme";
 
-
 ReactDOM.render(
   <Provider store={store}>
   <MuiThemeProvider theme={theme}>

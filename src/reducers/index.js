@@ -3,7 +3,7 @@ import login from "./login";
 import recipe from "./recipe";
 import myRecipes from "./myRecipes";
 import myRecipe from "./myRecipe";
-import ingredients from "./ingredients";
+import referenceData from "./referenceData";
 import { combineReducers } from "redux";
 
 export default combineReducers({
@@ -12,5 +12,5 @@ export default combineReducers({
   recipe,
   myRecipes,
   myRecipe,
-  ingredients
+  referenceData
 });

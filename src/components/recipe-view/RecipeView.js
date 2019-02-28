@@ -52,7 +52,7 @@ export default function RecipeView(props) {
                   component="p"
                   align="left"
                 >
-                  {ingredient.amountNumber} {ingredient.amountTypeUnit} {ingredient.name} 
+                  {ingredient.amountNumber} {ingredient.amountTypeUnitName} {ingredient.name} 
                 </Typography>
               </ListItem>
             ))}

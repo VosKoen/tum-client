@@ -4,9 +4,11 @@ import { login } from "../../actions/users";
 import Logon from "./Logon";
 import { Redirect } from "react-router-dom";
 
+
 class LogonContainer extends React.PureComponent {
   handleSubmit = logonData => {
     this.props.login(logonData.email, logonData.password);
+
   };
 
   render() {

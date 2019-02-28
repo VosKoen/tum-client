@@ -21,13 +21,14 @@ import {
   saveChangesRecipe,
   resetPlaceholderImage
 } from "../../actions/recipes";
-import { getIngredientList } from "../../actions/ingredients";
+import { getIngredientList, getIngredientAmountTypeUnitList } from "../../actions/ingredients";
 import { Redirect } from "react-router-dom";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import Button from "@material-ui/core/Button";
+import {userId} from '../../jwt'
 
 //Alert definitions
 import { alertIngredientAlreadyPresent } from "../../actions/recipes";
@@ -123,6 +124,7 @@ class RecipeFormContainer extends React.PureComponent {
 
   componentDidMount = () => {
     this.props.getIngredientList();
+    this.props.getIngredientAmountTypeUnitList()
 
     if (this.props.myRecipe.editMode)
       this.setState({
@@ -133,7 +135,7 @@ class RecipeFormContainer extends React.PureComponent {
 
   handleIngredientSelected = value => {
     let ingredientSelected = false;
-    const suggestions = getSuggestions(value, this.props.ingredients);
+    const suggestions = getSuggestions(value, this.props.referenceData.ingredients);
 
     if (
       suggestions.length > 0 &&
@@ -149,7 +151,7 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleSuggestionsFetchRequested = ({ value }) => {
-    const suggestions = getSuggestions(value, this.props.ingredients);
+    const suggestions = getSuggestions(value, this.props.referenceData.ingredients);
 
     this.setState({
       suggestions,
@@ -204,15 +206,18 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleIngredientAdd = () => {
+
+    const unitId = (this.state.unit && units.find(unit => unit.shorthand === this.state.unit).id) || null
+
     const ingredient = {
-      ingredientId: this.props.ingredients.find(
+      ingredientId: this.props.referenceData.ingredients.find(
         ingredient => ingredient.name === this.state.ingredient
       ).id,
       amountType: parseInt(this.state.amountType),
       amountNumber: this.state.amountNumber,
-      amountTypeUnit:
-        this.state.unit &&
-        units.find(unit => unit.shorthand === this.state.unit).id,
+      amountTypeUnit: unitId,
+      amountTypeUnitShorthand: unitId && this.props.referenceData.ingredientAmountTypeUnits.find(unit => unit.id === unitId).shorthand,
+      amountTypeUnitName: unitId && this.props.referenceData.ingredientAmountTypeUnits.find(unit => unit.id === unitId).name,
       name: this.state.ingredient
     };
 
@@ -226,7 +231,7 @@ class RecipeFormContainer extends React.PureComponent {
 
   handleIngredientChange = () => {
     const ingredient = {
-      ingredientId: this.props.ingredients.find(
+      ingredientId: this.props.referenceData.ingredients.find(
         ingredient => ingredient.name === this.state.ingredient
       ).id,
       amountType: parseInt(this.state.amountType),
@@ -316,10 +321,12 @@ class RecipeFormContainer extends React.PureComponent {
       id: this.props.myRecipe.id
     };
 
+    const user = userId(this.props.user.jwt);
+
     if (this.props.myRecipe.editMode) {
-      await this.props.saveChangesRecipe(recipe);
+      await this.props.saveChangesRecipe(recipe, user);
     } else {
-      await this.props.addRecipe(recipe);
+      await this.props.addRecipe(recipe, user);
     }
 
     this.setState({ submitRecipe: true });
@@ -447,6 +454,7 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   render() {
+
     const { classes, myRecipe } = this.props;
 
     const autosuggestProps = {
@@ -542,7 +550,7 @@ const styles = theme => ({
 const mapStateToProps = state => ({
   myRecipe: state.myRecipe,
   user: state.user,
-  ingredients: state.ingredients,
+  referenceData: state.referenceData,
   recipe: state.recipe
 });
 
@@ -561,7 +569,8 @@ export default withStyles(styles)(
       changeRecipeIngredient,
       changeRecipeStep,
       saveChangesRecipe,
-      resetPlaceholderImage
+      resetPlaceholderImage,
+      getIngredientAmountTypeUnitList
     }
   )(RecipeFormContainer)
 );
