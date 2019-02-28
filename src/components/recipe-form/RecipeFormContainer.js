@@ -293,7 +293,7 @@ class RecipeFormContainer extends React.PureComponent {
     this.props.removeStepFromRecipe(indexStepArray);
   };
 
-  handleSubmit = e => {
+  handleSubmit = async e => {
     e.preventDefault();
 
     //Alerts
@@ -307,8 +307,6 @@ class RecipeFormContainer extends React.PureComponent {
       return undefined;
     }
 
-    this.setState({ submitRecipe: true });
-
     const recipe = {
       title: this.state.recipeTitle,
       description: this.state.recipeDescription,
@@ -319,11 +317,13 @@ class RecipeFormContainer extends React.PureComponent {
     };
 
     if (this.props.myRecipe.editMode) {
-      this.props.saveChangesRecipe(recipe);
+      await this.props.saveChangesRecipe(recipe);
     } else {
-      this.props.addRecipe(recipe);
+      await this.props.addRecipe(recipe);
     }
-    this.props.resetRecipeForm();
+
+    this.setState({ submitRecipe: true });
+
   };
 
   handleCancelSubmit = () => {
@@ -488,6 +488,7 @@ class RecipeFormContainer extends React.PureComponent {
           handleStepSelect={this.handleStepSelect}
           handleStepChange={this.handleStepChange}
           handleImageRemove={this.handleImageRemove}
+
         />
         {this.renderNoStepsAlert()}
         {this.renderNoIngredientsAlert()}
@@ -522,19 +523,20 @@ const styles = theme => ({
   },
   dropzoneRoot: {
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "center",
+    height: "100%"
   },
   dropzoneContainer: {
     display: "flex",
     justifyContent: "center",
     margin: 0,
-    position: "relative"
+    position: "relative",
   },
   clearImageButton: {
     position: "absolute",
     right: "5px",
     top: "5px"
-  }
+  },
 });
 
 const mapStateToProps = state => ({

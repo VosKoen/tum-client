@@ -22,6 +22,7 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ClearIcon from "@material-ui/icons/Clear";
+
 import { Grid, CardMedia } from "@material-ui/core";
 
 import { alertIngredientAlreadyPresent } from "../../actions/recipes";
@@ -95,40 +96,46 @@ export default function RecipeForm(props) {
       <form onSubmit={handleSubmit}>
         <Grid container spacing={16}>
           <Grid item xs={12} sm={6}>
-            <Dropzone onDrop={handleImageAdd}>
-              {({ getRootProps, getInputProps, isDragActive }) => {
-                return (
-                  <div className={classes.dropzoneRoot}>
-                    <div className={classes.dropzoneContainer}>
-                      <div
-                        {...getRootProps()}
-                        className={classNames("dropzone", {
-                          "dropzone--isActive": isDragActive
-                        })}
-                      >
-                        <input {...getInputProps()} />
-                        <CardMedia
-                          component="img"
-                          src={myRecipe.imageUrl}
-                          title="finished-dish"
-                        />
+            <Grid container direction="column">
+              <Grid item>
+                <Dropzone onDrop={handleImageAdd}>
+                  {({ getRootProps, getInputProps, isDragActive }) => {
+                    return (
+                      <div className={classes.dropzoneRoot}>
+                        <div className={classes.dropzoneContainer}>
+                          <div
+                            {...getRootProps()}
+                            className={classNames("dropzone", {
+                              "dropzone--isActive": isDragActive
+                            })}
+                          >
+                            <input {...getInputProps()} />
+                            <CardMedia
+                              component="img"
+                              src={myRecipe.imageUrl}
+                              title="finished-dish"
+                            />
+                          </div>
+                          <IconButton
+                            aria-label="Remove image"
+                            onClick={handleImageRemove}
+                            className={classes.clearImageButton}
+                          >
+                            <ClearIcon />
+                          </IconButton>
+                        </div>
                       </div>
-                      <IconButton
-                        className={classes.clearImageButton}
-                        aria-label="Remove image"
-                        onClick={handleImageRemove}
-                      >
-                        <ClearIcon />
-                      </IconButton>
-                    </div>
-                  </div>
-                );
-              }}
-            </Dropzone>
-            <Typography>
-              Drop your image file above or click on the image area above to
-              select a file for upload
-            </Typography>
+                    );
+                  }}
+                </Dropzone>
+              </Grid>
+              <Grid item>
+                <Typography>
+                  Drop your image file above or click on the image area above to
+                  select a file for upload
+                </Typography>
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField

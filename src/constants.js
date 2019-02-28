@@ -1,9 +1,10 @@
 
-export const baseUrl = "https://tum-server.herokuapp.com";
+export const baseUrl = process.env.SERVER_URL || "http://localhost:4000";
 export const localStorageJwtKey = "currentUserJwt";
 
+
 export const imagePlaceholder =
-  "https://res.cloudinary.com/fox-app-development/image/upload/v1550050963/tum/image-placeholder-350x350.png";
+  "https://res.cloudinary.com/fox-app-development/image/upload/c_scale,w_800/v1550050963/tum/image-placeholder-350x350.png";
 export const maxImageWidth = 800;
 // Constants which should be retrieved somehow from the database
 

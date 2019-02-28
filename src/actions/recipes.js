@@ -13,7 +13,6 @@ export const ADD_NEW_INGREDIENT = "ADD_NEW_INGREDIENT";
 export const ADD_NEW_STEP = "ADD_NEW_STEP";
 export const DELETE_INGREDIENT = "DELETE_INGREDIENT";
 export const DELETE_STEP = "DELETE_STEP";
-export const ADD_NEW_RECIPE_TO_MY_RECIPES = "ADD_NEW_RECIPE_TO_MY_RECIPES";
 export const ADD_IMAGE_TO_RECIPE = "ADD_IMAGE_TO_RECIPE";
 export const SET_DELETE_RECIPE_SUCCESS = "SET_DELETE_RECIPE_SUCCESS";
 export const RESET_MY_RECIPE = "RESET_MY_RECIPE";
@@ -67,10 +66,6 @@ const changeStep = (newStep, arrayIndex) => {
 
 const deleteStep = indexStepArray => {
   return { type: DELETE_STEP, payload: indexStepArray };
-};
-
-const addNewRecipeToMyRecipes = recipe => {
-  return { type: ADD_NEW_RECIPE_TO_MY_RECIPES, payload: recipe };
 };
 
 const resetMyRecipe = () => {
@@ -149,7 +144,7 @@ export const uploadImage = image => async (dispatch, getState) => {
     .catch(err => console.error(err));
 };
 
-export const addRecipe = recipe => async (dispatch, getState) => {
+export const addRecipe = recipe => async (getState) => {
   const state = getState();
   if (!state.user) return null;
   const jwt = state.user.jwt;
@@ -190,16 +185,18 @@ export const addRecipe = recipe => async (dispatch, getState) => {
         .catch(err => console.error(err))
     );
 
-  if (recipe.imageUrl)
+  if (recipe.recipeImages[0].imageUrl)
     await request
       .post(`${baseUrl}/recipes/${recipeId}/images`)
       .send({
-        imageUrl: recipe.imageUrl
+        imageUrl: recipe.recipeImages[0].imageUrl
       })
       .catch(err => console.error(err));
 
   recipe.id = recipeId;
-  return dispatch(addNewRecipeToMyRecipes(recipe));
+
+  return undefined
+
 };
 
 
