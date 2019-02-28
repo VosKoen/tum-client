@@ -14,34 +14,42 @@ export default function MyRecipesView(props) {
   if (!myRecipes) return <div>Loading...</div>;
   return (
     <Paper className={classes.myRecipes}>
-      <Grid container className={classes.myRecipesHeader} spacing={16}>
-        <Grid item xs={9}>
-          <Typography variant="h6">My recipes</Typography>
+      <Grid container spacing={16}>
+        <Grid item xs={12} sm={6}>
+          <Grid container className={classes.myRecipesHeader} spacing={16}>
+            <Grid item xs={9}>
+              <Typography variant="h6">My recipes</Typography>
+            </Grid>
+            <Grid item xs={3} className={classes.buttonAddRecipeContainer}>
+              <Fab
+                color="primary"
+                aria-label="Add"
+                onClick={handleClickNewRecipe}
+                size="small"
+              >
+                <AddIcon />
+              </Fab>
+            </Grid>
+          </Grid>
+          <List>
+            {myRecipes.map((recipe, index) => (
+              <ListItem
+                key={index}
+                disableGutters={true}
+                divider
+                button
+                onClick={() => handleClickRecipe(recipe.id)}
+              >
+                <ListItemText primary={recipe.title} />
+              </ListItem>
+            ))}
+          </List>
         </Grid>
-        <Grid item xs={3} className={classes.buttonAddRecipeContainer}>
-            <Fab
-              color="primary"
-              aria-label="Add"
-              onClick={handleClickNewRecipe}
-
-            >
-              <AddIcon />
-            </Fab>
+        <Grid item xs={12} sm={6}>
+          <Typography variant="h6">Cooked recipes history</Typography>
+          <Typography>You have not cooked anything yet</Typography>
         </Grid>
       </Grid>
-      <List>
-        {myRecipes.map((recipe, index) => (
-          <ListItem
-            key={index}
-            disableGutters={true}
-            divider
-            button
-            onClick={() => handleClickRecipe(recipe.id)}
-          >
-            <ListItemText primary={recipe.title} />
-          </ListItem>
-        ))}
-      </List>
     </Paper>
   );
 }

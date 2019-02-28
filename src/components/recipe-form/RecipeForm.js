@@ -196,9 +196,7 @@ export default function RecipeForm(props) {
                   divider
                   button
                 >
-                  <ListItemText>{ingredient.amountNumber}</ListItemText>
-                  <ListItemText>{ingredient.unit}</ListItemText>
-                  <ListItemText>{ingredient.name}</ListItemText>
+                  <ListItemText>{ingredient.amountNumber} {ingredient.amountTypeUnitName} {ingredient.name}</ListItemText>
                   <ListItemSecondaryAction
                     onClick={() =>
                       handleIngredientDelete(ingredient.ingredientId)
