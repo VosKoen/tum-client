@@ -4,9 +4,7 @@ import { storeJwt } from "./middleware";
 import ReduxThunk from "redux-thunk";
 
 const composeEnhancers =
-(process.env.REACT_APP_PRODUCTION && compose ) || window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-console.log(composeEnhancers)
+((process.env.NODE_ENV === 'production') && compose ) || window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const enhancer = composeEnhancers(
   applyMiddleware(ReduxThunk, storeJwt)
