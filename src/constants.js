@@ -1,5 +1,5 @@
 
-export const baseUrl = process.env.SERVER_URL || "http://localhost:4000";
+export const baseUrl = process.env.REACT_APP_SERVER_URL || "http://localhost:4000";
 export const localStorageJwtKey = "currentUserJwt";
 
 
