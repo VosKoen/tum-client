@@ -4,7 +4,7 @@ import { logout } from "./users";
 import { isExpired, userId } from "../jwt";
 import { setRecipeUserRating } from "./ratings";
 
-export const SET_RANDOM_RECIPE = "SET_RANDOM_RECIPE";
+export const SET_RECIPE = "SET_RECIPE";
 export const SET_OPENED_RECIPE = "SET_OPENED_RECIPE";
 export const SET_MY_RECIPES = "SET_MY_RECIPES";
 export const SET_RECIPE_IMAGE = "SET_RECIPE_IMAGE";
@@ -21,20 +21,25 @@ export const PREFILL_RECIPE_TO_EDIT = "PREFILL_RECIPE_TO_EDIT";
 export const CHANGE_INGREDIENT = "CHANGE_INGREDIENT";
 export const CHANGE_STEP = "CHANGE_STEP";
 export const SET_PLACEHOLDER_IMAGE = "SET_PLACEHOLDER_IMAGE";
+export const SET_RECIPE_HISTORY = "SET_RECIPE_HISTORY";
 
 //Alerts
 export const alertIngredientAlreadyPresent = "alertIngredientAlreadyPresent";
 
-const setRandomRecipe = recipe => {
-  return { type: SET_RANDOM_RECIPE, payload: recipe };
+const setRecipe = recipe => {
+  return { type: SET_RECIPE, payload: recipe };
 };
 
-const setOpenedRecipe = recipe => {
-  return { type: SET_OPENED_RECIPE, payload: recipe };
+const setOpenedRecipe = () => {
+  return { type: SET_OPENED_RECIPE, payload: null };
 };
 
 const setMyRecipes = recipes => {
   return { type: SET_MY_RECIPES, payload: recipes };
+};
+
+const setRecipeHistory = recipes => {
+  return { type: SET_RECIPE_HISTORY, payload: recipes };
 };
 
 const setRecipeImage = imageUrl => {
@@ -105,8 +110,30 @@ export const selectRecipe = recipeId => (dispatch, getState) => {
   const user = userId(jwt);
 
   request
-    .post(`${baseUrl}/users/${user}/recipes/${recipeId}`)
+    .post(`${baseUrl}/users/${user}/recipes/${recipeId}/selected-recipes`)
     .then(_ => dispatch(setIsSelectedRecipe()))
+    .catch(err => console.error(err));
+};
+
+export const openSelectedRecipe = recipeId => async (dispatch, getState) => {
+  const state = getState();
+
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  if (isExpired(jwt)) return dispatch(logout());
+
+  await request
+    .get(`${baseUrl}/recipes/${recipeId}`)
+    .then(result => {
+      dispatch(setRecipe(result.body));
+    })
+    .then(() => dispatch(setIsSelectedRecipe()))
+    .catch(err => console.error(err));
+
+  request
+    .get(`${baseUrl}/recipes/${recipeId}/images/random`)
+    .then(result => dispatch(setRecipeImage(result.body.imageUrl)))
     .catch(err => console.error(err));
 };
 
@@ -121,8 +148,9 @@ export const openRecipe = recipeId => async (dispatch, getState) => {
   await request
     .get(`${baseUrl}/recipes/${recipeId}`)
     .then(result => {
-      dispatch(setOpenedRecipe(result.body));
+      dispatch(setRecipe(result.body));
     })
+    .then(() => dispatch(setOpenedRecipe()))
     .catch(err => console.error(err));
 
   request
@@ -195,13 +223,10 @@ export const addRecipe = (recipe, user) => async () => {
 
   recipe.id = recipeId;
 
-  return undefined
-
+  return undefined;
 };
 
-
-export const saveChangesRecipe = recipe => async (dispatch) => {
-
+export const saveChangesRecipe = recipe => async dispatch => {
   await request
     .put(`${baseUrl}/recipes/${recipe.id}`)
     .send(recipe)
@@ -307,7 +332,7 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
     .get(`${baseUrl}/random-recipe`)
     .then(result => {
       recipeId = result.body.id;
-      dispatch(setRandomRecipe(result.body));
+      dispatch(setRecipe(result.body));
     })
     .catch(err => console.error(err));
 
@@ -335,6 +360,23 @@ export const getMyRecipes = () => (dispatch, getState) => {
     .get(`${baseUrl}/users/${user}/recipes`)
     .then(result => {
       dispatch(setMyRecipes(result.body));
+    })
+    .catch(err => console.error(err));
+};
+
+export const getMyRecipeHistory = () => (dispatch, getState) => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  if (isExpired(jwt)) return dispatch(logout());
+
+  const user = userId(jwt);
+
+  request
+    .get(`${baseUrl}/users/${user}/selected-recipes`)
+    .then(result => {
+      dispatch(setRecipeHistory(result.body));
     })
     .catch(err => console.error(err));
 };

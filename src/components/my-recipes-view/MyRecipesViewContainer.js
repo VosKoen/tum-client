@@ -7,7 +7,9 @@ import { Redirect } from "react-router-dom";
 import {
   getMyRecipes,
   openRecipe,
-  resetRecipeForm
+  resetRecipeForm,
+  getMyRecipeHistory,
+  openSelectedRecipe
 } from "../../actions/recipes";
 
 class MyRecipesViewContainer extends React.PureComponent {
@@ -17,7 +19,8 @@ class MyRecipesViewContainer extends React.PureComponent {
   };
 
   componentDidMount() {
-    if (this.props.user) this.props.getMyRecipes();
+    this.props.getMyRecipes();
+    this.props.getMyRecipeHistory();
   }
 
   handleClickRecipe = async recipeId => {
@@ -32,18 +35,27 @@ class MyRecipesViewContainer extends React.PureComponent {
     this.setState({ addNewRecipeClicked: true });
   };
 
+  handleClickRecipeHistory = async recipeId => {
+    await this.props.openSelectedRecipe(recipeId);
+
+    this.setState({
+      recipeOpened: true
+    });
+  };
+
   render() {
-    const { classes, myRecipes } = this.props;
     if (!this.props.user) return <Redirect to="/logon" />;
     if (this.state.recipeOpened) return <Redirect to="/" />;
     if (this.state.addNewRecipeClicked) return <Redirect to="/recipe-form" />;
 
     return (
       <MyRecipesView
-        myRecipes={myRecipes}
-        classes={classes}
+        myRecipes={this.props.myRecipes}
+        recipeHistory={this.props.recipeHistory}
+        classes={this.props.classes}
         handleClickRecipe={this.handleClickRecipe}
         handleClickNewRecipe={this.handleClickNewRecipe}
+        handleClickRecipeHistory={this.handleClickRecipeHistory}
       />
     );
   }
@@ -64,12 +76,19 @@ const styles = theme => ({
 
 const mapStateToProps = state => ({
   myRecipes: state.myRecipes,
-  user: state.user
+  user: state.user,
+  recipeHistory: state.recipeHistory
 });
 
 export default withStyles(styles)(
   connect(
     mapStateToProps,
-    { getMyRecipes, openRecipe, resetRecipeForm }
+    {
+      getMyRecipes,
+      openRecipe,
+      resetRecipeForm,
+      getMyRecipeHistory,
+      openSelectedRecipe
+    }
   )(MyRecipesViewContainer)
 );

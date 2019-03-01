@@ -9,7 +9,14 @@ import Fab from "@material-ui/core/Fab";
 import Grid from "@material-ui/core/Grid";
 
 export default function MyRecipesView(props) {
-  const { classes, myRecipes, handleClickRecipe, handleClickNewRecipe } = props;
+  const {
+    classes,
+    myRecipes,
+    handleClickRecipe,
+    handleClickNewRecipe,
+    recipeHistory,
+    handleClickRecipeHistory
+  } = props;
 
   if (!myRecipes) return <div>Loading...</div>;
   return (
@@ -31,23 +38,43 @@ export default function MyRecipesView(props) {
               </Fab>
             </Grid>
           </Grid>
-          <List>
-            {myRecipes.map((recipe, index) => (
-              <ListItem
-                key={index}
-                disableGutters={true}
-                divider
-                button
-                onClick={() => handleClickRecipe(recipe.id)}
-              >
-                <ListItemText primary={recipe.title} />
-              </ListItem>
-            ))}
-          </List>
+          {myRecipes ? (
+            <List>
+              {myRecipes.map((recipe, index) => (
+                <ListItem
+                  key={index}
+                  disableGutters={true}
+                  divider
+                  button
+                  onClick={() => handleClickRecipe(recipe.id)}
+                >
+                  <ListItemText primary={recipe.title} />
+                </ListItem>
+              ))}
+            </List>
+          ) : (
+            <Typography>You have not submitted any recipes yet</Typography>
+          )}
         </Grid>
         <Grid item xs={12} sm={6}>
           <Typography variant="h6">Cooked recipes history</Typography>
-          <Typography>You have not cooked anything yet</Typography>
+          {recipeHistory ? (
+            <List>
+              {recipeHistory.map((recipe, index) => (
+                <ListItem
+                  key={index}
+                  disableGutters={true}
+                  divider
+                  button
+                  onClick={() => handleClickRecipeHistory(recipe.recipeId)}
+                >
+                  <ListItemText primary={recipe.title} />
+                </ListItem>
+              ))}
+            </List>
+          ) : (
+            <Typography>You have not cooked anything yet</Typography>
+          )}
         </Grid>
       </Grid>
     </Paper>
