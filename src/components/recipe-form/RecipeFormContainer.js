@@ -5,7 +5,7 @@ import RecipeForm from "./RecipeForm";
 import deburr from "lodash/deburr";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import { maxImageWidth, units } from "../../constants";
+import { maxImageWidth, units , sizeLoadingSymbol} from "../../constants";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import {
@@ -119,7 +119,8 @@ class RecipeFormContainer extends React.PureComponent {
     [alertIngredientAlreadyPresent]: false,
     [alertNoSteps]: false,
     [alertNoIngredients]: false,
-    imageFiles: []
+    imageFiles: [],
+    imageIsLoading: false
   };
 
   componentDidMount = () => {
@@ -360,14 +361,21 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleImageAdd = (acceptedFiles, rejectedFiles) => {
+    this.setState({
+      imageIsLoading: true
+    })
     this.resizeImage(acceptedFiles[0]);
   };
 
-  storeImage = image => {
+  storeImage = async image => {
     this.setState({
       imageFiles: [image]
     });
-    this.props.uploadImage(image);
+    await this.props.uploadImage(image);
+
+    this.setState({
+      imageIsLoading: false
+    })
   };
 
   resizeImage = async image => {
@@ -545,6 +553,13 @@ const styles = theme => ({
     right: "5px",
     top: "5px"
   },
+  loadingSymbol: {
+    position: "absolute",
+    right: "50%",
+    marginRight: `-${sizeLoadingSymbol/2}px`,
+    top: "50%",
+    marginTop: `-${sizeLoadingSymbol/2}px`
+  }
 });
 
 const mapStateToProps = state => ({

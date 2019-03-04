@@ -16,7 +16,7 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-import { amountTypes } from "../../constants";
+import { amountTypes, sizeLoadingSymbol } from "../../constants";
 import Select from "@material-ui/core/Select";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
@@ -24,6 +24,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import ClearIcon from "@material-ui/icons/Clear";
 
 import { Grid, CardMedia } from "@material-ui/core";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import { alertIngredientAlreadyPresent } from "../../actions/recipes";
 
@@ -110,6 +111,7 @@ export default function RecipeForm(props) {
                             })}
                           >
                             <input {...getInputProps()} />
+
                             <CardMedia
                               component="img"
                               src={myRecipe.imageUrl}
@@ -121,8 +123,16 @@ export default function RecipeForm(props) {
                             onClick={handleImageRemove}
                             className={classes.clearImageButton}
                           >
+
                             <ClearIcon />
                           </IconButton>
+{                          
+state.imageIsLoading ?
+<CircularProgress
+                              className={classes.loadingSymbol}
+                              size={sizeLoadingSymbol}
+                            />
+                          : ""}
                         </div>
                       </div>
                     );
@@ -196,7 +206,10 @@ export default function RecipeForm(props) {
                   divider
                   button
                 >
-                  <ListItemText>{ingredient.amountNumber} {ingredient.amountTypeUnitName} {ingredient.name}</ListItemText>
+                  <ListItemText>
+                    {ingredient.amountNumber} {ingredient.amountTypeUnitName}{" "}
+                    {ingredient.name}
+                  </ListItemText>
                   <ListItemSecondaryAction
                     onClick={() =>
                       handleIngredientDelete(ingredient.ingredientId)

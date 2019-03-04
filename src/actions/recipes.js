@@ -170,6 +170,8 @@ export const uploadImage = image => async (dispatch, getState) => {
       dispatch(addImageToRecipe(result.body.imageUrl));
     })
     .catch(err => console.error(err));
+
+  return undefined
 };
 
 export const addRecipe = (recipe, user) => async () => {

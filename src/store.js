@@ -6,7 +6,6 @@ import ReduxThunk from "redux-thunk";
 const composeEnhancers =
 (process.env.REACT_APP_DISABLE_DEVTOOLS && compose ) || window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-console.log(process.env.NODE_ENV)
 const enhancer = composeEnhancers(
   applyMiddleware(ReduxThunk, storeJwt)
 );
