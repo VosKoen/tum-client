@@ -12,12 +12,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Autosuggest from "react-autosuggest";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
-import { amountTypes, sizeLoadingSymbol } from "../../constants";
-import Select from "@material-ui/core/Select";
+import { sizeLoadingSymbol } from "../../constants";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -30,38 +25,6 @@ import { alertIngredientAlreadyPresent } from "../../actions/recipes";
 
 import Dropzone from "react-dropzone";
 import classNames from "classnames";
-
-function renderIngredientAmountType(state, handleChange) {
-  const amountType = parseInt(state.amountType);
-  const selectedAmountType = amountTypes.find(type => {
-    return type.id === amountType;
-  });
-
-  if (state.amountType !== undefined && selectedAmountType.units.length > 0)
-    return (
-      <FormControl>
-        <Select
-          native
-          value={state.unit}
-          onChange={handleChange}
-          inputProps={{
-            name: "unit",
-            id: "unit"
-          }}
-        >
-          {" "}
-          <option value="" disabled />
-          {selectedAmountType.units.map(unit => (
-            <option key={unit} value={unit}>
-              {unit}
-            </option>
-          ))}
-        </Select>
-      </FormControl>
-    );
-
-  return <div />;
-}
 
 export default function RecipeForm(props) {
   const {
@@ -89,8 +52,6 @@ export default function RecipeForm(props) {
     handleStepChange,
     handleImageRemove
   } = props;
-
-  const ingredientAmountType = renderIngredientAmountType(state, handleChange);
 
   return (
     <Paper className={classes.paper}>
@@ -123,16 +84,16 @@ export default function RecipeForm(props) {
                             onClick={handleImageRemove}
                             className={classes.clearImageButton}
                           >
-
                             <ClearIcon />
                           </IconButton>
-{                          
-state.imageIsLoading ?
-<CircularProgress
+                          {state.imageIsLoading ? (
+                            <CircularProgress
                               className={classes.loadingSymbol}
                               size={sizeLoadingSymbol}
                             />
-                          : ""}
+                          ) : (
+                            ""
+                          )}
                         </div>
                       </div>
                     );
@@ -207,8 +168,7 @@ state.imageIsLoading ?
                   button
                 >
                   <ListItemText>
-                    {ingredient.amountNumber} {ingredient.amountTypeUnitName}{" "}
-                    {ingredient.name}
+                    {ingredient.amount} {ingredient.name}
                   </ListItemText>
                   <ListItemSecondaryAction
                     onClick={() =>
@@ -289,13 +249,13 @@ state.imageIsLoading ?
         </Grid>
 
         <Dialog
-          className={classes.ingredientDialog}
           open={state.ingredientOpen}
           onClose={handleIngredientClose}
           aria-labelledby="responsive-dialog-title"
         >
           <DialogTitle>{"Add new ingredient"}</DialogTitle>
-          <DialogContent>
+          <DialogContent >
+          <div className={classes.ingredientDialogContent}>
             <Autosuggest
               {...autosuggestProps}
               inputProps={{
@@ -323,60 +283,19 @@ state.imageIsLoading ?
             ) : (
               ""
             )}
-            {state.ingredientSelected ? (
-              <Grid container direction="column">
-                <Grid item>
-                  <FormControl component="fieldset">
-                    <RadioGroup
-                      aria-label="amount-type"
-                      name="amountType"
-                      value={state.amountType}
-                      onChange={handleChange}
-                    >
-                      {amountTypes.map((amountType, index) => (
-                        <FormControlLabel
-                          key={index}
-                          value={amountType.id.toString()}
-                          control={<Radio />}
-                          label={amountType.name}
-                        />
-                      ))}
-                    </RadioGroup>
-                  </FormControl>
-                </Grid>
-                <Grid item>
-                  <Grid container spacing={8}>
-                    <Grid item>
-                      <TextField
-                        id="amount-number"
-                        name="amountNumber"
-                        value={state.amountNumber}
-                        onChange={handleChange}
-                        type="number"
-                        required
-                      />
-                    </Grid>
-                    <Grid item>{ingredientAmountType}</Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-            ) : (
-              <div>
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
+
+              <TextField
+                id="amount"
+                name="amount"
+                label="Amount"
+                value={state.amount}
+                onChange={handleChange}
+                margin="normal"
+                variant="outlined"
+                required
+                placeholder="eg. &quot;50 grams&quot;"
+              />
               </div>
-            )}
           </DialogContent>
           <DialogActions>
             {state.isIngredientEditMode ? (
@@ -387,11 +306,7 @@ state.imageIsLoading ?
               <Button
                 onClick={handleIngredientAdd}
                 color="primary"
-                disabled={
-                  !state.ingredientSelected ||
-                  !state.amountType ||
-                  !state.amountNumber
-                }
+                disabled={!state.ingredientSelected}
               >
                 Add ingredient
               </Button>

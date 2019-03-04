@@ -5,7 +5,7 @@ import RecipeForm from "./RecipeForm";
 import deburr from "lodash/deburr";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import { maxImageWidth, units , sizeLoadingSymbol} from "../../constants";
+import { maxImageWidth, sizeLoadingSymbol} from "../../constants";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import {
@@ -21,7 +21,7 @@ import {
   saveChangesRecipe,
   resetPlaceholderImage
 } from "../../actions/recipes";
-import { getIngredientList, getIngredientAmountTypeUnitList } from "../../actions/ingredients";
+import { getIngredientList } from "../../actions/ingredients";
 import { Redirect } from "react-router-dom";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -109,8 +109,7 @@ class RecipeFormContainer extends React.PureComponent {
     ingredient: "",
     nosuggestions: false,
     ingredientSelected: false,
-    amountNumber: "",
-    unit: "",
+    amount: "",
     stepOpen: false,
     cancelSubmit: false,
     submitRecipe: false,
@@ -125,7 +124,6 @@ class RecipeFormContainer extends React.PureComponent {
 
   componentDidMount = () => {
     this.props.getIngredientList();
-    this.props.getIngredientAmountTypeUnitList()
 
     if (this.props.myRecipe.editMode)
       this.setState({
@@ -180,8 +178,7 @@ class RecipeFormContainer extends React.PureComponent {
       ingredient: "",
       nosuggestions: false,
       ingredientSelected: false,
-      amountNumber: "",
-      unit: "",
+      amount: "",
       isIngredientEditMode: false
     });
   };
@@ -198,9 +195,7 @@ class RecipeFormContainer extends React.PureComponent {
       ingredient: selectedIngredient.name,
       nosuggestions: false,
       ingredientSelected: true,
-      amountNumber: selectedIngredient.amountNumber,
-      amountType: selectedIngredient.amountType.toString(),
-      unit: "",
+      amount: selectedIngredient.amount,
       isIngredientEditMode: true,
       arrayIndexSelectedIngredient: arrayIndex
     });
@@ -208,17 +203,11 @@ class RecipeFormContainer extends React.PureComponent {
 
   handleIngredientAdd = () => {
 
-    const unitId = (this.state.unit && units.find(unit => unit.shorthand === this.state.unit).id) || null
-
     const ingredient = {
       ingredientId: this.props.referenceData.ingredients.find(
         ingredient => ingredient.name === this.state.ingredient
       ).id,
-      amountType: parseInt(this.state.amountType),
-      amountNumber: this.state.amountNumber,
-      amountTypeUnit: unitId,
-      amountTypeUnitShorthand: unitId && this.props.referenceData.ingredientAmountTypeUnits.find(unit => unit.id === unitId).shorthand,
-      amountTypeUnitName: unitId && this.props.referenceData.ingredientAmountTypeUnits.find(unit => unit.id === unitId).name,
+      amount: this.state.amount,
       name: this.state.ingredient
     };
 
@@ -235,9 +224,7 @@ class RecipeFormContainer extends React.PureComponent {
       ingredientId: this.props.referenceData.ingredients.find(
         ingredient => ingredient.name === this.state.ingredient
       ).id,
-      amountType: parseInt(this.state.amountType),
-      amountNumber: this.state.amountNumber,
-      amountTypeUnit: units.find(unit => unit.shorthand === this.state.unit).id,
+      amount: this.state.amount,
       name: this.state.ingredient
     };
 
@@ -524,7 +511,7 @@ const styles = theme => ({
   },
   suggestionsContainerOpen: {
     position: "absolute",
-    zIndex: 1,
+    zIndex: 1000,
     marginTop: theme.spacing.unit,
     left: 0,
     right: 0
@@ -559,6 +546,9 @@ const styles = theme => ({
     marginRight: `-${sizeLoadingSymbol/2}px`,
     top: "50%",
     marginTop: `-${sizeLoadingSymbol/2}px`
+  },
+  ingredientDialogContent: {
+    height: '250px'
   }
 });
 
@@ -584,8 +574,7 @@ export default withStyles(styles)(
       changeRecipeIngredient,
       changeRecipeStep,
       saveChangesRecipe,
-      resetPlaceholderImage,
-      getIngredientAmountTypeUnitList
+      resetPlaceholderImage
     }
   )(RecipeFormContainer)
 );
