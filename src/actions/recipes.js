@@ -197,9 +197,8 @@ export const addRecipe = (recipe, user) => async () => {
           }`
         )
         .send({
-          amountNumber: ingredient.amountNumber,
-          amountType: ingredient.amountType,
-          amountTypeUnit: ingredient.amountTypeUnit
+          amount: ingredient.amount,
+
         })
         .catch(err => console.error(err))
     );
