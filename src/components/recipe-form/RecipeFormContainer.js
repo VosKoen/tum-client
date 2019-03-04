@@ -80,6 +80,7 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
 
 function getSuggestions(value, ingredientList) {
   const inputValue = deburr(value.trim()).toLowerCase();
+
   const inputLength = inputValue.length;
   let count = 0;
 
@@ -88,7 +89,7 @@ function getSuggestions(value, ingredientList) {
     : ingredientList.filter(suggestion => {
         const keep =
           count < 5 &&
-          suggestion.name.slice(0, inputLength).toLowerCase() === inputValue;
+          deburr(suggestion.name.slice(0, inputLength).toLowerCase()) === inputValue;
 
         if (keep) {
           count += 1;
@@ -329,6 +330,7 @@ class RecipeFormContainer extends React.PureComponent {
 
   handleAutosuggestChange = name => (event, { newValue }) => {
     this.handleIngredientSelected(newValue);
+
 
     this.setState({
       [name]: newValue
