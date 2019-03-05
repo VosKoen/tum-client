@@ -460,7 +460,6 @@ class RecipeFormContainer extends React.PureComponent {
               }
             }
 
-            // ctx.drawImage(img, 0, 0, width, height);
             ctx.canvas.toBlob(
               blob => {
                 const resizedImage = new File([blob], fileName, {
