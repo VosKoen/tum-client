@@ -344,7 +344,7 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
 
   request
     .get(`${baseUrl}/recipes/${recipeId}/users/${user}/ratings`)
-    .then(result => dispatch(setRecipeUserRating(result.body)))
+    .then(result => dispatch(setRecipeUserRating({recipeIsLiked: result.body.recipeIsLiked, newRating: result.body.newRating})))
     .catch(err => console.error(err));
 };
 

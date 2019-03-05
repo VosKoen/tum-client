@@ -22,6 +22,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import Button from "@material-ui/core/Button";
 import { Grid } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 
 //Alert definitions
 export const alertDeleteAreYouSure = "alertDeleteAreYouSure";
@@ -78,34 +79,53 @@ class RecipeViewContainer extends React.PureComponent {
       !this.props.recipe.isOpenedRecipe
     )
       return (
-        <Grid container direction="row" spacing={16}>
-          <Grid
-            item
-            xs={6}
-            className={this.props.classes.recipeActionButtonLeft}
-          >
-            <Fab
-              variant="extended"
-              aria-label="Cook"
-              color="primary"
-              onClick={this.handleConfirmation}
-            >
-              Cook!
-            </Fab>
+        <Grid container direction="column" spacing={16}>
+          <Grid item className={
+                this.props.recipe.rating > 0
+                  ? this.props.classes.ratingPositive
+                  : this.props.recipe.rating < 0
+                  ? this.props.classes.ratingNegative
+                  : this.props.classes.ratingNeutral
+              }>
+            <Typography color="inherit">
+              {!this.props.recipe.rating
+                ? 0
+                : this.props.recipe.rating > 0
+                ? `+${this.props.recipe.rating}`
+                : this.props.recipe.rating}
+            </Typography>
           </Grid>
-          <Grid
-            item
-            xs={6}
-            className={this.props.classes.recipeActionButtonRight}
-          >
-            <Fab
-              variant="extended"
-              aria-label="Next recipe"
-              color="primary"
-              onClick={this.handleRejection}
-            >
-              Not today
-            </Fab>
+          <Grid item>
+            <Grid container direction="row" spacing={16}>
+              <Grid
+                item
+                xs={6}
+                className={this.props.classes.recipeActionButtonLeft}
+              >
+                <Fab
+                  variant="extended"
+                  aria-label="Cook"
+                  color="primary"
+                  onClick={this.handleConfirmation}
+                >
+                  Cook!
+                </Fab>
+              </Grid>
+              <Grid
+                item
+                xs={6}
+                className={this.props.classes.recipeActionButtonRight}
+              >
+                <Fab
+                  variant="extended"
+                  aria-label="Next recipe"
+                  color="primary"
+                  onClick={this.handleRejection}
+                >
+                  Not today
+                </Fab>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       );
@@ -117,7 +137,7 @@ class RecipeViewContainer extends React.PureComponent {
         <Grid container direction="row" spacing={16}>
           <Grid
             item
-            xs={6}
+            xs={5}
             className={this.props.classes.recipeActionButtonLeft}
           >
             <IconButton
@@ -130,9 +150,28 @@ class RecipeViewContainer extends React.PureComponent {
               <ThumbUpIcon />
             </IconButton>
           </Grid>
+          <Grid item xs={2}>
+            <div
+              className={
+                this.props.recipe.rating > 0
+                  ? this.props.classes.ratingPositive
+                  : this.props.recipe.rating < 0
+                  ? this.props.classes.ratingNegative
+                  : this.props.classes.ratingNeutral
+              }
+            >
+              <Typography color="inherit">
+                {!this.props.recipe.rating
+                  ? 0
+                  : this.props.recipe.rating > 0
+                  ? `+${this.props.recipe.rating}`
+                  : this.props.recipe.rating}
+              </Typography>
+            </div>
+          </Grid>
           <Grid
             item
-            xs={6}
+            xs={5}
             className={this.props.classes.recipeActionButtonRight}
           >
             <IconButton
@@ -249,6 +288,15 @@ const styles = theme => ({
       color: "red"
     },
     color: "lightcoral"
+  },
+  ratingPositive: {
+    color: "green"
+  },
+  ratingNegative: {
+    color: "red"
+  },
+  ratingNeutral: {
+    color: "black"
   }
 });
 

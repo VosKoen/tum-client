@@ -29,8 +29,9 @@ export default function RecipeView(props) {
           </Grid>
           <Grid item xs={12} sm={6}>
           {renderEditDeleteButtons()}
-            <Typography variant="h5">{recipe.title}</Typography>
+            <Typography variant="h4">{recipe.title}</Typography>
             <CardContent>
+
               <Typography component="p" align="left">
                 {recipe.description}
               </Typography>
