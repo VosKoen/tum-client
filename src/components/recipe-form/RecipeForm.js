@@ -60,7 +60,7 @@ export default function RecipeForm(props) {
           <Grid item xs={12} sm={6}>
             <Grid container direction="column">
               <Grid item>
-                <Dropzone onDrop={handleImageAdd}>
+                <Dropzone onDrop={handleImageAdd} accept="image/*">
                   {({ getRootProps, getInputProps, isDragActive }) => {
                     return (
                       <div className={classes.dropzoneRoot}>

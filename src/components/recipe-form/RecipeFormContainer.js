@@ -5,7 +5,7 @@ import RecipeForm from "./RecipeForm";
 import deburr from "lodash/deburr";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import { maxImageWidth, sizeLoadingSymbol} from "../../constants";
+import { maxImageWidth, sizeLoadingSymbol } from "../../constants";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import {
@@ -28,12 +28,14 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import Button from "@material-ui/core/Button";
-import {userId} from '../../jwt'
+import { userId } from "../../jwt";
+import ExifReader from "exifreader";
 
 //Alert definitions
 import { alertIngredientAlreadyPresent } from "../../actions/recipes";
 const alertNoSteps = "alertNoSteps";
 const alertNoIngredients = "alertNoIngredients";
+const alertImageRejected = "alertImageRejected";
 
 function renderInputComponent(inputProps) {
   const { classes, inputRef = () => {}, ref, ...other } = inputProps;
@@ -89,7 +91,8 @@ function getSuggestions(value, ingredientList) {
     : ingredientList.filter(suggestion => {
         const keep =
           count < 5 &&
-          deburr(suggestion.name.slice(0, inputLength).toLowerCase()) === inputValue;
+          deburr(suggestion.name.slice(0, inputLength).toLowerCase()) ===
+            inputValue;
 
         if (keep) {
           count += 1;
@@ -119,6 +122,7 @@ class RecipeFormContainer extends React.PureComponent {
     [alertIngredientAlreadyPresent]: false,
     [alertNoSteps]: false,
     [alertNoIngredients]: false,
+    [alertImageRejected]: false,
     imageFiles: [],
     imageIsLoading: false
   };
@@ -135,7 +139,10 @@ class RecipeFormContainer extends React.PureComponent {
 
   handleIngredientSelected = value => {
     let ingredientSelected = false;
-    const suggestions = getSuggestions(value, this.props.referenceData.ingredients);
+    const suggestions = getSuggestions(
+      value,
+      this.props.referenceData.ingredients
+    );
 
     if (
       suggestions.length > 0 &&
@@ -151,7 +158,10 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleSuggestionsFetchRequested = ({ value }) => {
-    const suggestions = getSuggestions(value, this.props.referenceData.ingredients);
+    const suggestions = getSuggestions(
+      value,
+      this.props.referenceData.ingredients
+    );
 
     this.setState({
       suggestions,
@@ -203,7 +213,6 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleIngredientAdd = () => {
-
     const ingredient = {
       ingredientId: this.props.referenceData.ingredients.find(
         ingredient => ingredient.name === this.state.ingredient
@@ -319,7 +328,6 @@ class RecipeFormContainer extends React.PureComponent {
     }
 
     this.setState({ submitRecipe: true });
-
   };
 
   handleCancelSubmit = () => {
@@ -330,7 +338,6 @@ class RecipeFormContainer extends React.PureComponent {
 
   handleAutosuggestChange = name => (event, { newValue }) => {
     this.handleIngredientSelected(newValue);
-
 
     this.setState({
       [name]: newValue
@@ -350,9 +357,14 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   handleImageAdd = (acceptedFiles, rejectedFiles) => {
+    if (rejectedFiles.length > 0) {
+      this.openAlert(alertImageRejected);
+      return;
+    }
+
     this.setState({
       imageIsLoading: true
-    })
+    });
     this.resizeImage(acceptedFiles[0]);
   };
 
@@ -364,52 +376,130 @@ class RecipeFormContainer extends React.PureComponent {
 
     this.setState({
       imageIsLoading: false
-    })
+    });
   };
 
   resizeImage = async image => {
     const fileName = image.name;
-    const reader = new FileReader();
-    reader.readAsDataURL(image);
 
-    reader.onload = async event => {
-      const img = new Image();
-      img.src = event.target.result;
+    const exifDataReader = new FileReader();
 
-      img.onload = () => {
-        let width;
-        let height;
-        if (img.width <= maxImageWidth) {
-          width = img.width;
-          height = img.height;
-        } else {
-          width = maxImageWidth;
-          height = img.height * (width / img.width);
-        }
+    exifDataReader.readAsArrayBuffer(image.slice(0, 128 * 1024));
+    exifDataReader.onload = event => {
+      let exifData;
+      try {
+        exifData = ExifReader.load(event.target.result);
+      } catch (e) {
+        //do nothing
+      } finally {
+        const reader = new FileReader();
+        reader.readAsDataURL(image);
 
-        const elem = document.createElement("canvas");
-        elem.width = width;
-        elem.height = height;
-        const ctx = elem.getContext("2d");
+        reader.onload = async event => {
+          const img = new Image();
+          img.src = event.target.result;
 
-        ctx.drawImage(img, 0, 0, width, height);
-        ctx.canvas.toBlob(
-          blob => {
-            const resizedImage = new File([blob], fileName, {
-              type: "image/jpeg",
-              lastModified: Date.now()
-            });
-            this.storeImage(resizedImage);
-          },
-          "image/jpeg",
-          1
-        );
-      };
+          img.onload = () => {
+            let width;
+            let height;
+            if (img.width <= maxImageWidth) {
+              width = img.width;
+              height = img.height;
+            } else {
+              width = maxImageWidth;
+              height = img.height * (width / img.width);
+            }
+
+            if (exifData) {
+              const oldWidth = width;
+              switch (exifData.Orientation.value) {
+                case 6:
+                  width = height;
+                  height = oldWidth;
+                  break;
+                case 8:
+                  width = height;
+                  height = oldWidth;
+                  break;
+                default:
+                  break;
+              }
+            }
+
+            const elem = document.createElement("canvas");
+            elem.width = width;
+            elem.height = height;
+            const ctx = elem.getContext("2d");
+
+            if (exifData) {
+              //What to do?
+              // 1 do nothing
+              // 3 flip 180
+              // 6 90 clockwise
+              // 8 90 counterclockwise
+
+              switch (exifData.Orientation.value) {
+                case 3:
+                  ctx.translate(width / 2, height / 2);
+                  ctx.rotate(Math.PI);
+                  ctx.drawImage(img, -width / 2, -height / 2, width, height);
+                  break;
+                case 6:
+                  ctx.translate(width / 2, height / 2);
+                  ctx.rotate((90 / 180) * Math.PI);
+                  ctx.drawImage(img, -height / 2, -width / 2, height, width);
+                  break;
+                case 8:
+                  ctx.translate(width / 2, height / 2);
+                  ctx.rotate((-90 / 180) * Math.PI);
+                  ctx.drawImage(img, -height / 2, -width / 2, height, width);
+                  break;
+                default:
+                  ctx.drawImage(img, 0, 0, width, height);
+                  break;
+              }
+            }
+
+            // ctx.drawImage(img, 0, 0, width, height);
+            ctx.canvas.toBlob(
+              blob => {
+                const resizedImage = new File([blob], fileName, {
+                  type: "image/jpeg",
+                  lastModified: Date.now()
+                });
+                this.storeImage(resizedImage);
+              },
+              "image/jpeg",
+              1
+            );
+          };
+        };
+      }
     };
   };
 
   handleImageRemove = () => {
     this.props.resetPlaceholderImage();
+  };
+
+  renderImageRejectedAlert = () => {
+    return (
+      <Dialog
+        open={this.state.alertImageRejected}
+        onClose={() => this.closeAlert(alertImageRejected)}
+      >
+        <DialogContent>
+          <DialogContentText>
+            You can only upload images, no other filetypes are allowed.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.closeAlert(alertImageRejected)}>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
   };
 
   renderNoStepsAlert = () => {
@@ -451,7 +541,6 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   render() {
-
     const { classes, myRecipe } = this.props;
 
     const autosuggestProps = {
@@ -493,10 +582,10 @@ class RecipeFormContainer extends React.PureComponent {
           handleStepSelect={this.handleStepSelect}
           handleStepChange={this.handleStepChange}
           handleImageRemove={this.handleImageRemove}
-
         />
         {this.renderNoStepsAlert()}
         {this.renderNoIngredientsAlert()}
+        {this.renderImageRejectedAlert()}
       </div>
     );
   }
@@ -535,7 +624,7 @@ const styles = theme => ({
     display: "flex",
     justifyContent: "center",
     margin: 0,
-    position: "relative",
+    position: "relative"
   },
   clearImageButton: {
     position: "absolute",
@@ -545,12 +634,12 @@ const styles = theme => ({
   loadingSymbol: {
     position: "absolute",
     right: "50%",
-    marginRight: `-${sizeLoadingSymbol/2}px`,
+    marginRight: `-${sizeLoadingSymbol / 2}px`,
     top: "50%",
-    marginTop: `-${sizeLoadingSymbol/2}px`
+    marginTop: `-${sizeLoadingSymbol / 2}px`
   },
   ingredientDialogContent: {
-    height: '250px'
+    height: "250px"
   }
 });
 
