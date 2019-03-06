@@ -21,7 +21,7 @@ import {
   saveChangesRecipe,
   resetPlaceholderImage
 } from "../../actions/recipes";
-import { getIngredientList } from "../../actions/ingredients";
+import { getIngredientList, submitNewIngredientRequest } from "../../actions/ingredients";
 import { Redirect } from "react-router-dom";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -36,6 +36,7 @@ import { alertIngredientAlreadyPresent } from "../../actions/recipes";
 const alertNoSteps = "alertNoSteps";
 const alertNoIngredients = "alertNoIngredients";
 const alertImageRejected = "alertImageRejected";
+const alertRequestIngredientSubmitted = "alertRequestIngredientSubmitted"
 
 function renderInputComponent(inputProps) {
   const { classes, inputRef = () => {}, ref, ...other } = inputProps;
@@ -123,8 +124,11 @@ class RecipeFormContainer extends React.PureComponent {
     [alertNoSteps]: false,
     [alertNoIngredients]: false,
     [alertImageRejected]: false,
+    [alertRequestIngredientSubmitted]: false,
     imageFiles: [],
-    imageIsLoading: false
+    imageIsLoading: false,
+    requestIngredientOpen: false,
+    newIngredient: ""
   };
 
   componentDidMount = () => {
@@ -539,6 +543,48 @@ class RecipeFormContainer extends React.PureComponent {
     );
   };
 
+  renderRequestIngredientSubmittedAlert = () => {
+    return (
+      <Dialog
+        open={this.state.alertRequestIngredientSubmitted}
+        onClose={() => this.closeAlert(alertRequestIngredientSubmitted)}
+      >
+        <DialogContent>
+          <DialogContentText>
+            Thank you for submitting your request for a new ingredient. Your request will be reviewed.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.closeAlert(alertRequestIngredientSubmitted)}>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
+
+  handleRequestIngredientOpen = () => {
+    this.handleIngredientClose();
+    this.setState({
+      requestIngredientOpen: true
+    });
+  };
+
+  handleRequestIngredientClose = () => {
+    this.setState({
+      requestIngredientOpen: false
+    });
+  };
+
+  handleRequestIngredientSubmit = ingredient => {
+    this.props.submitNewIngredientRequest(ingredient);
+    this.handleRequestIngredientClose();
+    this.setState({
+      newIngredient: ""
+    })
+    this.openAlert(alertRequestIngredientSubmitted);
+  };
+
   render() {
     const { classes, myRecipe } = this.props;
 
@@ -581,10 +627,14 @@ class RecipeFormContainer extends React.PureComponent {
           handleStepSelect={this.handleStepSelect}
           handleStepChange={this.handleStepChange}
           handleImageRemove={this.handleImageRemove}
+          handleRequestIngredientClose={this.handleRequestIngredientClose}
+          handleRequestIngredientOpen={this.handleRequestIngredientOpen}
+          handleRequestIngredientSubmit={this.handleRequestIngredientSubmit}
         />
         {this.renderNoStepsAlert()}
         {this.renderNoIngredientsAlert()}
         {this.renderImageRejectedAlert()}
+        {this.renderRequestIngredientSubmittedAlert()}
       </div>
     );
   }
@@ -664,7 +714,8 @@ export default withStyles(styles)(
       changeRecipeIngredient,
       changeRecipeStep,
       saveChangesRecipe,
-      resetPlaceholderImage
+      resetPlaceholderImage,
+      submitNewIngredientRequest
     }
   )(RecipeFormContainer)
 );
