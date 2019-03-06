@@ -15,7 +15,8 @@ export default function MyRecipesView(props) {
     handleClickRecipe,
     handleClickNewRecipe,
     recipeHistory,
-    handleClickRecipeHistory
+    handleClickRecipeHistory,
+    convertTimestampToDate
   } = props;
 
   if (!myRecipes) return <div>Loading...</div>;
@@ -68,7 +69,7 @@ export default function MyRecipesView(props) {
                   button
                   onClick={() => handleClickRecipeHistory(recipe.recipeId)}
                 >
-                  <ListItemText primary={recipe.title} />
+                  <ListItemText primary={recipe.title} secondary={convertTimestampToDate(recipe.timeSelected)}/>
                 </ListItem>
               ))}
             </List>

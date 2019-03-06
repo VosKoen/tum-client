@@ -32,7 +32,12 @@ export default (state = { ...initialState }, action = {}) => {
     case SET_RECIPE_IMAGE:
       return { ...state, ...action.payload };
     case SET_RECIPE_USER_RATING:
-      return { ...state, recipeIsLiked: action.payload };
+
+      return {
+        ...state,
+        recipeIsLiked: action.payload.recipeIsLiked,
+        rating: action.payload.newRating
+      };
     case SET_DELETE_RECIPE_SUCCESS:
       return { ...initialState, deleteRecipeSuccess: true };
     case SET_MY_RECIPES:

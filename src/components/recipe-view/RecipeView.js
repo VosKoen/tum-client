@@ -28,17 +28,17 @@ export default function RecipeView(props) {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-          {renderEditDeleteButtons()}
-            <Typography variant="h5">{recipe.title}</Typography>
+            <Typography variant="h4">{recipe.title}</Typography>
             <CardContent>
               <Typography component="p" align="left">
                 {recipe.description}
               </Typography>
             </CardContent>
 
+            {renderEditDeleteButtons()}
             {renderRecipeSelectButtons()}
             {renderRecipeRating()}
-
+            
           </Grid>
         </Grid>
         <CardContent>
@@ -48,11 +48,8 @@ export default function RecipeView(props) {
           <List>
             {recipe.ingredients.map(ingredient => (
               <ListItem key={ingredient.ingredientId} disableGutters={true}>
-                <Typography
-                  component="p"
-                  align="left"
-                >
-                  {ingredient.amount} {ingredient.name} 
+                <Typography component="p" align="left">
+                  {ingredient.amount} {ingredient.name}
                 </Typography>
               </ListItem>
             ))}
@@ -63,10 +60,7 @@ export default function RecipeView(props) {
           <List>
             {recipe.steps.map(step => (
               <ListItem key={step.id} disableGutters={true}>
-                <Typography
-                  component="p"
-                  align="left"
-                >
+                <Typography component="p" align="left">
                   {step.description}
                 </Typography>
               </ListItem>
