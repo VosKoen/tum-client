@@ -70,5 +70,5 @@ export default function RecipeView(props) {
       </Card>
     );
 
-  return <div>Something went wrong.</div>;
+  return <div>Loading...</div>;
 }
