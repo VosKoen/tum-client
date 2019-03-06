@@ -5,7 +5,6 @@ import { isExpired, userId } from "../jwt";
 export const SET_RECIPE_USER_RATING = "SET_RECIPE_USER_RATING";
 
 export const setRecipeUserRating = userRatingResult => {
-  console.log(userRatingResult)
   return { type: SET_RECIPE_USER_RATING, payload: userRatingResult };
 };
 

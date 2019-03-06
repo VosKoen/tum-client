@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import MyRecipesView from "./MyRecipesView";
 import { withStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
+import { months} from '../../constants'
 
 import {
   getMyRecipes,
@@ -43,6 +44,16 @@ class MyRecipesViewContainer extends React.PureComponent {
     });
   };
 
+  convertTimestampToDate = (milliseconds) => {
+    const timestamp = new Date(parseInt(milliseconds))
+    const year = timestamp.getFullYear();
+    const month = months[timestamp.getMonth()];
+    const date = timestamp.getDate();
+
+    const completeDate = `${month} ${date}, ${year}`
+    return completeDate
+  }
+
   render() {
     if (!this.props.user) return <Redirect to="/logon" />;
     if (this.state.recipeOpened) return <Redirect to="/" />;
@@ -56,6 +67,7 @@ class MyRecipesViewContainer extends React.PureComponent {
         handleClickRecipe={this.handleClickRecipe}
         handleClickNewRecipe={this.handleClickNewRecipe}
         handleClickRecipeHistory={this.handleClickRecipeHistory}
+        convertTimestampToDate={this.convertTimestampToDate}
       />
     );
   }

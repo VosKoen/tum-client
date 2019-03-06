@@ -80,13 +80,16 @@ class RecipeViewContainer extends React.PureComponent {
     )
       return (
         <Grid container direction="column" spacing={16}>
-          <Grid item className={
-                this.props.recipe.rating > 0
-                  ? this.props.classes.ratingPositive
-                  : this.props.recipe.rating < 0
-                  ? this.props.classes.ratingNegative
-                  : this.props.classes.ratingNeutral
-              }>
+          <Grid
+            item
+            className={
+              this.props.recipe.rating > 0
+                ? this.props.classes.ratingPositive
+                : this.props.recipe.rating < 0
+                ? this.props.classes.ratingNegative
+                : this.props.classes.ratingNeutral
+            }
+          >
             <Typography color="inherit">
               {!this.props.recipe.rating
                 ? 0
@@ -191,32 +194,54 @@ class RecipeViewContainer extends React.PureComponent {
   renderEditDeleteButtons = () => {
     if (this.props.recipe.isOpenedRecipe)
       return (
-        <Grid container direction="row" spacing={16}>
+        <Grid container direction="column" spacing={16}>
           <Grid
             item
-            xs={6}
-            className={this.props.classes.recipeActionButtonLeft}
+            className={
+              this.props.recipe.rating > 0
+                ? this.props.classes.ratingPositive
+                : this.props.recipe.rating < 0
+                ? this.props.classes.ratingNegative
+                : this.props.classes.ratingNeutral
+            }
           >
-            <IconButton
-              aria-label="edit recipe"
-              color="primary"
-              onClick={this.handleEditRecipe}
-            >
-              <EditIcon />
-            </IconButton>
+            <Typography color="inherit">
+              {!this.props.recipe.rating
+                ? 0
+                : this.props.recipe.rating > 0
+                ? `+${this.props.recipe.rating}`
+                : this.props.recipe.rating}
+            </Typography>
           </Grid>
-          <Grid
-            item
-            xs={6}
-            className={this.props.classes.recipeActionButtonRight}
-          >
-            <IconButton
-              aria-label="delete recipe"
-              color="primary"
-              onClick={() => this.openAlert(alertDeleteAreYouSure)}
-            >
-              <DeleteIcon />
-            </IconButton>
+          <Grid item>
+            <Grid container direction="row" spacing={16}>
+              <Grid
+                item
+                xs={6}
+                className={this.props.classes.recipeActionButtonLeft}
+              >
+                <IconButton
+                  aria-label="edit recipe"
+                  color="primary"
+                  onClick={this.handleEditRecipe}
+                >
+                  <EditIcon />
+                </IconButton>
+              </Grid>
+              <Grid
+                item
+                xs={6}
+                className={this.props.classes.recipeActionButtonRight}
+              >
+                <IconButton
+                  aria-label="delete recipe"
+                  color="primary"
+                  onClick={() => this.openAlert(alertDeleteAreYouSure)}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       );
