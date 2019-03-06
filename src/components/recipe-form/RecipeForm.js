@@ -50,7 +50,10 @@ export default function RecipeForm(props) {
     handleIngredientChange,
     handleStepSelect,
     handleStepChange,
-    handleImageRemove
+    handleImageRemove,
+    handleRequestIngredientClose,
+    handleRequestIngredientOpen,
+    handleRequestIngredientSubmit
   } = props;
 
   return (
@@ -254,35 +257,35 @@ export default function RecipeForm(props) {
           aria-labelledby="responsive-dialog-title"
         >
           <DialogTitle>{"Add new ingredient"}</DialogTitle>
-          <DialogContent >
-          <div className={classes.ingredientDialogContent}>
-            <Autosuggest
-              {...autosuggestProps}
-              inputProps={{
-                classes,
-                placeholder: "Search for an ingredient",
-                value: state.ingredient,
-                onChange: handleAutosuggestChange("ingredient")
-              }}
-              theme={{
-                container: classes.autosuggestContainer,
-                suggestionsContainerOpen: classes.suggestionsContainerOpen,
-                suggestionsList: classes.suggestionsList,
-                suggestion: classes.suggestion
-              }}
-              renderSuggestionsContainer={options => (
-                <Paper {...options.containerProps} square>
-                  {options.children}
-                </Paper>
+          <DialogContent>
+            <div className={classes.ingredientDialogContent}>
+              <Autosuggest
+                {...autosuggestProps}
+                inputProps={{
+                  classes,
+                  placeholder: "Search for an ingredient",
+                  value: state.ingredient,
+                  onChange: handleAutosuggestChange("ingredient")
+                }}
+                theme={{
+                  container: classes.autosuggestContainer,
+                  suggestionsContainerOpen: classes.suggestionsContainerOpen,
+                  suggestionsList: classes.suggestionsList,
+                  suggestion: classes.suggestion
+                }}
+                renderSuggestionsContainer={options => (
+                  <Paper {...options.containerProps} square>
+                    {options.children}
+                  </Paper>
+                )}
+              />
+              {state.nosuggestions ? (
+                <DialogContentText>
+                  Please select an existing ingredient from the list.
+                </DialogContentText>
+              ) : (
+                ""
               )}
-            />
-            {state.nosuggestions ? (
-              <DialogContentText>
-                Please select an existing ingredient from the list.
-              </DialogContentText>
-            ) : (
-              ""
-            )}
 
               <TextField
                 id="amount"
@@ -293,9 +296,20 @@ export default function RecipeForm(props) {
                 margin="normal"
                 variant="outlined"
                 required
-                placeholder="eg. &quot;50 grams&quot;"
+                placeholder='eg. "50 grams"'
               />
-              </div>
+              <DialogContentText>
+                Cannot find the ingredient you are looking for? Request an
+                ingredient to be added to the list.
+              </DialogContentText>
+              <Button
+                variant="text"
+                color="primary"
+                onClick={() => handleRequestIngredientOpen()}
+              >
+                Request ingredient
+              </Button>
+            </div>
           </DialogContent>
           <DialogActions>
             {state.isIngredientEditMode ? (
@@ -381,6 +395,42 @@ export default function RecipeForm(props) {
               color="primary"
             >
               Ok
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={state.requestIngredientOpen}
+          onClose={() => handleRequestIngredientClose()}
+        >
+          <DialogContent>
+            <DialogContentText>
+              Please type in the ingredient which is missing from the database
+              and submit.
+            </DialogContentText>
+            <TextField
+              id="newIngredient"
+              name="newIngredient"
+              label="Ingredient"
+              value={state.newIngredient}
+              onChange={handleChange}
+              margin="normal"
+              variant="outlined"
+              required
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => handleRequestIngredientSubmit(state.newIngredient)}
+              color="primary"
+            >
+              Submit request
+            </Button>
+            <Button
+              onClick={() => handleRequestIngredientClose()}
+              color="primary"
+            >
+              Cancel
             </Button>
           </DialogActions>
         </Dialog>
