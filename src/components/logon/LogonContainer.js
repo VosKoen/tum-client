@@ -3,34 +3,68 @@ import { connect } from "react-redux";
 import { login } from "../../actions/users";
 import Logon from "./Logon";
 import { Redirect } from "react-router-dom";
-
+import withStyles from "@material-ui/core/styles/withStyles";
 
 class LogonContainer extends React.PureComponent {
-  handleSubmit = logonData => {
-    this.props.login(logonData.email, logonData.password);
 
+  state = { email: "", password: "" };
+
+  handleSubmit = e => {
+    e.preventDefault();
+    this.props.login(this.state.email, this.state.password);
+  };
+
+  handleChange = event => {
+    const { name, value } = event.target;
+    this.setState({
+      [name]: value
+    });
   };
 
   render() {
     if (this.props.user) return <Redirect to="/" />;
     return (
-      <div>
-        <h1>Logon</h1>
-        <Logon handleSubmit={this.handleSubmit} />
-        {this.props.error && (
-          <span style={{ color: "red" }}>{this.props.error}</span>
-        )}
-      </div>
+      <Logon
+        handleSubmit={this.handleSubmit}
+        handleChange={this.handleChange}
+        state={this.state}
+        classes={this.props.classes}
+        error={this.props.error}
+      />
     );
   }
 }
 
-const mapStateToProps = state => ({
-  user: state.user,
-  error: state.login.error,
+const styles = theme => ({
+  paper: {
+    marginTop: theme.spacing.unit * 8,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
+      .spacing.unit * 3}px`
+  },
+  avatar: {
+    margin: theme.spacing.unit,
+    backgroundColor: theme.palette.secondary.main
+  },
+  form: {
+    width: "100%", // Fix IE 11 issue.
+    marginTop: theme.spacing.unit
+  },
+  submit: {
+    marginTop: theme.spacing.unit * 3
+  }
 });
 
-export default connect(
-  mapStateToProps,
-  { login }
-)(LogonContainer);
+const mapStateToProps = state => ({
+  user: state.user,
+  error: state.login.error
+});
+
+export default withStyles(styles)(
+  connect(
+    mapStateToProps,
+    { login }
+  )(LogonContainer)
+);
