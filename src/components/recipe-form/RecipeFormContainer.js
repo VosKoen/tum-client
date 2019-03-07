@@ -302,7 +302,7 @@ class RecipeFormContainer extends React.PureComponent {
     this.props.removeStepFromRecipe(indexStepArray);
   };
 
-  handleSubmit = async e => {
+  handleSubmit = e => {
     e.preventDefault();
 
     //Alerts
@@ -316,6 +316,18 @@ class RecipeFormContainer extends React.PureComponent {
       return undefined;
     }
 
+    if (this.props.myRecipe.editMode)
+    {
+      this.openAlert(alertChangeResetsRating)
+      return undefined
+    }
+
+    //If none of the alerts is triggered, the recipe can be submitted
+    this.submitRecipe()
+
+  };
+
+  submitRecipe = async () => {
     const recipe = {
       title: this.state.recipeTitle,
       description: this.state.recipeDescription,
@@ -334,7 +346,7 @@ class RecipeFormContainer extends React.PureComponent {
     }
 
     this.setState({ submitRecipe: true });
-  };
+  }
 
   handleCancelSubmit = () => {
     this.setState({ cancelSubmit: true });
@@ -578,7 +590,7 @@ class RecipeFormContainer extends React.PureComponent {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => this.handleSubmit()}>
+          <Button onClick={() => this.submitRecipe()}>
             Submit changes
           </Button>
           <Button onClick={() => this.closeAlert(alertChangeResetsRating)}>
