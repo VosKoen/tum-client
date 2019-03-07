@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import MyRecipesView from "./MyRecipesView";
 import { withStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
-import { months} from '../../constants'
+import { months, startLimit, startOffset} from '../../constants'
 
 import {
   getMyRecipes,
@@ -20,8 +20,8 @@ class MyRecipesViewContainer extends React.PureComponent {
   };
 
   componentDidMount() {
-    this.props.getMyRecipes();
-    this.props.getMyRecipeHistory();
+    this.props.getMyRecipes(startLimit, startOffset);
+    this.props.getMyRecipeHistory(startLimit, startOffset);
   }
 
   handleClickRecipe = async recipeId => {
@@ -68,6 +68,8 @@ class MyRecipesViewContainer extends React.PureComponent {
         handleClickNewRecipe={this.handleClickNewRecipe}
         handleClickRecipeHistory={this.handleClickRecipeHistory}
         convertTimestampToDate={this.convertTimestampToDate}
+        getMyRecipes={this.props.getMyRecipes}
+        getMyRecipeHistory={this.props.getMyRecipeHistory}
       />
     );
   }

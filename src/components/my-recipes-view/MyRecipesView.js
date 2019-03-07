@@ -7,6 +7,8 @@ import Paper from "@material-ui/core/Paper";
 import AddIcon from "@material-ui/icons/Add";
 import Fab from "@material-ui/core/Fab";
 import Grid from "@material-ui/core/Grid";
+import PaginationBarContainer from "../pagination/paginationBarContainer";
+import { startLimit, startOffset } from "../../constants";
 
 export default function MyRecipesView(props) {
   const {
@@ -16,7 +18,9 @@ export default function MyRecipesView(props) {
     handleClickNewRecipe,
     recipeHistory,
     handleClickRecipeHistory,
-    convertTimestampToDate
+    convertTimestampToDate,
+    getMyRecipes,
+    getMyRecipeHistory
   } = props;
 
   if (!myRecipes) return <div>Loading...</div>;
@@ -39,9 +43,15 @@ export default function MyRecipesView(props) {
               </Fab>
             </Grid>
           </Grid>
-          {myRecipes ? (
+          <PaginationBarContainer
+            itemsTotal={myRecipes.count}
+            startOffset={startOffset}
+            startLimit={startLimit}
+            functionToCallWithLimitAndOffset={getMyRecipes}
+          />
+          {myRecipes.recipes ? (
             <List>
-              {myRecipes.map((recipe, index) => (
+              {myRecipes.recipes.map((recipe, index) => (
                 <ListItem
                   key={index}
                   disableGutters={true}
@@ -49,7 +59,7 @@ export default function MyRecipesView(props) {
                   button
                   onClick={() => handleClickRecipe(recipe.id)}
                 >
-                  <ListItemText primary={recipe.title} />
+                  <ListItemText primary={recipe.title} secondary={<br />} />
                 </ListItem>
               ))}
             </List>
@@ -59,9 +69,15 @@ export default function MyRecipesView(props) {
         </Grid>
         <Grid item xs={12} sm={6}>
           <Typography variant="h6">Cooked recipes history</Typography>
-          {recipeHistory ? (
+          <PaginationBarContainer
+            itemsTotal={recipeHistory.count}
+            startOffset={startOffset}
+            startLimit={startLimit}
+            functionToCallWithLimitAndOffset={getMyRecipeHistory}
+          />
+          {recipeHistory.recipes ? (
             <List>
-              {recipeHistory.map((recipe, index) => (
+              {recipeHistory.recipes.map((recipe, index) => (
                 <ListItem
                   key={index}
                   disableGutters={true}
@@ -69,7 +85,10 @@ export default function MyRecipesView(props) {
                   button
                   onClick={() => handleClickRecipeHistory(recipe.recipeId)}
                 >
-                  <ListItemText primary={recipe.title} secondary={convertTimestampToDate(recipe.timeSelected)}/>
+                  <ListItemText
+                    primary={recipe.title}
+                    secondary={convertTimestampToDate(recipe.timeSelected)}
+                  />
                 </ListItem>
               ))}
             </List>

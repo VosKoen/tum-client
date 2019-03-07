@@ -34,12 +34,12 @@ const setOpenedRecipe = () => {
   return { type: SET_OPENED_RECIPE, payload: null };
 };
 
-const setMyRecipes = recipes => {
-  return { type: SET_MY_RECIPES, payload: recipes };
+const setMyRecipes = (recipes, count) => {
+  return { type: SET_MY_RECIPES, payload: {recipes, count} };
 };
 
-const setRecipeHistory = recipes => {
-  return { type: SET_RECIPE_HISTORY, payload: recipes };
+const setRecipeHistory = (recipes, count) => {
+  return { type: SET_RECIPE_HISTORY, payload: {recipes, count} };
 };
 
 const setRecipeImage = imageUrl => {
@@ -368,7 +368,7 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
     .catch(err => console.error(err));
 };
 
-export const getMyRecipes = () => (dispatch, getState) => {
+export const getMyRecipes = (limit, offset) => (dispatch, getState) => {
   const state = getState();
   if (!state.user) return null;
   const jwt = state.user.jwt;
@@ -379,13 +379,16 @@ export const getMyRecipes = () => (dispatch, getState) => {
 
   request
     .get(`${baseUrl}/users/${user}/recipes`)
+    .query({ limit, offset })
     .then(result => {
-      dispatch(setMyRecipes(result.body));
+      const recipes = result.body[0];
+      const count = result.body[1];
+      dispatch(setMyRecipes(recipes, count));
     })
     .catch(err => console.error(err));
 };
 
-export const getMyRecipeHistory = () => (dispatch, getState) => {
+export const getMyRecipeHistory = (limit, offset) => (dispatch, getState) => {
   const state = getState();
   if (!state.user) return null;
   const jwt = state.user.jwt;
@@ -396,8 +399,11 @@ export const getMyRecipeHistory = () => (dispatch, getState) => {
 
   request
     .get(`${baseUrl}/users/${user}/selected-recipes`)
+    .query({ limit, offset })
     .then(result => {
-      dispatch(setRecipeHistory(result.body));
+      const recipes = result.body[0];
+      const count = result.body[1];
+      dispatch(setRecipeHistory(recipes, count));
     })
     .catch(err => console.error(err));
 };
