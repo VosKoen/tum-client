@@ -37,6 +37,7 @@ const alertNoSteps = "alertNoSteps";
 const alertNoIngredients = "alertNoIngredients";
 const alertImageRejected = "alertImageRejected";
 const alertRequestIngredientSubmitted = "alertRequestIngredientSubmitted"
+const alertChangeResetsRating = "alertChangeResetsRating"
 
 function renderInputComponent(inputProps) {
   const { classes, inputRef = () => {}, ref, ...other } = inputProps;
@@ -125,6 +126,7 @@ class RecipeFormContainer extends React.PureComponent {
     [alertNoIngredients]: false,
     [alertImageRejected]: false,
     [alertRequestIngredientSubmitted]: false,
+    [alertChangeResetsRating]: false,
     imageFiles: [],
     imageIsLoading: false,
     requestIngredientOpen: false,
@@ -300,7 +302,7 @@ class RecipeFormContainer extends React.PureComponent {
     this.props.removeStepFromRecipe(indexStepArray);
   };
 
-  handleSubmit = async e => {
+  handleSubmit = e => {
     e.preventDefault();
 
     //Alerts
@@ -314,6 +316,18 @@ class RecipeFormContainer extends React.PureComponent {
       return undefined;
     }
 
+    if (this.props.myRecipe.editMode)
+    {
+      this.openAlert(alertChangeResetsRating)
+      return undefined
+    }
+
+    //If none of the alerts is triggered, the recipe can be submitted
+    this.submitRecipe()
+
+  };
+
+  submitRecipe = async () => {
     const recipe = {
       title: this.state.recipeTitle,
       description: this.state.recipeDescription,
@@ -332,7 +346,7 @@ class RecipeFormContainer extends React.PureComponent {
     }
 
     this.setState({ submitRecipe: true });
-  };
+  }
 
   handleCancelSubmit = () => {
     this.setState({ cancelSubmit: true });
@@ -563,6 +577,30 @@ class RecipeFormContainer extends React.PureComponent {
     );
   };
 
+  renderChangeResetsRatingAlert = () => {
+
+    return (
+      <Dialog
+        open={this.state.alertChangeResetsRating}
+        onClose={() => this.closeAlert(alertChangeResetsRating)}
+      >
+        <DialogContent>
+          <DialogContentText>
+           Any changes in ingredients or in steps will reset the recipe rating. Are you sure you want to submit your changes?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.submitRecipe()}>
+            Submit changes
+          </Button>
+          <Button onClick={() => this.closeAlert(alertChangeResetsRating)}>
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
+
   handleRequestIngredientOpen = () => {
     this.handleIngredientClose();
     this.setState({
@@ -635,6 +673,7 @@ class RecipeFormContainer extends React.PureComponent {
         {this.renderNoIngredientsAlert()}
         {this.renderImageRejectedAlert()}
         {this.renderRequestIngredientSubmittedAlert()}
+        {this.renderChangeResetsRatingAlert()}
       </div>
     );
   }

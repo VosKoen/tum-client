@@ -121,6 +121,8 @@ export const openSelectedRecipe = recipeId => async (dispatch, getState) => {
   if (!state.user) return null;
   const jwt = state.user.jwt;
 
+  const user = userId(jwt);
+
   if (isExpired(jwt)) return dispatch(logout());
 
   await request
@@ -134,6 +136,18 @@ export const openSelectedRecipe = recipeId => async (dispatch, getState) => {
   request
     .get(`${baseUrl}/recipes/${recipeId}/images/random`)
     .then(result => dispatch(setRecipeImage(result.body.imageUrl)))
+    .catch(err => console.error(err));
+
+  request
+    .get(`${baseUrl}/recipes/${recipeId}/users/${user}/ratings`)
+    .then(result =>
+      dispatch(
+        setRecipeUserRating({
+          recipeIsLiked: result.body.recipeIsLiked,
+          newRating: result.body.newRating
+        })
+      )
+    )
     .catch(err => console.error(err));
 };
 
