@@ -9,3 +9,7 @@ export const maxImageWidth = 800;
 export const  sizeLoadingSymbol = 60;
 
 export const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+//Set initial limit and offset for My Recipes
+export const startLimit = 5;
+export const startOffset = 0;
