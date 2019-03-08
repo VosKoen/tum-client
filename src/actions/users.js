@@ -23,18 +23,18 @@ const userLoginFailed = error => ({
   payload: error || "Unknown error"
 });
 
-const userSignupFailed = error => ({
-  type: USER_SIGNUP_FAILED,
-  payload: error || "Unknown error"
-});
+// const userSignupFailed = error => ({
+//   type: USER_SIGNUP_FAILED,
+//   payload: error || "Unknown error"
+// });
 
-const userSignupSuccess = () => ({
-  type: USER_SIGNUP_SUCCESS
-});
+// const userSignupSuccess = () => ({
+//   type: USER_SIGNUP_SUCCESS
+// });
 
-export const resetUserSignup = () => ({
-  type: RESET_USER_SIGNUP
-});
+// export const resetUserSignup = () => ({
+//   type: RESET_USER_SIGNUP
+// });
 
 export const login = (email, password) => dispatch =>
   request
