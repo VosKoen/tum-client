@@ -6,7 +6,6 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Typography from "@material-ui/core/Typography";
-import { Link } from "react-router-dom";
 
 export default function Navbar(props) {
   const {
@@ -15,7 +14,9 @@ export default function Navbar(props) {
     handleClose,
     handleClickLogout,
     anchorEl,
-    handleClickRandomRecipe
+    handleClickRandomRecipe,
+    handleClickMyAccount,
+    handleClickMyRecipes
   } = props;
   return (
     <AppBar position="static">
@@ -35,13 +36,9 @@ export default function Navbar(props) {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={handleClose}>Profile</MenuItem>
-          <Link to={"/my-recipes"} style={{ textDecoration: 'none' }}>
-            <MenuItem onClick={handleClose}>My recipes</MenuItem>
-          </Link>
-          <Link to={"/"} style={{ textDecoration: 'none' }}>
-            <MenuItem onClick={handleClickRandomRecipe}>Cook!</MenuItem>
-          </Link>
+          <MenuItem onClick={handleClickMyAccount}>Account</MenuItem>
+          <MenuItem onClick={handleClickMyRecipes}>My recipes</MenuItem>
+          <MenuItem onClick={handleClickRandomRecipe}>Cook!</MenuItem>
           <MenuItem onClick={handleClickLogout}>Logout</MenuItem>
         </Menu>
         <Typography variant="h1" className={classes.header}>

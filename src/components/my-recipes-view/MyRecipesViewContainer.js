@@ -77,7 +77,6 @@ class MyRecipesViewContainer extends React.PureComponent {
 
 const styles = theme => ({
   myRecipes: {
-    width: "95%",
     margin: "auto",
     padding: theme.spacing.unit * 2,
     textAlign: "left"

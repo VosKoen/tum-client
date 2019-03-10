@@ -681,7 +681,6 @@ class RecipeFormContainer extends React.PureComponent {
 
 const styles = theme => ({
   paper: {
-    maxWidth: "95%",
     margin: "auto",
     padding: theme.spacing.unit * 2
   },
