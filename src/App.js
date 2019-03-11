@@ -9,6 +9,7 @@ import FooterContainer from "./components/footer/FooterContainer";
 import RecipeFormContainer from "./components/recipe-form/RecipeFormContainer";
 import RecipeViewContainer from "./components/recipe-view/RecipeViewContainer";
 import MyRecipesViewContainer from "./components/my-recipes-view/MyRecipesViewContainer";
+import MyAccountContainer from "./components/account/MyAccountContainer";
 
 //TODO: Check connection database and show something in case of no connection
 
@@ -30,6 +31,7 @@ class App extends Component {
               path="/my-recipes"
               component={MyRecipesViewContainer}
             />
+            <Route exact path="/my-account" component={MyAccountContainer} />
             <Route exact path="/logon" component={LogonContainer} />
             <Route exact path="/signup" component={SignupContainer} />
           </main>

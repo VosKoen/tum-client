@@ -1,0 +1,110 @@
+import * as React from "react";
+import { connect } from "react-redux";
+import MyAccount from "./MyAccount";
+import { withStyles } from "@material-ui/core/styles";
+import { getAccountData, setNewPassword } from "../../actions/users";
+import { Redirect } from "react-router-dom";
+
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import Button from "@material-ui/core/Button";
+
+//Alert definitions
+const alertPasswordsNotSame = "alertPasswordsNotSame";
+
+class MyAccountContainer extends React.PureComponent {
+  state = {
+    password: "",
+    newPassword: "",
+    newPasswordConfirm: "",
+    [alertPasswordsNotSame]: false
+  };
+
+  componentDidMount() {
+    this.props.getAccountData();
+  }
+
+  handleSubmitPassword = e => {
+    e.preventDefault();
+
+    //Alerts
+    if (this.state.newPassword !== this.state.newPasswordConfirm) {
+      this.openAlert(alertPasswordsNotSame);
+      return undefined;
+    }
+    this.props.setNewPassword(this.state.password, this.state.newPassword)
+  };
+
+  handleChange = event => {
+    const { name, value } = event.target;
+    this.setState({
+      [name]: value
+    });
+  };
+
+  closeAlert = alertName => {
+    this.setState({
+      [alertName]: false
+    });
+  };
+
+  openAlert = alertName => {
+    this.setState({
+      [alertName]: true
+    });
+  };
+
+  renderPasswordNotTheSameAlert = () => {
+    return (
+      <Dialog
+        open={this.state.alertPasswordsNotSame}
+        onClose={() => this.closeAlert(alertPasswordsNotSame)}
+      >
+        <DialogContent>
+          <DialogContentText>
+            The password in "Confirm new password" is not the same as the password in 'New password'
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => this.closeAlert(alertPasswordsNotSame)}
+            color="primary"
+            autoFocus
+          >
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
+
+  render() {
+    if (!this.props.user) return <Redirect to="/logon" />;
+    return (
+        <div>
+      <MyAccount
+        user={this.props.user}
+        state={this.state}
+        handleSubmitPassword={this.handleSubmitPassword}
+        handleChange={this.handleChange}
+      />
+      {this.renderPasswordNotTheSameAlert()}
+      </div>
+    );
+  }
+}
+
+const styles = theme => ({});
+
+const mapStateToProps = state => ({
+  user: state.user
+});
+
+export default withStyles(styles)(
+  connect(
+    mapStateToProps,
+    { getAccountData, setNewPassword }
+  )(MyAccountContainer)
+);

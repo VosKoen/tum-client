@@ -4,11 +4,23 @@ import Navbar from "./Navbar";
 import { withStyles } from "@material-ui/core/styles";
 import { logoutUser } from "../../actions/users";
 import { getRandomRecipe } from "../../actions/recipes";
+import { Redirect } from "react-router-dom";
 
 class NavContainer extends React.PureComponent {
   state = {
-    anchorEl: null
+    anchorEl: null,
+    redirectMyAccount: false,
+    redirectRandomRecipe: false,
+    redirectMyRecipes: false
   };
+
+  componentDidUpdate() {
+    this.setState({
+      redirectMyRecipes: false,
+      redirectMyAccount: false,
+      redirectRandomRecipe: false
+    });
+  }
 
   handleClick = event => {
     this.setState({ anchorEl: event.currentTarget });
@@ -18,13 +30,24 @@ class NavContainer extends React.PureComponent {
     this.setState({ anchorEl: null });
   };
 
-  handleClickLogout = ()  => {
+  handleClickLogout = () => {
     this.props.logoutUser();
     this.handleClose();
   };
 
   handleClickRandomRecipe = () => {
     this.props.getRandomRecipe();
+    this.setState({ redirectRandomRecipe: true });
+    this.handleClose();
+  };
+
+  handleClickMyRecipes = () => {
+    this.setState({ redirectMyRecipes: true });
+    this.handleClose();
+  };
+
+  handleClickMyAccount = () => {
+    this.setState({ redirectMyAccount: true });
     this.handleClose();
   };
 
@@ -33,14 +56,27 @@ class NavContainer extends React.PureComponent {
 
     if (this.props.user)
       return (
-        <Navbar
-          classes={classes}
-          handleClick={this.handleClick}
-          handleClose={this.handleClose}
-          handleClickLogout={this.handleClickLogout}
-          anchorEl={this.state.anchorEl}
-          handleClickRandomRecipe={this.handleClickRandomRecipe}
-        />
+        <div>
+          <Navbar
+            classes={classes}
+            handleClick={this.handleClick}
+            handleClose={this.handleClose}
+            handleClickLogout={this.handleClickLogout}
+            anchorEl={this.state.anchorEl}
+            handleClickRandomRecipe={this.handleClickRandomRecipe}
+            handleClickMyAccount={this.handleClickMyAccount}
+            handleClickMyRecipes={this.handleClickMyRecipes}
+          />
+          {this.state.redirectRandomRecipe ? (
+            <Redirect to="/" />
+          ) : this.state.redirectMyRecipes ? (
+            <Redirect to="/my-recipes" />
+          ) : this.state.redirectMyAccount ? (
+            <Redirect to="/my-account" />
+          ) : (
+            ""
+          )}
+        </div>
       );
     return <div />;
   }

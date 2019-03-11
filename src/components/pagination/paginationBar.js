@@ -8,7 +8,6 @@ import { Typography, ButtonBase } from "@material-ui/core";
 
 export default function PaginationBar(props) {
   const {
-    classes,
     handleClickFirstPage,
     handleClickPreviousPage,
     handleClickNextPage,
