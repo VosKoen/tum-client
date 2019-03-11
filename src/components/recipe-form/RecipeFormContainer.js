@@ -428,7 +428,7 @@ class RecipeFormContainer extends React.PureComponent {
               height = img.height * (width / img.width);
             }
 
-            if (exifData) {
+            if (exifData && exifData.Orientation) {
               const oldWidth = width;
               console.log(exifData)
               if (exifData.Orientation)
@@ -451,15 +451,14 @@ class RecipeFormContainer extends React.PureComponent {
             elem.height = height;
             const ctx = elem.getContext("2d");
 
-            if (exifData) {
+            if (exifData && exifData.Orientation) {
               //What to do?
               // 1 do nothing
               // 3 flip 180
               // 6 90 clockwise
               // 8 90 counterclockwise              
               
-              console.log(exifData)
-              if (exifData.Orientation)
+
               switch (exifData.Orientation.value) {
                 case 3:
                   ctx.translate(width / 2, height / 2);
