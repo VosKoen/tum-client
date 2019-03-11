@@ -456,8 +456,10 @@ class RecipeFormContainer extends React.PureComponent {
               // 1 do nothing
               // 3 flip 180
               // 6 90 clockwise
-              // 8 90 counterclockwise
-
+              // 8 90 counterclockwise              
+              
+              console.log(exifData)
+              if (exifData.Orientation)
               switch (exifData.Orientation.value) {
                 case 3:
                   ctx.translate(width / 2, height / 2);
