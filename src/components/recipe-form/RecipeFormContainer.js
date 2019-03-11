@@ -21,7 +21,10 @@ import {
   saveChangesRecipe,
   resetPlaceholderImage
 } from "../../actions/recipes";
-import { getIngredientList, submitNewIngredientRequest } from "../../actions/ingredients";
+import {
+  getIngredientList,
+  submitNewIngredientRequest
+} from "../../actions/ingredients";
 import { Redirect } from "react-router-dom";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -36,8 +39,8 @@ import { alertIngredientAlreadyPresent } from "../../actions/recipes";
 const alertNoSteps = "alertNoSteps";
 const alertNoIngredients = "alertNoIngredients";
 const alertImageRejected = "alertImageRejected";
-const alertRequestIngredientSubmitted = "alertRequestIngredientSubmitted"
-const alertChangeResetsRating = "alertChangeResetsRating"
+const alertRequestIngredientSubmitted = "alertRequestIngredientSubmitted";
+const alertChangeResetsRating = "alertChangeResetsRating";
 
 function renderInputComponent(inputProps) {
   const { classes, inputRef = () => {}, ref, ...other } = inputProps;
@@ -93,8 +96,8 @@ function getSuggestions(value, ingredientList) {
     : ingredientList.filter(suggestion => {
         const keep =
           count < 5 &&
-          deburr(suggestion.name.slice(0, inputLength).toLowerCase()) ===
-            inputValue;
+          deburr(suggestion.name.toLowerCase()).indexOf(inputValue) !== -1;
+
 
         if (keep) {
           count += 1;
@@ -316,15 +319,13 @@ class RecipeFormContainer extends React.PureComponent {
       return undefined;
     }
 
-    if (this.props.myRecipe.editMode)
-    {
-      this.openAlert(alertChangeResetsRating)
-      return undefined
+    if (this.props.myRecipe.editMode) {
+      this.openAlert(alertChangeResetsRating);
+      return undefined;
     }
 
     //If none of the alerts is triggered, the recipe can be submitted
-    this.submitRecipe()
-
+    this.submitRecipe();
   };
 
   submitRecipe = async () => {
@@ -346,7 +347,7 @@ class RecipeFormContainer extends React.PureComponent {
     }
 
     this.setState({ submitRecipe: true });
-  }
+  };
 
   handleCancelSubmit = () => {
     this.setState({ cancelSubmit: true });
@@ -432,18 +433,18 @@ class RecipeFormContainer extends React.PureComponent {
               const oldWidth = width;
 
               if (exifData.Orientation)
-              switch (exifData.Orientation.value) {
-                case 6:
-                  width = height;
-                  height = oldWidth;
-                  break;
-                case 8:
-                  width = height;
-                  height = oldWidth;
-                  break;
-                default:
-                  break;
-              }
+                switch (exifData.Orientation.value) {
+                  case 6:
+                    width = height;
+                    height = oldWidth;
+                    break;
+                  case 8:
+                    width = height;
+                    height = oldWidth;
+                    break;
+                  default:
+                    break;
+                }
             }
 
             const elem = document.createElement("canvas");
@@ -456,8 +457,7 @@ class RecipeFormContainer extends React.PureComponent {
               // 1 do nothing
               // 3 flip 180
               // 6 90 clockwise
-              // 8 90 counterclockwise              
-              
+              // 8 90 counterclockwise
 
               switch (exifData.Orientation.value) {
                 case 3:
@@ -482,7 +482,6 @@ class RecipeFormContainer extends React.PureComponent {
             } else {
               ctx.drawImage(img, 0, 0, width, height);
             }
-
 
             ctx.canvas.toBlob(
               blob => {
@@ -571,11 +570,14 @@ class RecipeFormContainer extends React.PureComponent {
       >
         <DialogContent>
           <DialogContentText>
-            Thank you for submitting your request for a new ingredient. Your request will be reviewed.
+            Thank you for submitting your request for a new ingredient. Your
+            request will be reviewed.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => this.closeAlert(alertRequestIngredientSubmitted)}>
+          <Button
+            onClick={() => this.closeAlert(alertRequestIngredientSubmitted)}
+          >
             Close
           </Button>
         </DialogActions>
@@ -584,7 +586,6 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   renderChangeResetsRatingAlert = () => {
-
     return (
       <Dialog
         open={this.state.alertChangeResetsRating}
@@ -592,13 +593,12 @@ class RecipeFormContainer extends React.PureComponent {
       >
         <DialogContent>
           <DialogContentText>
-           Any changes in ingredients or in steps will reset the recipe rating. Are you sure you want to submit your changes?
+            Any changes in ingredients or in steps will reset the recipe rating.
+            Are you sure you want to submit your changes?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => this.submitRecipe()}>
-            Submit changes
-          </Button>
+          <Button onClick={() => this.submitRecipe()}>Submit changes</Button>
           <Button onClick={() => this.closeAlert(alertChangeResetsRating)}>
             Cancel
           </Button>
@@ -625,7 +625,7 @@ class RecipeFormContainer extends React.PureComponent {
     this.handleRequestIngredientClose();
     this.setState({
       newIngredient: ""
-    })
+    });
     this.openAlert(alertRequestIngredientSubmitted);
   };
 
