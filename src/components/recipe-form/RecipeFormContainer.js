@@ -430,7 +430,7 @@ class RecipeFormContainer extends React.PureComponent {
 
             if (exifData && exifData.Orientation) {
               const oldWidth = width;
-              console.log(exifData)
+
               if (exifData.Orientation)
               switch (exifData.Orientation.value) {
                 case 6:
@@ -479,7 +479,10 @@ class RecipeFormContainer extends React.PureComponent {
                   ctx.drawImage(img, 0, 0, width, height);
                   break;
               }
+            } else {
+              ctx.drawImage(img, 0, 0, width, height);
             }
+
 
             ctx.canvas.toBlob(
               blob => {
