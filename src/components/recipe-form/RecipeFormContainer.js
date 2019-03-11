@@ -430,6 +430,8 @@ class RecipeFormContainer extends React.PureComponent {
 
             if (exifData) {
               const oldWidth = width;
+              console.log(exifData)
+              if (exifData.Orientation)
               switch (exifData.Orientation.value) {
                 case 6:
                   width = height;
