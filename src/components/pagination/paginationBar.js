@@ -4,7 +4,8 @@ import FirstPageIcon from "@material-ui/icons/FirstPageRounded";
 import LastPageIcon from "@material-ui/icons/LastPageRounded";
 import ChevronLeft from "@material-ui/icons/ChevronLeftRounded";
 import ChevronRight from "@material-ui/icons/ChevronRightRounded";
-import { Typography, ButtonBase } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
+import IconButton from "@material-ui/core/IconButton";
 
 export default function PaginationBar(props) {
   const {
@@ -16,22 +17,45 @@ export default function PaginationBar(props) {
     limit,
     offset
   } = props;
-  return (
-    <Grid container>
-      <ButtonBase onClick={handleClickFirstPage}>
-        <FirstPageIcon />
-      </ButtonBase>
-      <ButtonBase onClick={handleClickPreviousPage}>
-        <ChevronLeft />
-      </ButtonBase>
 
-      <Typography>{offset+1} - {offset+limit} of {itemsTotal}</Typography>
-      <ButtonBase onClick={handleClickNextPage}>
-        <ChevronRight />
-      </ButtonBase>
-      <ButtonBase onClick={handleClickLastPage}>
-        <LastPageIcon />
-      </ButtonBase>
+  return (
+    <Grid container alignItems="center" spacing={8}>
+      <Grid item>
+        <IconButton
+          onClick={handleClickFirstPage}
+          disabled={offset === 0}
+          size="small"
+        >
+          <FirstPageIcon />
+        </IconButton>
+      </Grid>
+      <Grid item>
+        <IconButton onClick={handleClickPreviousPage} disabled={offset === 0}>
+          <ChevronLeft />
+        </IconButton>
+      </Grid>
+      <Grid item>
+        <Typography>
+          {itemsTotal === 0 ? 0 : offset + 1} -{" "}
+          {Math.min(itemsTotal, offset + limit)} of {itemsTotal}
+        </Typography>
+      </Grid>
+      <Grid item>
+        <IconButton
+          onClick={handleClickNextPage}
+          disabled={offset + limit === itemsTotal}
+        >
+          <ChevronRight />
+        </IconButton>
+      </Grid>
+      <Grid item>
+        <IconButton
+          onClick={handleClickLastPage}
+          disabled={offset + limit === itemsTotal}
+        >
+          <LastPageIcon />
+        </IconButton>
+      </Grid>
     </Grid>
   );
 }
