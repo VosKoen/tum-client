@@ -46,7 +46,7 @@ export default function RecipeView(props) {
                 <Grid item>
                   <Grid container spacing={8} alignItems="center">
                     <Grid item>
-                    <PeopleIcon />
+                      <PeopleIcon />
                     </Grid>
                     <Grid item>
                       <Typography>{recipe.servings}</Typography>

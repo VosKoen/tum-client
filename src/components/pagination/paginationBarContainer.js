@@ -41,9 +41,13 @@ class PaginationBarContainer extends React.PureComponent {
         ? this.props.itemsTotal - (this.state.offset + this.state.selectedLimit)
         : this.state.limit
     );
-    const newOffset = Math.min(
-      this.state.offset + this.state.selectedLimit,
-      this.props.itemsTotal - newLimit
+
+    const newOffset = Math.max(
+      0,
+      Math.min(
+        this.state.offset + this.state.selectedLimit,
+        this.props.itemsTotal - newLimit
+      )
     );
 
     this.setState({
@@ -76,7 +80,6 @@ class PaginationBarContainer extends React.PureComponent {
         handleClickPreviousPage={this.handleClickPreviousPage}
         handleClickNextPage={this.handleClickNextPage}
         handleClickLastPage={this.handleClickLastPage}
-        state={this.state}
         itemsTotal={this.props.itemsTotal}
         limit={this.state.limit}
         offset={this.state.offset}

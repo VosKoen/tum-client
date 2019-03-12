@@ -44,7 +44,7 @@ export default function MyRecipesView(props) {
             </Grid>
           </Grid>
           <PaginationBarContainer
-            itemsTotal={myRecipes.count}
+            itemsTotal={myRecipes.count || 0}
             startOffset={startOffset}
             startLimit={startLimit}
             functionToCallWithLimitAndOffset={getMyRecipes}
@@ -70,7 +70,7 @@ export default function MyRecipesView(props) {
         <Grid item xs={12} sm={6}>
           <Typography variant="h6">Cooked recipes history</Typography>
           <PaginationBarContainer
-            itemsTotal={recipeHistory.count}
+            itemsTotal={recipeHistory.count || 0}
             startOffset={startOffset}
             startLimit={startLimit}
             functionToCallWithLimitAndOffset={getMyRecipeHistory}
