@@ -5,7 +5,9 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import { Grid } from "@material-ui/core";
+import { Grid, Divider } from "@material-ui/core";
+import TimelapseIcon from "@material-ui/icons/Timelapse";
+import PeopleIcon from "@material-ui/icons/People";
 
 export default function RecipeView(props) {
   const {
@@ -30,6 +32,29 @@ export default function RecipeView(props) {
           <Grid item xs={12} sm={6}>
             <Typography variant="h4">{recipe.title}</Typography>
             <CardContent>
+              <Grid container spacing={16}>
+                <Grid item>
+                  <Grid container spacing={8} alignItems="center">
+                    <Grid item>
+                      <TimelapseIcon />
+                    </Grid>
+                    <Grid item>
+                      <Typography>{recipe.timeNeeded} min.</Typography>
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item>
+                  <Grid container spacing={8} alignItems="center">
+                    <Grid item>
+                    <PeopleIcon />
+                    </Grid>
+                    <Grid item>
+                      <Typography>{recipe.servings}</Typography>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Divider />
               <Typography component="p" align="left">
                 {recipe.description}
               </Typography>
@@ -38,7 +63,6 @@ export default function RecipeView(props) {
             {renderEditDeleteButtons()}
             {renderRecipeSelectButtons()}
             {renderRecipeRating()}
-            
           </Grid>
         </Grid>
         <CardContent>
