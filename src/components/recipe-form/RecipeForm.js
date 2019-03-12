@@ -18,6 +18,8 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ClearIcon from "@material-ui/icons/Clear";
 
+import InputAdornment from "@material-ui/core/InputAdornment";
+
 import { Grid, CardMedia } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
@@ -137,6 +139,39 @@ export default function RecipeForm(props) {
               required
               fullWidth
             />
+            <Grid container spacing={16}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="preparation-time"
+                  name="preparationTime"
+                  label="Preparation time"
+                  value={state.preparationTime}
+                  onChange={handleChange}
+                  margin="normal"
+                  variant="outlined"
+                  type="number"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">min.</InputAdornment>
+                    )
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="servings"
+                  name="servings"
+                  label="Servings"
+                  value={state.servings}
+                  onChange={handleChange}
+                  margin="normal"
+                  variant="outlined"
+                  type="number"
+                />
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
 

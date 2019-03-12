@@ -244,7 +244,6 @@ export const saveChangesRecipe = recipe => async dispatch => {
   await request
     .put(`${baseUrl}/recipes/${recipe.id}`)
     .send(recipe)
-    .then(result => console.log(result))
     .catch(err => console.error(err));
 
   return undefined;

@@ -133,7 +133,9 @@ class RecipeFormContainer extends React.PureComponent {
     imageFiles: [],
     imageIsLoading: false,
     requestIngredientOpen: false,
-    newIngredient: ""
+    newIngredient: "",
+    servings: "",
+    preparationTime: ""
   };
 
   componentDidMount = () => {
@@ -142,7 +144,9 @@ class RecipeFormContainer extends React.PureComponent {
     if (this.props.myRecipe.editMode)
       this.setState({
         recipeTitle: this.props.recipe.title,
-        recipeDescription: this.props.recipe.description
+        recipeDescription: this.props.recipe.description,
+        servings: this.props.recipe.servings,
+        preparationTime: this.props.recipe.timeNeeded,
       });
   };
 
@@ -332,6 +336,8 @@ class RecipeFormContainer extends React.PureComponent {
     const recipe = {
       title: this.state.recipeTitle,
       description: this.state.recipeDescription,
+      timeNeeded: this.state.preparationTime,
+      servings: this.state.servings,
       recipeIngredients: this.props.myRecipe.ingredients,
       steps: this.props.myRecipe.steps,
       recipeImages: [{ imageUrl: this.props.myRecipe.imageUrl }],
