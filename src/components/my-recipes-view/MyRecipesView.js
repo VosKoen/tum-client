@@ -28,9 +28,15 @@ export default function MyRecipesView(props) {
     <Paper className={classes.myRecipes}>
       <Grid container spacing={16}>
         <Grid item xs={12} sm={6}>
-          <Grid container className={classes.myRecipesHeader} spacing={16}>
+          <Grid container spacing={16}>
             <Grid item xs={9}>
-              <Typography variant="h6">My recipes</Typography>
+              <Typography variant="h6">My cookbook</Typography>
+              <PaginationBarContainer
+            itemsTotal={myRecipes.count || 0}
+            startOffset={startOffset}
+            startLimit={startLimit}
+            functionToCallWithLimitAndOffset={getMyRecipes}
+          />
             </Grid>
             <Grid item xs={3} className={classes.buttonAddRecipeContainer}>
               <Fab
@@ -43,13 +49,8 @@ export default function MyRecipesView(props) {
               </Fab>
             </Grid>
           </Grid>
-          <PaginationBarContainer
-            itemsTotal={myRecipes.count || 0}
-            startOffset={startOffset}
-            startLimit={startLimit}
-            functionToCallWithLimitAndOffset={getMyRecipes}
-          />
-          {myRecipes.recipes ? (
+
+          {myRecipes.recipes && myRecipes.recipes.length > 0 ? (
             <List>
               {myRecipes.recipes.map((recipe, index) => (
                 <ListItem
@@ -68,14 +69,14 @@ export default function MyRecipesView(props) {
           )}
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Typography variant="h6">Cooked recipes history</Typography>
+          <Typography variant="h6">Cooked recipes</Typography>
           <PaginationBarContainer
             itemsTotal={recipeHistory.count || 0}
             startOffset={startOffset}
             startLimit={startLimit}
             functionToCallWithLimitAndOffset={getMyRecipeHistory}
           />
-          {recipeHistory.recipes ? (
+          {recipeHistory.recipes && recipeHistory.recipes.length > 0 ? (
             <List>
               {recipeHistory.recipes.map((recipe, index) => (
                 <ListItem

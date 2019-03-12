@@ -81,9 +81,8 @@ const styles = theme => ({
     padding: theme.spacing.unit * 2,
     textAlign: "left"
   },
-  myRecipesHeader: {},
   buttonAddRecipeContainer: {
-    textAlign: "right"
+    textAlign: "right"        
   }
 });
 
