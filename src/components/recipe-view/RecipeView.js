@@ -8,6 +8,7 @@ import ListItem from "@material-ui/core/ListItem";
 import { Grid, Divider } from "@material-ui/core";
 import TimelapseIcon from "@material-ui/icons/Timelapse";
 import PeopleIcon from "@material-ui/icons/People";
+import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 
 export default function RecipeView(props) {
   const {
@@ -56,6 +57,19 @@ export default function RecipeView(props) {
                     </Grid>
                   </Grid>
                 </Grid>
+
+                <Grid item>
+                  <Grid container spacing={8} alignItems="center">
+                    <Grid item>
+                      <ThumbUpIcon />
+                    </Grid>
+                    <Grid item>
+                      <Typography>{recipe.rating}</Typography>
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+
               </Grid>
               <Divider />
               <Typography component="p" align="left">

@@ -83,11 +83,11 @@ class RecipeViewContainer extends React.PureComponent {
       !this.props.recipe.isOpenedRecipe
     )
       return (
-        <div className={this.props.classes.recipeSelectButtonsContainer}>
+        <div className={this.props.classes.recipeButtonsContainer}>
           <Grid
             container
             spacing={16}
-            className={this.props.classes.recipeSelectButtons}
+            className={this.props.classes.recipeButtons}
           >
             <Grid item xs={3} />
             <Grid item xs={3}>
@@ -119,11 +119,11 @@ class RecipeViewContainer extends React.PureComponent {
   renderRecipeRating = () => {
     if (this.props.recipe.isSelectedRecipe)
       return (
-        <div className={this.props.classes.recipeSelectButtonsContainer}>
+        <div className={this.props.classes.recipeButtonsContainer}>
           <Grid
             container
             spacing={16}
-            className={this.props.classes.recipeSelectButtons}
+            className={this.props.classes.recipeButtons}
           >
             <Grid item xs={3} />
             <Grid item xs={3}>
@@ -163,11 +163,11 @@ class RecipeViewContainer extends React.PureComponent {
   renderEditDeleteButtons = () => {
     if (this.props.recipe.isOpenedRecipe)
       return (
-        <div className={this.props.classes.recipeSelectButtonsContainer}>
+        <div className={this.props.classes.recipeButtonsContainer}>
           <Grid
             container
             spacing={16}
-            className={this.props.classes.recipeSelectButtons}
+            className={this.props.classes.recipeButtons}
           >
             <Grid item xs={3} />
             <Grid item xs={3}>
@@ -279,22 +279,13 @@ const styles = theme => ({
     backgroundColor: red[200]
   },
 
-  ratingPositive: {
-    color: "green"
-  },
-  ratingNegative: {
-    color: "red"
-  },
-  ratingNeutral: {
-    color: "black"
-  },
-  recipeSelectButtonsContainer: {
+  recipeButtonsContainer: {
     position: "relative",
     width: "100%",
     paddingLeft: "8px",
     paddingRight: "8px"
   },
-  recipeSelectButtons: {
+  recipeButtons: {
     position: "absolute",
     bottom: "16px",
     width: "100%"
