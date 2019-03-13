@@ -79,58 +79,38 @@ class RecipeViewContainer extends React.PureComponent {
       !this.props.recipe.isOpenedRecipe
     )
       return (
-        <Grid container direction="column" spacing={16}>
+        <div className={this.props.classes.recipeSelectButtonsContainer}>
+        <Grid container spacing={16}  className={this.props.classes.recipeSelectButtons}>
           <Grid
             item
-            className={
-              this.props.recipe.rating > 0
-                ? this.props.classes.ratingPositive
-                : this.props.recipe.rating < 0
-                ? this.props.classes.ratingNegative
-                : this.props.classes.ratingNeutral
-            }
+            xs={6}
+            className={this.props.classes.recipeActionButtonLeft}
           >
-            <Typography color="inherit">
-              {!this.props.recipe.rating
-                ? 0
-                : this.props.recipe.rating > 0
-                ? `+${this.props.recipe.rating}`
-                : this.props.recipe.rating}
-            </Typography>
+            <Fab
+              variant="extended"
+              aria-label="Cook"
+              color="primary"
+              onClick={this.handleConfirmation}
+            >
+              Cook!
+            </Fab>
           </Grid>
-          <Grid item>
-            <Grid container direction="row" spacing={16}>
-              <Grid
-                item
-                xs={6}
-                className={this.props.classes.recipeActionButtonLeft}
-              >
-                <Fab
-                  variant="extended"
-                  aria-label="Cook"
-                  color="primary"
-                  onClick={this.handleConfirmation}
-                >
-                  Cook!
-                </Fab>
-              </Grid>
-              <Grid
-                item
-                xs={6}
-                className={this.props.classes.recipeActionButtonRight}
-              >
-                <Fab
-                  variant="extended"
-                  aria-label="Next recipe"
-                  color="primary"
-                  onClick={this.handleRejection}
-                >
-                  Not today
-                </Fab>
-              </Grid>
-            </Grid>
+          <Grid
+            item
+            xs={6}
+            className={this.props.classes.recipeActionButtonRight}
+          >
+            <Fab
+              variant="extended"
+              aria-label="Next recipe"
+              color="primary"
+              onClick={this.handleRejection}
+            >
+              Not today
+            </Fab>
           </Grid>
         </Grid>
+        </div>
       );
   };
 
@@ -298,7 +278,6 @@ class RecipeViewContainer extends React.PureComponent {
 
 const styles = theme => ({
   card: {
-
     margin: "auto",
     padding: theme.spacing.unit * 2
   },
@@ -322,7 +301,16 @@ const styles = theme => ({
   },
   ratingNeutral: {
     color: "black"
-  }
+  },
+  recipeSelectButtonsContainer: {
+    position: "relative",
+    width: "100%",
+  },
+  recipeSelectButtons: {
+    position: "absolute",
+    bottom: "16px",
+    width: "100%"
+  },
 });
 
 const mapStateToProps = state => ({

@@ -28,6 +28,7 @@ export default function RecipeView(props) {
               src={recipe.imageUrl}
               title={recipe.title}
             />
+            {renderRecipeSelectButtons()}
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="h4">{recipe.title}</Typography>
@@ -61,7 +62,7 @@ export default function RecipeView(props) {
             </CardContent>
 
             {renderEditDeleteButtons()}
-            {renderRecipeSelectButtons()}
+            
             {renderRecipeRating()}
           </Grid>
         </Grid>
