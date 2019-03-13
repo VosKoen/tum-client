@@ -83,6 +83,13 @@ const styles = theme => ({
   },
   buttonAddRecipeContainer: {
     textAlign: "right"        
+  },
+  secondaryTextCookbook: {
+    paddingLeft: '5px'
+  },
+  thumbUpIconInline: {
+    position: 'relative',
+    top: '2px'
   }
 });
 

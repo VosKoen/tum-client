@@ -9,6 +9,7 @@ import Fab from "@material-ui/core/Fab";
 import Grid from "@material-ui/core/Grid";
 import PaginationBarContainer from "../pagination/paginationBarContainer";
 import { startLimit, startOffset } from "../../constants";
+import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 
 export default function MyRecipesView(props) {
   const {
@@ -32,11 +33,11 @@ export default function MyRecipesView(props) {
             <Grid item xs={9}>
               <Typography variant="h6">My cookbook</Typography>
               <PaginationBarContainer
-            itemsTotal={myRecipes.count || 0}
-            startOffset={startOffset}
-            startLimit={startLimit}
-            functionToCallWithLimitAndOffset={getMyRecipes}
-          />
+                itemsTotal={myRecipes.count || 0}
+                startOffset={startOffset}
+                startLimit={startLimit}
+                functionToCallWithLimitAndOffset={getMyRecipes}
+              />
             </Grid>
             <Grid item xs={3} className={classes.buttonAddRecipeContainer}>
               <Fab
@@ -60,7 +61,15 @@ export default function MyRecipesView(props) {
                   button
                   onClick={() => handleClickRecipe(recipe.id)}
                 >
-                  <ListItemText primary={recipe.title} secondary={<br />} />
+                  <ListItemText
+                    primary={recipe.title}
+                    secondary={
+                      <span className={classes.secondaryTextCookbook}>
+                        <ThumbUpIcon fontSize="inherit" className={classes.thumbUpIconInline}/>
+                        &nbsp;&nbsp;{recipe.rating}
+                      </span>
+                    }
+                  />
                 </ListItem>
               ))}
             </List>
