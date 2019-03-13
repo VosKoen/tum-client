@@ -17,6 +17,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import RestaurantIcon from "@material-ui/icons/Restaurant";
 import RefreshIcon from "@material-ui/icons/Refresh";
+import TuneIcon from "@material-ui/icons/Tune";
 import { setRating } from "../../actions/ratings";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -24,6 +25,9 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import Button from "@material-ui/core/Button";
 import { Grid } from "@material-ui/core";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import { filters } from "../../constants";
 
 import red from "@material-ui/core/colors/red";
 import green from "@material-ui/core/colors/green";
@@ -34,7 +38,8 @@ export const alertDeleteAreYouSure = "alertDeleteAreYouSure";
 class RecipeViewContainer extends React.PureComponent {
   state = {
     [alertDeleteAreYouSure]: false,
-    redirectToRecipeForm: false
+    redirectToRecipeForm: false,
+    anchorEl: null
   };
 
   componentDidMount() {
@@ -65,6 +70,14 @@ class RecipeViewContainer extends React.PureComponent {
     this.closeAlert(alertDeleteAreYouSure);
   };
 
+  handleCloseFilterMenu = () => {
+    this.setState({ anchorEl: null });
+  };
+
+  handleOpenFilterMenu = event => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
+
   closeAlert = alertName => {
     this.setState({
       [alertName]: false
@@ -82,38 +95,66 @@ class RecipeViewContainer extends React.PureComponent {
       !this.props.recipe.isSelectedRecipe &&
       !this.props.recipe.isOpenedRecipe
     )
-      return (
-        <div className={this.props.classes.recipeButtonsContainer}>
-          <Grid
-            container
-            spacing={16}
-            className={this.props.classes.recipeButtons}
-          >
-            <Grid item xs={3} />
-            <Grid item xs={3}>
-              <Fab
-                aria-label="Cook"
-                color="secondary"
-                onClick={this.handleConfirmation}
-                size="small"
-              >
-                <RestaurantIcon />
-              </Fab>
-            </Grid>
-            <Grid item xs={3}>
-              <Fab
-                aria-label="Load new recipe"
-                color="primary"
-                onClick={this.handleRejection}
-                size="small"
-              >
-                <RefreshIcon />
-              </Fab>
-            </Grid>
-            <Grid item xs={3} />
+
+    return (
+      <div className={this.props.classes.recipeButtonsContainer}>
+        <Grid
+          container
+          spacing={16}
+          className={this.props.classes.recipeButtons}
+        >
+          <Grid item xs={3} />
+          <Grid item xs={2}>
+            <Fab
+              aria-label="Cook"
+              color="secondary"
+              onClick={this.handleConfirmation}
+              size="small"
+            >
+              <RestaurantIcon />
+            </Fab>
           </Grid>
-        </div>
-      );
+          <Grid item xs={2}>
+            <Fab
+              aria-label="Add filter"
+              color="primary"
+              onClick={this.handleOpenFilterMenu}
+              size="small"
+            >
+              <TuneIcon />
+            </Fab>
+            <Menu
+              id="filter-menu"
+              anchorEl={this.state.anchorEl}
+              open={Boolean(this.state.anchorEl)}
+              onClose={this.handleCloseFilterMenu}
+              disableAutoFocusItem
+            >
+              <MenuItem button={false} divider>
+                Add a filter
+              </MenuItem>
+              {filters.map(filter => (
+                <MenuItem key={filter.id} onClick={() => console.log(filter.id)}>
+                  {filter.label}
+                </MenuItem>
+              ))}
+            </Menu>
+          </Grid>
+
+          <Grid item xs={2}>
+            <Fab
+              aria-label="Load new recipe"
+              color="primary"
+              onClick={this.handleRejection}
+              size="small"
+            >
+              <RefreshIcon />
+            </Fab>
+          </Grid>
+          <Grid item xs={3} />
+        </Grid>
+      </div>
+    );
   };
 
   renderRecipeRating = () => {
@@ -289,6 +330,9 @@ const styles = theme => ({
     position: "absolute",
     bottom: "16px",
     width: "100%"
+  },
+  menuHeader: {
+    color: "black"
   }
 });
 

@@ -13,3 +13,12 @@ export const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oc
 //Set initial limit and offset for My Recipes
 export const startLimit = 5;
 export const startOffset = 0;
+
+//Filters
+export const filters = 
+[
+  {
+    id: "preparationTime", 
+    label: "Preparation time"
+  }
+]
