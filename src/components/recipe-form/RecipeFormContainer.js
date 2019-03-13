@@ -95,7 +95,7 @@ function getSuggestions(value, ingredientList) {
     ? []
     : ingredientList.filter(suggestion => {
         const keep =
-          count < 5 &&
+          count < 15 &&
           deburr(suggestion.name.toLowerCase()).indexOf(inputValue) !== -1;
 
 

@@ -139,8 +139,8 @@ export default function RecipeForm(props) {
               required
               fullWidth
             />
-            <Grid container spacing={16}>
-              <Grid item xs={12} sm={6}>
+            <Grid container spacing={16} justifyContent="flex-start">
+              <Grid item >
                 <TextField
                   required
                   id="preparation-time"
@@ -158,7 +158,7 @@ export default function RecipeForm(props) {
                   }}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item >
                 <TextField
                   required
                   id="servings"
@@ -298,9 +298,12 @@ export default function RecipeForm(props) {
                 {...autosuggestProps}
                 inputProps={{
                   classes,
-                  placeholder: "Search for an ingredient",
                   value: state.ingredient,
-                  onChange: handleAutosuggestChange("ingredient")
+                  onChange: handleAutosuggestChange("ingredient"),
+                  variant: "outlined",
+                  label: "Search for an ingredient",
+                  required: true,
+                  margin: 'normal'
                 }}
                 theme={{
                   container: classes.autosuggestContainer,
