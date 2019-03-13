@@ -36,9 +36,12 @@ export default function Navbar(props) {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={handleClickMyAccount}>Account</MenuItem>
-          <MenuItem onClick={handleClickMyRecipes}>My recipes</MenuItem>
-          <MenuItem onClick={handleClickRandomRecipe}>Cook!</MenuItem>
+          <MenuItem onClick={handleClickRandomRecipe}>
+            Give me a recipe
+          </MenuItem>
+          <MenuItem onClick={handleClickMyRecipes}>Cookbook</MenuItem>
+          <MenuItem onClick={handleClickMyAccount}>My account</MenuItem>
+
           <MenuItem onClick={handleClickLogout}>Logout</MenuItem>
         </Menu>
         <Typography variant="h1" className={classes.header}>
