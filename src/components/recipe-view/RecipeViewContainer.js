@@ -10,7 +10,7 @@ import {
   openEditRecipeForm
 } from "../../actions/recipes";
 import Fab from "@material-ui/core/Fab";
-import IconButton from "@material-ui/core/IconButton";
+
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import EditIcon from "@material-ui/icons/Edit";
@@ -24,7 +24,9 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import Button from "@material-ui/core/Button";
 import { Grid } from "@material-ui/core";
-import Typography from "@material-ui/core/Typography";
+
+import red from "@material-ui/core/colors/red";
+import green from "@material-ui/core/colors/green";
 
 //Alert definitions
 export const alertDeleteAreYouSure = "alertDeleteAreYouSure";
@@ -87,12 +89,8 @@ class RecipeViewContainer extends React.PureComponent {
             spacing={16}
             className={this.props.classes.recipeSelectButtons}
           >
-            <Grid item xs={4} />
-            <Grid
-              item
-              xs={2}
-              className={this.props.classes.recipeActionButtonLeft}
-            >
+            <Grid item xs={3} />
+            <Grid item xs={3}>
               <Fab
                 aria-label="Cook"
                 color="secondary"
@@ -102,11 +100,7 @@ class RecipeViewContainer extends React.PureComponent {
                 <RestaurantIcon />
               </Fab>
             </Grid>
-            <Grid
-              item
-              xs={2}
-              className={this.props.classes.recipeActionButtonRight}
-            >
+            <Grid item xs={3}>
               <Fab
                 aria-label="Load new recipe"
                 color="primary"
@@ -115,8 +109,8 @@ class RecipeViewContainer extends React.PureComponent {
               >
                 <RefreshIcon />
               </Fab>
-              </Grid>
-              <Grid item xs={4} />
+            </Grid>
+            <Grid item xs={3} />
           </Grid>
         </div>
       );
@@ -125,113 +119,84 @@ class RecipeViewContainer extends React.PureComponent {
   renderRecipeRating = () => {
     if (this.props.recipe.isSelectedRecipe)
       return (
-        <Grid container direction="row" spacing={16}>
+        <div className={this.props.classes.recipeSelectButtonsContainer}>
           <Grid
-            item
-            xs={5}
-            className={this.props.classes.recipeActionButtonLeft}
+            container
+            spacing={16}
+            className={this.props.classes.recipeSelectButtons}
           >
-            <IconButton
-              disabled={this.props.recipe.recipeIsLiked === true}
-              aria-label="Thumbs up"
-              color="primary"
-              onClick={() => this.handleRating(this.props.recipe.id, true)}
-              className={this.props.classes.ratingButton}
+            <Grid item xs={3} />
+            <Grid item xs={3}>
+              <Fab
+                disabled={this.props.recipe.recipeIsLiked === true}
+                aria-label="Thumbs up"
+                color="secondary"
+                onClick={() => this.handleRating(this.props.recipe.id, true)}
+                size="small"
+                className={this.props.classes.ratingButtonPlus}
+              >
+                <ThumbUpIcon />
+              </Fab>
+            </Grid>
+            <Grid
+              item
+              xs={3}
+              className={this.props.classes.recipeActionButtonRight}
             >
-              <ThumbUpIcon />
-            </IconButton>
+              <Fab
+                disabled={this.props.recipe.recipeIsLiked === false}
+                aria-label="Thumbs down"
+                color="primary"
+                onClick={() => this.handleRating(this.props.recipe.id, false)}
+                size="small"
+                className={this.props.classes.ratingButtonMinus}
+              >
+                <ThumbDownIcon />
+              </Fab>
+            </Grid>
+            <Grid item xs={3} />
           </Grid>
-          <Grid item xs={2}>
-            <div
-              className={
-                this.props.recipe.rating > 0
-                  ? this.props.classes.ratingPositive
-                  : this.props.recipe.rating < 0
-                  ? this.props.classes.ratingNegative
-                  : this.props.classes.ratingNeutral
-              }
-            >
-              <Typography color="inherit">
-                {!this.props.recipe.rating
-                  ? 0
-                  : this.props.recipe.rating > 0
-                  ? `+${this.props.recipe.rating}`
-                  : this.props.recipe.rating}
-              </Typography>
-            </div>
-          </Grid>
-          <Grid
-            item
-            xs={5}
-            className={this.props.classes.recipeActionButtonRight}
-          >
-            <IconButton
-              disabled={this.props.recipe.recipeIsLiked === false}
-              aria-label="Thumbs down"
-              color="primary"
-              onClick={() => this.handleRating(this.props.recipe.id, false)}
-              className={this.props.classes.ratingButton}
-            >
-              <ThumbDownIcon />
-            </IconButton>
-          </Grid>
-        </Grid>
+        </div>
       );
   };
 
   renderEditDeleteButtons = () => {
     if (this.props.recipe.isOpenedRecipe)
       return (
-        <Grid container direction="column" spacing={16}>
+        <div className={this.props.classes.recipeSelectButtonsContainer}>
           <Grid
-            item
-            className={
-              this.props.recipe.rating > 0
-                ? this.props.classes.ratingPositive
-                : this.props.recipe.rating < 0
-                ? this.props.classes.ratingNegative
-                : this.props.classes.ratingNeutral
-            }
+            container
+            spacing={16}
+            className={this.props.classes.recipeSelectButtons}
           >
-            <Typography color="inherit">
-              {!this.props.recipe.rating
-                ? 0
-                : this.props.recipe.rating > 0
-                ? `+${this.props.recipe.rating}`
-                : this.props.recipe.rating}
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Grid container direction="row" spacing={16}>
-              <Grid
-                item
-                xs={6}
-                className={this.props.classes.recipeActionButtonLeft}
+            <Grid item xs={3} />
+            <Grid item xs={3}>
+              <Fab
+                aria-label="Edit recipe"
+                color="primary"
+                onClick={this.handleEditRecipe}
+                size="small"
               >
-                <IconButton
-                  aria-label="edit recipe"
-                  color="primary"
-                  onClick={this.handleEditRecipe}
-                >
-                  <EditIcon />
-                </IconButton>
-              </Grid>
-              <Grid
-                item
-                xs={6}
-                className={this.props.classes.recipeActionButtonRight}
-              >
-                <IconButton
-                  aria-label="delete recipe"
-                  color="primary"
-                  onClick={() => this.openAlert(alertDeleteAreYouSure)}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Grid>
+                <EditIcon />
+              </Fab>
             </Grid>
+            <Grid
+              item
+              xs={3}
+              className={this.props.classes.recipeActionButtonRight}
+            >
+              <Fab
+                aria-label="Delete recipe"
+                color="primary"
+                onClick={() => this.openAlert(alertDeleteAreYouSure)}
+                size="small"
+              >
+                <DeleteIcon />
+              </Fab>
+            </Grid>
+            <Grid item xs={3} />
           </Grid>
-        </Grid>
+        </div>
       );
   };
 
@@ -289,18 +254,31 @@ const styles = theme => ({
     margin: "auto",
     padding: theme.spacing.unit * 2
   },
-  // recipeActionButtonLeft: {
-  //   textAlign: "center"
+  // ratingButton: {
+  //   "&:disabled": {
+  //     backgroundColor: "black"
+  //   },
+  //   color: "lightcoral"
   // },
-  // recipeActionButtonRight: {
-  //   textAlign: "center"
-  // },
-  ratingButton: {
+
+  ratingButtonPlus: {
     "&:disabled": {
-      color: "red"
+      color: "white",
+      backgroundColor: green["A700"]
     },
-    color: "lightcoral"
+    color: "white",
+    backgroundColor: green[200]
   },
+
+  ratingButtonMinus: {
+    "&:disabled": {
+      color: "white",
+      backgroundColor: red["500"]
+    },
+    color: "white",
+    backgroundColor: red[200]
+  },
+
   ratingPositive: {
     color: "green"
   },
