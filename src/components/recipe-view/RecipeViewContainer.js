@@ -15,6 +15,8 @@ import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import RestaurantIcon from "@material-ui/icons/Restaurant";
+import RefreshIcon from "@material-ui/icons/Refresh";
 import { setRating } from "../../actions/ratings";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -80,36 +82,42 @@ class RecipeViewContainer extends React.PureComponent {
     )
       return (
         <div className={this.props.classes.recipeSelectButtonsContainer}>
-        <Grid container spacing={16}  className={this.props.classes.recipeSelectButtons}>
           <Grid
-            item
-            xs={6}
-            className={this.props.classes.recipeActionButtonLeft}
+            container
+            spacing={16}
+            className={this.props.classes.recipeSelectButtons}
           >
-            <Fab
-              variant="extended"
-              aria-label="Cook"
-              color="primary"
-              onClick={this.handleConfirmation}
+            <Grid item xs={4} />
+            <Grid
+              item
+              xs={2}
+              className={this.props.classes.recipeActionButtonLeft}
             >
-              Cook!
-            </Fab>
-          </Grid>
-          <Grid
-            item
-            xs={6}
-            className={this.props.classes.recipeActionButtonRight}
-          >
-            <Fab
-              variant="extended"
-              aria-label="Next recipe"
-              color="primary"
-              onClick={this.handleRejection}
+              <Fab
+                aria-label="Cook"
+                color="secondary"
+                onClick={this.handleConfirmation}
+                size="small"
+              >
+                <RestaurantIcon />
+              </Fab>
+            </Grid>
+            <Grid
+              item
+              xs={2}
+              className={this.props.classes.recipeActionButtonRight}
             >
-              Not today
-            </Fab>
+              <Fab
+                aria-label="Load new recipe"
+                color="primary"
+                onClick={this.handleRejection}
+                size="small"
+              >
+                <RefreshIcon />
+              </Fab>
+              </Grid>
+              <Grid item xs={4} />
           </Grid>
-        </Grid>
         </div>
       );
   };
@@ -281,12 +289,12 @@ const styles = theme => ({
     margin: "auto",
     padding: theme.spacing.unit * 2
   },
-  recipeActionButtonLeft: {
-    textAlign: "right"
-  },
-  recipeActionButtonRight: {
-    textAlign: "left"
-  },
+  // recipeActionButtonLeft: {
+  //   textAlign: "center"
+  // },
+  // recipeActionButtonRight: {
+  //   textAlign: "center"
+  // },
   ratingButton: {
     "&:disabled": {
       color: "red"
@@ -305,12 +313,14 @@ const styles = theme => ({
   recipeSelectButtonsContainer: {
     position: "relative",
     width: "100%",
+    paddingLeft: "8px",
+    paddingRight: "8px"
   },
   recipeSelectButtons: {
     position: "absolute",
     bottom: "16px",
     width: "100%"
-  },
+  }
 });
 
 const mapStateToProps = state => ({
