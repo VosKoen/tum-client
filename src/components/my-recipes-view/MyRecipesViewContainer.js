@@ -81,9 +81,15 @@ const styles = theme => ({
     padding: theme.spacing.unit * 2,
     textAlign: "left"
   },
-  myRecipesHeader: {},
   buttonAddRecipeContainer: {
-    textAlign: "right"
+    textAlign: "right"        
+  },
+  secondaryTextCookbook: {
+    paddingLeft: '5px'
+  },
+  thumbUpIconInline: {
+    position: 'relative',
+    top: '2px'
   }
 });
 

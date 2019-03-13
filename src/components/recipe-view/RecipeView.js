@@ -8,6 +8,7 @@ import ListItem from "@material-ui/core/ListItem";
 import { Grid, Divider } from "@material-ui/core";
 import TimelapseIcon from "@material-ui/icons/Timelapse";
 import PeopleIcon from "@material-ui/icons/People";
+import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 
 export default function RecipeView(props) {
   const {
@@ -28,6 +29,9 @@ export default function RecipeView(props) {
               src={recipe.imageUrl}
               title={recipe.title}
             />
+            {renderRecipeSelectButtons()}
+            {renderRecipeRating()}
+            {renderEditDeleteButtons()}
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="h4">{recipe.title}</Typography>
@@ -53,43 +57,58 @@ export default function RecipeView(props) {
                     </Grid>
                   </Grid>
                 </Grid>
+
+                <Grid item>
+                  <Grid container spacing={8} alignItems="center">
+                    <Grid item>
+                      <ThumbUpIcon />
+                    </Grid>
+                    <Grid item>
+                      <Typography>{recipe.rating}</Typography>
+                    </Grid>
+                  </Grid>
+                </Grid>
               </Grid>
               <Divider />
               <Typography component="p" align="left">
                 {recipe.description}
               </Typography>
             </CardContent>
-
-            {renderEditDeleteButtons()}
-            {renderRecipeSelectButtons()}
-            {renderRecipeRating()}
           </Grid>
         </Grid>
         <CardContent>
-          <Typography variant="h6" align="left">
-            Ingredients
-          </Typography>
-          <List>
-            {recipe.ingredients.map(ingredient => (
-              <ListItem key={ingredient.ingredientId} disableGutters={true}>
-                <Typography component="p" align="left">
-                  {ingredient.amount} {ingredient.name}
-                </Typography>
-              </ListItem>
-            ))}
-          </List>
-          <Typography variant="h6" align="left">
-            Steps
-          </Typography>
-          <List>
-            {recipe.steps.map(step => (
-              <ListItem key={step.id} disableGutters={true}>
-                <Typography component="p" align="left">
-                  {step.description}
-                </Typography>
-              </ListItem>
-            ))}
-          </List>
+          <Grid container spacing={16}>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6" align="left">
+                Ingredients
+              </Typography>
+              <Divider />
+              <List>
+                {recipe.ingredients.map(ingredient => (
+                  <ListItem key={ingredient.ingredientId} disableGutters={true}>
+                    <Typography component="p" align="left">
+                      {ingredient.amount} {ingredient.name}
+                    </Typography>
+                  </ListItem>
+                ))}
+              </List>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6" align="left">
+                Steps
+              </Typography>
+              <Divider />
+              <List>
+                {recipe.steps.map(step => (
+                  <ListItem key={step.id} disableGutters={true}>
+                    <Typography component="p" align="left">
+                      {step.description}
+                    </Typography>
+                  </ListItem>
+                ))}
+              </List>
+            </Grid>
+          </Grid>
         </CardContent>
       </Card>
     );
