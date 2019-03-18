@@ -139,7 +139,7 @@ export default function RecipeForm(props) {
               required
               fullWidth
             />
-            <Grid container spacing={16} justifyContent="flex-start">
+            <Grid container spacing={16}>
               <Grid item >
                 <TextField
                   required

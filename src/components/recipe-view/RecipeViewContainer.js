@@ -25,9 +25,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import Button from "@material-ui/core/Button";
 import { Grid } from "@material-ui/core";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import { filters } from "../../constants";
+import FilterDialogContainer from "../filter-dialog/FilterDialogContainer"
 
 import red from "@material-ui/core/colors/red";
 import green from "@material-ui/core/colors/green";
@@ -39,7 +37,7 @@ class RecipeViewContainer extends React.PureComponent {
   state = {
     [alertDeleteAreYouSure]: false,
     redirectToRecipeForm: false,
-    anchorEl: null
+    openFilterDialog: false
   };
 
   componentDidMount() {
@@ -70,13 +68,11 @@ class RecipeViewContainer extends React.PureComponent {
     this.closeAlert(alertDeleteAreYouSure);
   };
 
-  handleCloseFilterMenu = () => {
-    this.setState({ anchorEl: null });
-  };
-
-  handleOpenFilterMenu = event => {
-    this.setState({ anchorEl: event.currentTarget });
-  };
+  toggleFilterDialog = () => {
+    this.setState({
+      openFilterDialog: !this.state.openFilterDialog
+    })
+  }
 
   closeAlert = alertName => {
     this.setState({
@@ -118,27 +114,11 @@ class RecipeViewContainer extends React.PureComponent {
             <Fab
               aria-label="Add filter"
               color="primary"
-              onClick={this.handleOpenFilterMenu}
+              onClick={this.toggleFilterDialog}
               size="small"
             >
               <TuneIcon />
             </Fab>
-            <Menu
-              id="filter-menu"
-              anchorEl={this.state.anchorEl}
-              open={Boolean(this.state.anchorEl)}
-              onClose={this.handleCloseFilterMenu}
-              disableAutoFocusItem
-            >
-              <MenuItem button={false} divider>
-                Add a filter
-              </MenuItem>
-              {filters.map(filter => (
-                <MenuItem key={filter.id} onClick={() => console.log(filter.id)}>
-                  {filter.label}
-                </MenuItem>
-              ))}
-            </Menu>
           </Grid>
 
           <Grid item xs={2}>
@@ -153,6 +133,7 @@ class RecipeViewContainer extends React.PureComponent {
           </Grid>
           <Grid item xs={3} />
         </Grid>
+        
       </div>
     );
   };
@@ -285,6 +266,7 @@ class RecipeViewContainer extends React.PureComponent {
           renderEditDeleteButtons={this.renderEditDeleteButtons}
         />
         {this.renderDeleteAlert()}
+        <FilterDialogContainer open={this.state.openFilterDialog} close={this.toggleFilterDialog} />
       </div>
     );
   }
