@@ -14,7 +14,7 @@ import {
   addStepToRecipe,
   removeStepFromRecipe,
   addRecipe,
-  uploadImage,
+  
   resetRecipeForm,
   changeRecipeIngredient,
   changeRecipeStep,
@@ -130,7 +130,8 @@ class RecipeFormContainer extends React.PureComponent {
     [alertImageRejected]: false,
     [alertRequestIngredientSubmitted]: false,
     [alertChangeResetsRating]: false,
-    imageFiles: [],
+    imageFile: null,
+    imageUrl: this.props.myRecipe.imageUrl,
     imageIsLoading: false,
     requestIngredientOpen: false,
     newIngredient: "",
@@ -340,8 +341,7 @@ class RecipeFormContainer extends React.PureComponent {
       servings: this.state.servings,
       recipeIngredients: this.props.myRecipe.ingredients,
       steps: this.props.myRecipe.steps,
-      recipeImages: [{ imageUrl: this.props.myRecipe.imageUrl }],
-      id: this.props.myRecipe.id
+      id: this.props.myRecipe.id,
     };
 
     const user = userId(this.props.user.jwt);
@@ -349,7 +349,7 @@ class RecipeFormContainer extends React.PureComponent {
     if (this.props.myRecipe.editMode) {
       await this.props.saveChangesRecipe(recipe, user);
     } else {
-      await this.props.addRecipe(recipe, user);
+      await this.props.addRecipe(recipe, user, this.state.imageFile);
     }
 
     this.setState({ submitRecipe: true });
@@ -393,11 +393,11 @@ class RecipeFormContainer extends React.PureComponent {
     this.resizeImage(acceptedFiles[0]);
   };
 
-  storeImage = async image => {
+  storeImage = async (image, imageUrl) => {
     this.setState({
-      imageFiles: [image]
+      imageFile: image,
+      imageUrl: imageUrl
     });
-    await this.props.uploadImage(image);
 
     this.setState({
       imageIsLoading: false
@@ -489,13 +489,14 @@ class RecipeFormContainer extends React.PureComponent {
               ctx.drawImage(img, 0, 0, width, height);
             }
 
+            const imageUrl = ctx.canvas.toDataURL();
             ctx.canvas.toBlob(
               blob => {
                 const resizedImage = new File([blob], fileName, {
                   type: "image/jpeg",
                   lastModified: Date.now()
                 });
-                this.storeImage(resizedImage);
+                this.storeImage(resizedImage, imageUrl);
               },
               "image/jpeg",
               1
@@ -758,7 +759,7 @@ export default withStyles(styles)(
       addStepToRecipe,
       removeStepFromRecipe,
       addRecipe,
-      uploadImage,
+      
       getIngredientList,
       resetRecipeForm,
       changeRecipeIngredient,

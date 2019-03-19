@@ -18,6 +18,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import RestaurantIcon from "@material-ui/icons/Restaurant";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import TuneIcon from "@material-ui/icons/Tune";
+import AddAPhotoIcon from "@material-ui/icons/AddAPhoto";
 import { setRating } from "../../actions/ratings";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -25,7 +26,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import Button from "@material-ui/core/Button";
 import { Grid } from "@material-ui/core";
-import FilterDialogContainer from "../filter-dialog/FilterDialogContainer"
+import FilterDialogContainer from "../filter-dialog/FilterDialogContainer";
 
 import red from "@material-ui/core/colors/red";
 import green from "@material-ui/core/colors/green";
@@ -71,8 +72,8 @@ class RecipeViewContainer extends React.PureComponent {
   toggleFilterDialog = () => {
     this.setState({
       openFilterDialog: !this.state.openFilterDialog
-    })
-  }
+    });
+  };
 
   closeAlert = alertName => {
     this.setState({
@@ -91,51 +92,49 @@ class RecipeViewContainer extends React.PureComponent {
       !this.props.recipe.isSelectedRecipe &&
       !this.props.recipe.isOpenedRecipe
     )
+      return (
+        <div className={this.props.classes.recipeButtonsContainer}>
+          <Grid
+            container
+            spacing={16}
+            className={this.props.classes.recipeButtons}
+          >
+            <Grid item xs={3} />
+            <Grid item xs={2}>
+              <Fab
+                aria-label="Cook"
+                color="secondary"
+                onClick={this.handleConfirmation}
+                size="small"
+              >
+                <RestaurantIcon />
+              </Fab>
+            </Grid>
+            <Grid item xs={2}>
+              <Fab
+                aria-label="Add filter"
+                color="primary"
+                onClick={this.toggleFilterDialog}
+                size="small"
+              >
+                <TuneIcon />
+              </Fab>
+            </Grid>
 
-    return (
-      <div className={this.props.classes.recipeButtonsContainer}>
-        <Grid
-          container
-          spacing={16}
-          className={this.props.classes.recipeButtons}
-        >
-          <Grid item xs={3} />
-          <Grid item xs={2}>
-            <Fab
-              aria-label="Cook"
-              color="secondary"
-              onClick={this.handleConfirmation}
-              size="small"
-            >
-              <RestaurantIcon />
-            </Fab>
+            <Grid item xs={2}>
+              <Fab
+                aria-label="Load new recipe"
+                color="primary"
+                onClick={this.handleRejection}
+                size="small"
+              >
+                <RefreshIcon />
+              </Fab>
+            </Grid>
+            <Grid item xs={3} />
           </Grid>
-          <Grid item xs={2}>
-            <Fab
-              aria-label="Add filter"
-              color="primary"
-              onClick={this.toggleFilterDialog}
-              size="small"
-            >
-              <TuneIcon />
-            </Fab>
-          </Grid>
-
-          <Grid item xs={2}>
-            <Fab
-              aria-label="Load new recipe"
-              color="primary"
-              onClick={this.handleRejection}
-              size="small"
-            >
-              <RefreshIcon />
-            </Fab>
-          </Grid>
-          <Grid item xs={3} />
-        </Grid>
-        
-      </div>
-    );
+        </div>
+      );
   };
 
   renderRecipeRating = () => {
@@ -176,7 +175,16 @@ class RecipeViewContainer extends React.PureComponent {
                 <ThumbDownIcon />
               </Fab>
             </Grid>
-            <Grid item xs={3} />
+            <Grid item xs={3}>
+              <Fab
+                aria-label="Add a photo"
+                color="primary"
+                onClick={() => console.log('Click')}
+                size="small"
+              >
+                <AddAPhotoIcon />
+              </Fab>
+            </Grid>
           </Grid>
         </div>
       );
@@ -266,7 +274,10 @@ class RecipeViewContainer extends React.PureComponent {
           renderEditDeleteButtons={this.renderEditDeleteButtons}
         />
         {this.renderDeleteAlert()}
-        <FilterDialogContainer open={this.state.openFilterDialog} close={this.toggleFilterDialog} />
+        <FilterDialogContainer
+          open={this.state.openFilterDialog}
+          close={this.toggleFilterDialog}
+        />
       </div>
     );
   }

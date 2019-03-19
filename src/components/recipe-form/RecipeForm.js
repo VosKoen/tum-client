@@ -80,7 +80,7 @@ export default function RecipeForm(props) {
 
                             <CardMedia
                               component="img"
-                              src={myRecipe.imageUrl}
+                              src={state.imageUrl}
                               title="finished-dish"
                             />
                           </div>

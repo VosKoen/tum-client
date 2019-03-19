@@ -13,7 +13,6 @@ export const ADD_NEW_INGREDIENT = "ADD_NEW_INGREDIENT";
 export const ADD_NEW_STEP = "ADD_NEW_STEP";
 export const DELETE_INGREDIENT = "DELETE_INGREDIENT";
 export const DELETE_STEP = "DELETE_STEP";
-export const ADD_IMAGE_TO_RECIPE = "ADD_IMAGE_TO_RECIPE";
 export const SET_DELETE_RECIPE_SUCCESS = "SET_DELETE_RECIPE_SUCCESS";
 export const RESET_MY_RECIPE = "RESET_MY_RECIPE";
 export const SET_EDIT_MODE_YES = "SET_EDIT_MODE_YES";
@@ -75,10 +74,6 @@ const deleteStep = indexStepArray => {
 
 const resetMyRecipe = () => {
   return { type: RESET_MY_RECIPE, payload: null };
-};
-
-const addImageToRecipe = imageUrl => {
-  return { type: ADD_IMAGE_TO_RECIPE, payload: imageUrl };
 };
 
 const setIsSelectedRecipe = () => {
@@ -173,27 +168,8 @@ export const openRecipe = recipeId => async (dispatch, getState) => {
     .catch(err => console.error(err));
 };
 
-export const uploadImage = image => async (dispatch, getState) => {
-  const state = getState();
-  if (!state.user) return null;
+export const addRecipe = (recipe, user, imageFile) => async () => {
 
-  await request
-    .post(`${baseUrl}/images/upload`)
-    .attach("file", image)
-    .then(result => {
-      dispatch(addImageToRecipe(result.body.imageUrl));
-    })
-    .catch(err => console.error(err));
-
-  return undefined;
-};
-
-export const addRecipe = (recipe, user) => async () => {
-  // const state = getState();
-  // if (!state.user) return null;
-  // const jwt = state.user.jwt;
-
-  // const user = userId(jwt);
   let recipeId;
 
   await request
@@ -227,15 +203,10 @@ export const addRecipe = (recipe, user) => async () => {
         .catch(err => console.error(err))
     );
 
-  if (recipe.recipeImages[0].imageUrl)
     await request
       .post(`${baseUrl}/recipes/${recipeId}/images`)
-      .send({
-        imageUrl: recipe.recipeImages[0].imageUrl
-      })
+      .attach("file", imageFile)
       .catch(err => console.error(err));
-
-  recipe.id = recipeId;
 
   return undefined;
 };
@@ -344,9 +315,9 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
   //Build query based on filters
   const filterIds = Object.keys(state.filters);
   const queryFilters = filterIds.reduce((acc, filter) => {
-    if(state.filters[filter]) acc[filter] = state.filters[filter]
-    return acc
-  },{})
+    if (state.filters[filter]) acc[filter] = state.filters[filter];
+    return acc;
+  }, {});
 
   await request
     .get(`${baseUrl}/random-recipe`)

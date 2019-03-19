@@ -3,7 +3,6 @@ import {
   ADD_NEW_STEP,
   DELETE_INGREDIENT,
   DELETE_STEP,
-  ADD_IMAGE_TO_RECIPE,
   RESET_MY_RECIPE,
   SET_EDIT_MODE_YES,
   PREFILL_RECIPE_TO_EDIT,
@@ -59,9 +58,6 @@ export default (
       newStepArray[action.payload.arrayIndex] = action.payload.newStep;
 
       return { ...state, steps: newStepArray };
-
-    case ADD_IMAGE_TO_RECIPE:
-      return { ...state, imageUrl: action.payload };
 
     case RESET_MY_RECIPE:
       return JSON.parse(JSON.stringify(initialState));
