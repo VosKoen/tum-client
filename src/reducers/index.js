@@ -5,6 +5,7 @@ import myRecipes from "./myRecipes";
 import myRecipe from "./myRecipe";
 import referenceData from "./referenceData";
 import recipeHistory from "./recipeHistory";
+import filters from './filters'
 import { combineReducers } from "redux";
 
 export default combineReducers({
@@ -14,5 +15,6 @@ export default combineReducers({
   myRecipes,
   myRecipe,
   referenceData,
-  recipeHistory
+  recipeHistory,
+  filters
 });

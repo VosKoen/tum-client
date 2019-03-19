@@ -35,11 +35,11 @@ const setOpenedRecipe = () => {
 };
 
 const setMyRecipes = (recipes, count) => {
-  return { type: SET_MY_RECIPES, payload: {recipes, count} };
+  return { type: SET_MY_RECIPES, payload: { recipes, count } };
 };
 
 const setRecipeHistory = (recipes, count) => {
-  return { type: SET_RECIPE_HISTORY, payload: {recipes, count} };
+  return { type: SET_RECIPE_HISTORY, payload: { recipes, count } };
 };
 
 const setRecipeImage = imageUrl => {
@@ -341,8 +341,16 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
   const user = userId(jwt);
   let recipeId;
 
+  //Build query based on filters
+  const filterIds = Object.keys(state.filters);
+  const queryFilters = filterIds.reduce((acc, filter) => {
+    if(state.filters[filter]) acc[filter] = state.filters[filter]
+    return acc
+  },{})
+
   await request
     .get(`${baseUrl}/random-recipe`)
+    .query(queryFilters)
     .then(result => {
       recipeId = result.body.id;
       dispatch(setRecipe(result.body));
