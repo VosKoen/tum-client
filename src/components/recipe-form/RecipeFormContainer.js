@@ -33,6 +33,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import Button from "@material-ui/core/Button";
 import { userId } from "../../jwt";
 import ExifReader from "exifreader";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 //Alert definitions
 import { alertIngredientAlreadyPresent } from "../../actions/recipes";
@@ -136,7 +137,8 @@ class RecipeFormContainer extends React.PureComponent {
     requestIngredientOpen: false,
     newIngredient: "",
     servings: "",
-    preparationTime: ""
+    preparationTime: "",
+    submitIsLoading: false
   };
 
   componentDidMount = () => {
@@ -334,6 +336,11 @@ class RecipeFormContainer extends React.PureComponent {
   };
 
   submitRecipe = async () => {
+    this.setState({
+      submitIsLoading: true,
+    })
+this.closeAlert(alertChangeResetsRating)
+
     const recipe = {
       title: this.state.recipeTitle,
       description: this.state.recipeDescription,
@@ -347,12 +354,13 @@ class RecipeFormContainer extends React.PureComponent {
     const user = userId(this.props.user.jwt);
 
     if (this.props.myRecipe.editMode) {
-      await this.props.saveChangesRecipe(recipe, user);
+      await this.props.saveChangesRecipe(recipe, this.state.imageFile);
     } else {
       await this.props.addRecipe(recipe, user, this.state.imageFile);
     }
 
-    this.setState({ submitRecipe: true });
+    this.setState({ submitRecipe: true,
+    submitIsLoading: false });
   };
 
   handleCancelSubmit = () => {
@@ -682,6 +690,14 @@ class RecipeFormContainer extends React.PureComponent {
           handleRequestIngredientOpen={this.handleRequestIngredientOpen}
           handleRequestIngredientSubmit={this.handleRequestIngredientSubmit}
         />
+        {this.state.submitIsLoading ? (
+                            <CircularProgress
+                              size={sizeLoadingSymbol}
+                              className={this.props.classes.loadingSymbolScreen}
+                            />
+                          ) : (
+                            ""
+                          )}
         {this.renderNoStepsAlert()}
         {this.renderNoIngredientsAlert()}
         {this.renderImageRejectedAlert()}
@@ -733,6 +749,13 @@ const styles = theme => ({
   },
   loadingSymbol: {
     position: "absolute",
+    right: "50%",
+    marginRight: `-${sizeLoadingSymbol / 2}px`,
+    top: "50%",
+    marginTop: `-${sizeLoadingSymbol / 2}px`
+  },
+  loadingSymbolScreen: {
+    position: "fixed",
     right: "50%",
     marginRight: `-${sizeLoadingSymbol / 2}px`,
     top: "50%",

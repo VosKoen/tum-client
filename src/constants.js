@@ -3,7 +3,7 @@ export const baseUrl =
 export const localStorageJwtKey = "currentUserJwt";
 
 export const imagePlaceholder =
-  "https://res.cloudinary.com/fox-app-development/image/upload/c_scale,w_800/v1550050963/tum/image-placeholder-350x350.png";
+  "https://res.cloudinary.com/fox-app-development/image/upload/c_fill,h_600,w_800,g_auto/v1550050963/tum/image-placeholder-350x350.png";
 export const maxImageWidth = 800;
 export const sizeLoadingSymbol = 60;
 
