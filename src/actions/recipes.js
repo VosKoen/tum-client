@@ -198,7 +198,7 @@ export const addRecipe = (recipe, user, imageFile) => async () => {
 
   if (imageFile)
     await request
-      .post(`${baseUrl}/recipes/${recipeId}/images`)
+      .post(`${baseUrl}/recipes/${recipeId}/own-image`)
       .attach("file", imageFile)
       .catch(err => console.error(err));
 
@@ -211,9 +211,10 @@ export const saveChangesRecipe = (recipe, imageFile) => async () => {
     .send(recipe)
     .catch(err => console.error(err));
 
+    //Replacing the recipes own image
     if (imageFile)
     await request
-      .post(`${baseUrl}/recipes/${recipe.id}/images`)
+      .put(`${baseUrl}/recipes/${recipe.id}/own-image`)
       .attach("file", imageFile)
       .catch(err => console.error(err));
 
