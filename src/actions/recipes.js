@@ -19,7 +19,6 @@ export const SET_EDIT_MODE_YES = "SET_EDIT_MODE_YES";
 export const PREFILL_RECIPE_TO_EDIT = "PREFILL_RECIPE_TO_EDIT";
 export const CHANGE_INGREDIENT = "CHANGE_INGREDIENT";
 export const CHANGE_STEP = "CHANGE_STEP";
-export const SET_PLACEHOLDER_IMAGE = "SET_PLACEHOLDER_IMAGE";
 export const SET_RECIPE_HISTORY = "SET_RECIPE_HISTORY";
 
 //Alerts
@@ -90,10 +89,6 @@ const setEditModeYes = () => {
 
 const prefillRecipeToEdit = recipe => {
   return { type: PREFILL_RECIPE_TO_EDIT, payload: recipe };
-};
-
-const setPlaceholerImage = () => {
-  return { type: SET_PLACEHOLDER_IMAGE, payload: null };
 };
 
 export const selectRecipe = recipeId => (dispatch, getState) => {
@@ -205,17 +200,27 @@ export const addRecipe = (recipe, user, imageFile) => async () => {
   return undefined;
 };
 
-export const saveChangesRecipe = (recipe, imageFile) => async () => {
+export const saveChangesRecipe = (
+  recipe,
+  imageFile,
+  removeOwnImage
+) => async () => {
   await request
     .put(`${baseUrl}/recipes/${recipe.id}`)
     .send(recipe)
     .catch(err => console.error(err));
 
-    //Replacing the recipes own image
-    if (imageFile)
+  //Replacing the recipes own image if a new image file is present
+  if (imageFile)
     await request
       .put(`${baseUrl}/recipes/${recipe.id}/own-image`)
       .attach("file", imageFile)
+      .catch(err => console.error(err));
+
+  //Removing the recipes own image if it is actively removed without providing a new image
+  if (removeOwnImage && !imageFile)
+    await request
+      .delete(`${baseUrl}/recipes/${recipe.id}/own-image`)
       .catch(err => console.error(err));
 
   return undefined;
@@ -421,8 +426,4 @@ export const openEditRecipeForm = () => (dispatch, getState) => {
 
   dispatch(setEditModeYes());
   return dispatch(prefillRecipeToEdit(state.recipe));
-};
-
-export const resetPlaceholderImage = () => dispatch => {
-  return dispatch(setPlaceholerImage());
 };

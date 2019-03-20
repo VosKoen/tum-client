@@ -5,7 +5,7 @@ import RecipeForm from "./RecipeForm";
 import deburr from "lodash/deburr";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import { maxImageWidth, sizeLoadingSymbol } from "../../constants";
+import { maxImageWidth, sizeLoadingSymbol, imagePlaceholder } from "../../constants";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import {
@@ -14,12 +14,10 @@ import {
   addStepToRecipe,
   removeStepFromRecipe,
   addRecipe,
-  
   resetRecipeForm,
   changeRecipeIngredient,
   changeRecipeStep,
   saveChangesRecipe,
-  resetPlaceholderImage
 } from "../../actions/recipes";
 import {
   getIngredientList,
@@ -138,7 +136,8 @@ class RecipeFormContainer extends React.PureComponent {
     newIngredient: "",
     servings: "",
     preparationTime: "",
-    submitIsLoading: false
+    submitIsLoading: false,
+    removeOwnImage: false
   };
 
   componentDidMount = () => {
@@ -354,7 +353,7 @@ this.closeAlert(alertChangeResetsRating)
     const user = userId(this.props.user.jwt);
 
     if (this.props.myRecipe.editMode) {
-      await this.props.saveChangesRecipe(recipe, this.state.imageFile);
+      await this.props.saveChangesRecipe(recipe, this.state.imageFile, this.state.removeOwnImage);
     } else {
       await this.props.addRecipe(recipe, user, this.state.imageFile);
     }
@@ -516,7 +515,11 @@ this.closeAlert(alertChangeResetsRating)
   };
 
   handleImageRemove = () => {
-    this.props.resetPlaceholderImage();
+    this.setState({
+      imageFile: null,
+      imageUrl: imagePlaceholder,
+      removeOwnImage: true
+    })
   };
 
   renderImageRejectedAlert = () => {
@@ -782,13 +785,11 @@ export default withStyles(styles)(
       addStepToRecipe,
       removeStepFromRecipe,
       addRecipe,
-      
       getIngredientList,
       resetRecipeForm,
       changeRecipeIngredient,
       changeRecipeStep,
       saveChangesRecipe,
-      resetPlaceholderImage,
       submitNewIngredientRequest
     }
   )(RecipeFormContainer)
