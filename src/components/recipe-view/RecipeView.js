@@ -16,7 +16,8 @@ export default function RecipeView(props) {
     recipe,
     renderRecipeSelectButtons,
     renderRecipeRating,
-    renderEditDeleteButtons
+    renderEditDeleteButtons,
+    renderPhotoButton
   } = props;
 
   if (recipe.title)
@@ -24,14 +25,17 @@ export default function RecipeView(props) {
       <Card className={classes.card}>
         <Grid container spacing={16}>
           <Grid item xs={12} sm={6}>
+            <div className={classes.imageContainer}>
             <CardMedia
               component="img"
               src={recipe.imageUrl}
               title={recipe.title}
             />
+            {renderPhotoButton()}
             {renderRecipeSelectButtons()}
             {renderRecipeRating()}
             {renderEditDeleteButtons()}
+            </div>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="h4">{recipe.title}</Typography>

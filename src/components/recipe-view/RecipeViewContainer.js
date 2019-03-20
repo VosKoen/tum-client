@@ -93,7 +93,6 @@ class RecipeViewContainer extends React.PureComponent {
       !this.props.recipe.isOpenedRecipe
     )
       return (
-        <div className={this.props.classes.recipeButtonsContainer}>
           <Grid
             container
             spacing={16}
@@ -133,14 +132,13 @@ class RecipeViewContainer extends React.PureComponent {
             </Grid>
             <Grid item xs={3} />
           </Grid>
-        </div>
       );
   };
 
   renderRecipeRating = () => {
     if (this.props.recipe.isSelectedRecipe)
       return (
-        <div className={this.props.classes.recipeButtonsContainer}>
+
           <Grid
             container
             spacing={16}
@@ -175,25 +173,33 @@ class RecipeViewContainer extends React.PureComponent {
                 <ThumbDownIcon />
               </Fab>
             </Grid>
-            <Grid item xs={3}>
-              <Fab
-                aria-label="Add a photo"
-                color="primary"
-                onClick={() => console.log('Click')}
-                size="small"
-              >
-                <AddAPhotoIcon />
-              </Fab>
-            </Grid>
+            <Grid item xs={3} />
           </Grid>
-        </div>
+
       );
+  };
+
+  renderPhotoButton = () => {
+    if (this.props.recipe.isSelectedRecipe)
+    return (
+      <div className={this.props.classes.photoButton}>
+      <Fab
+        aria-label="Add a photo"
+        color="primary"
+        onClick={() => console.log("Click")}
+        size="small"
+        
+      >
+        <AddAPhotoIcon />
+      </Fab>
+      </div>
+    );
   };
 
   renderEditDeleteButtons = () => {
     if (this.props.recipe.isOpenedRecipe)
       return (
-        <div className={this.props.classes.recipeButtonsContainer}>
+
           <Grid
             container
             spacing={16}
@@ -226,7 +232,7 @@ class RecipeViewContainer extends React.PureComponent {
             </Grid>
             <Grid item xs={3} />
           </Grid>
-        </div>
+
       );
   };
 
@@ -272,6 +278,7 @@ class RecipeViewContainer extends React.PureComponent {
           renderRecipeSelectButtons={this.renderRecipeSelectButtons}
           renderRecipeRating={this.renderRecipeRating}
           renderEditDeleteButtons={this.renderEditDeleteButtons}
+          renderPhotoButton={this.renderPhotoButton}
         />
         {this.renderDeleteAlert()}
         <FilterDialogContainer
@@ -288,13 +295,6 @@ const styles = theme => ({
     margin: "auto",
     padding: theme.spacing.unit * 2
   },
-  // ratingButton: {
-  //   "&:disabled": {
-  //     backgroundColor: "black"
-  //   },
-  //   color: "lightcoral"
-  // },
-
   ratingButtonPlus: {
     "&:disabled": {
       color: "white",
@@ -313,16 +313,21 @@ const styles = theme => ({
     backgroundColor: red[200]
   },
 
-  recipeButtonsContainer: {
+  imageContainer: {
     position: "relative",
     width: "100%",
-    paddingLeft: "8px",
-    paddingRight: "8px"
+
+  },
+  photoButton:{
+    position: "absolute",
+    right: "16px",
+    top: "16px"
   },
   recipeButtons: {
     position: "absolute",
     bottom: "16px",
-    width: "100%"
+    left: "8px",
+    width: "100%",
   },
   menuHeader: {
     color: "black"
