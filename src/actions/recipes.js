@@ -428,10 +428,17 @@ export const openEditRecipeForm = () => (dispatch, getState) => {
   return dispatch(prefillRecipeToEdit(state.recipe));
 };
 
-export const addPhotoToRecipe = (recipeId, imageFile) => async dispatch => {
+export const addPhotoToRecipe = (recipeId, imageFile) => async (dispatch, getState) => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  if (isExpired(jwt)) return dispatch(logout());
+
+  const user = userId(jwt);
 
   await request
-    .post(`${baseUrl}/recipes/${recipeId}/images`)
+    .post(`${baseUrl}/recipes/${recipeId}/users/${user}/images`)
     .attach("file", imageFile)
     .then(res => {
       dispatch(setRecipeImage(res.body.imageUrl));
