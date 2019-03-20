@@ -427,3 +427,16 @@ export const openEditRecipeForm = () => (dispatch, getState) => {
   dispatch(setEditModeYes());
   return dispatch(prefillRecipeToEdit(state.recipe));
 };
+
+export const addPhotoToRecipe = (recipeId, imageFile) => async dispatch => {
+
+  await request
+    .post(`${baseUrl}/recipes/${recipeId}/images`)
+    .attach("file", imageFile)
+    .then(res => {
+      dispatch(setRecipeImage(res.body.imageUrl));
+    })
+    .catch(err => console.error(err));
+
+  return undefined;
+};

@@ -5,7 +5,7 @@ import RecipeForm from "./RecipeForm";
 import deburr from "lodash/deburr";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import { maxImageWidth, sizeLoadingSymbol, imagePlaceholder } from "../../constants";
+import { sizeLoadingSymbol, imagePlaceholder } from "../../constants";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import {
@@ -17,7 +17,7 @@ import {
   resetRecipeForm,
   changeRecipeIngredient,
   changeRecipeStep,
-  saveChangesRecipe,
+  saveChangesRecipe
 } from "../../actions/recipes";
 import {
   getIngredientList,
@@ -30,8 +30,9 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import Button from "@material-ui/core/Button";
 import { userId } from "../../jwt";
-import ExifReader from "exifreader";
+
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { resizeImage } from "../../image-processing/imageProcessing";
 
 //Alert definitions
 import { alertIngredientAlreadyPresent } from "../../actions/recipes";
@@ -97,7 +98,6 @@ function getSuggestions(value, ingredientList) {
           count < 15 &&
           deburr(suggestion.name.toLowerCase()).indexOf(inputValue) !== -1;
 
-
         if (keep) {
           count += 1;
         }
@@ -148,7 +148,7 @@ class RecipeFormContainer extends React.PureComponent {
         recipeTitle: this.props.recipe.title,
         recipeDescription: this.props.recipe.description,
         servings: this.props.recipe.servings,
-        preparationTime: this.props.recipe.timeNeeded,
+        preparationTime: this.props.recipe.timeNeeded
       });
   };
 
@@ -336,9 +336,9 @@ class RecipeFormContainer extends React.PureComponent {
 
   submitRecipe = async () => {
     this.setState({
-      submitIsLoading: true,
-    })
-this.closeAlert(alertChangeResetsRating)
+      submitIsLoading: true
+    });
+    this.closeAlert(alertChangeResetsRating);
 
     const recipe = {
       title: this.state.recipeTitle,
@@ -347,19 +347,22 @@ this.closeAlert(alertChangeResetsRating)
       servings: this.state.servings,
       recipeIngredients: this.props.myRecipe.ingredients,
       steps: this.props.myRecipe.steps,
-      id: this.props.myRecipe.id,
+      id: this.props.myRecipe.id
     };
 
     const user = userId(this.props.user.jwt);
 
     if (this.props.myRecipe.editMode) {
-      await this.props.saveChangesRecipe(recipe, this.state.imageFile, this.state.removeOwnImage);
+      await this.props.saveChangesRecipe(
+        recipe,
+        this.state.imageFile,
+        this.state.removeOwnImage
+      );
     } else {
       await this.props.addRecipe(recipe, user, this.state.imageFile);
     }
 
-    this.setState({ submitRecipe: true,
-    submitIsLoading: false });
+    this.setState({ submitRecipe: true, submitIsLoading: false });
   };
 
   handleCancelSubmit = () => {
@@ -397,121 +400,18 @@ this.closeAlert(alertChangeResetsRating)
     this.setState({
       imageIsLoading: true
     });
-    this.resizeImage(acceptedFiles[0]);
+
+    resizeImage(acceptedFiles[0], this.storeImage);
   };
 
   storeImage = async (image, imageUrl) => {
     this.setState({
       imageFile: image,
-      imageUrl: imageUrl
-    });
-
-    this.setState({
+      imageUrl: imageUrl,
       imageIsLoading: false
     });
-  };
 
-  resizeImage = async image => {
-    const fileName = image.name;
 
-    const exifDataReader = new FileReader();
-
-    exifDataReader.readAsArrayBuffer(image.slice(0, 128 * 1024));
-    exifDataReader.onload = event => {
-      let exifData;
-      try {
-        exifData = ExifReader.load(event.target.result);
-      } catch (e) {
-        //do nothing
-      } finally {
-        const reader = new FileReader();
-        reader.readAsDataURL(image);
-
-        reader.onload = async event => {
-          const img = new Image();
-          img.src = event.target.result;
-
-          img.onload = () => {
-            let width;
-            let height;
-            if (img.width <= maxImageWidth) {
-              width = img.width;
-              height = img.height;
-            } else {
-              width = maxImageWidth;
-              height = img.height * (width / img.width);
-            }
-
-            if (exifData && exifData.Orientation) {
-              const oldWidth = width;
-
-              if (exifData.Orientation)
-                switch (exifData.Orientation.value) {
-                  case 6:
-                    width = height;
-                    height = oldWidth;
-                    break;
-                  case 8:
-                    width = height;
-                    height = oldWidth;
-                    break;
-                  default:
-                    break;
-                }
-            }
-
-            const elem = document.createElement("canvas");
-            elem.width = width;
-            elem.height = height;
-            const ctx = elem.getContext("2d");
-
-            if (exifData && exifData.Orientation) {
-              //What to do?
-              // 1 do nothing
-              // 3 flip 180
-              // 6 90 clockwise
-              // 8 90 counterclockwise
-
-              switch (exifData.Orientation.value) {
-                case 3:
-                  ctx.translate(width / 2, height / 2);
-                  ctx.rotate(Math.PI);
-                  ctx.drawImage(img, -width / 2, -height / 2, width, height);
-                  break;
-                case 6:
-                  ctx.translate(width / 2, height / 2);
-                  ctx.rotate((90 / 180) * Math.PI);
-                  ctx.drawImage(img, -height / 2, -width / 2, height, width);
-                  break;
-                case 8:
-                  ctx.translate(width / 2, height / 2);
-                  ctx.rotate((-90 / 180) * Math.PI);
-                  ctx.drawImage(img, -height / 2, -width / 2, height, width);
-                  break;
-                default:
-                  ctx.drawImage(img, 0, 0, width, height);
-                  break;
-              }
-            } else {
-              ctx.drawImage(img, 0, 0, width, height);
-            }
-
-            const imageUrl = ctx.canvas.toDataURL();
-            ctx.canvas.toBlob(
-              blob => {
-                const resizedImage = new File([blob], fileName, {
-                  type: "image/jpeg",
-                  lastModified: Date.now()
-                });
-                this.storeImage(resizedImage, imageUrl);
-              },
-              "image/jpeg",
-              1
-            );
-          };
-        };
-      }
-    };
   };
 
   handleImageRemove = () => {
@@ -519,7 +419,7 @@ this.closeAlert(alertChangeResetsRating)
       imageFile: null,
       imageUrl: imagePlaceholder,
       removeOwnImage: true
-    })
+    });
   };
 
   renderImageRejectedAlert = () => {
@@ -694,13 +594,13 @@ this.closeAlert(alertChangeResetsRating)
           handleRequestIngredientSubmit={this.handleRequestIngredientSubmit}
         />
         {this.state.submitIsLoading ? (
-                            <CircularProgress
-                              size={sizeLoadingSymbol}
-                              className={this.props.classes.loadingSymbolScreen}
-                            />
-                          ) : (
-                            ""
-                          )}
+          <CircularProgress
+            size={sizeLoadingSymbol}
+            className={this.props.classes.loadingSymbolScreen}
+          />
+        ) : (
+          ""
+        )}
         {this.renderNoStepsAlert()}
         {this.renderNoIngredientsAlert()}
         {this.renderImageRejectedAlert()}
