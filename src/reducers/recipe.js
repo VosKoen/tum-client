@@ -4,7 +4,8 @@ import {
   SET_IS_SELECTED_RECIPE,
   SET_OPENED_RECIPE,
   SET_DELETE_RECIPE_SUCCESS,
-  SET_MY_RECIPES
+  SET_MY_RECIPES,
+  SET_RECIPE_IMAGE_IS_USER
 } from "../actions/recipes";
 import { SET_RECIPE_USER_RATING } from "../actions/ratings";
 import { imagePlaceholder } from "../constants";
@@ -31,8 +32,9 @@ export default (state = { ...initialState }, action = {}) => {
       return { ...state, isSelectedRecipe: true, isOpenedRecipe: false };
     case SET_RECIPE_IMAGE:
       return { ...state, ...action.payload };
+    case SET_RECIPE_IMAGE_IS_USER:
+      return { ...state, recipeImageFromUser: action.payload };
     case SET_RECIPE_USER_RATING:
-
       return {
         ...state,
         recipeIsLiked: action.payload.recipeIsLiked,

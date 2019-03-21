@@ -9,6 +9,8 @@ import { Grid, Divider } from "@material-ui/core";
 import TimelapseIcon from "@material-ui/icons/Timelapse";
 import PeopleIcon from "@material-ui/icons/People";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { sizeLoadingSymbol } from "../../constants";
 
 export default function RecipeView(props) {
   const {
@@ -16,7 +18,9 @@ export default function RecipeView(props) {
     recipe,
     renderRecipeSelectButtons,
     renderRecipeRating,
-    renderEditDeleteButtons
+    renderEditDeleteButtons,
+    renderPhotoButton,
+    state
   } = props;
 
   if (recipe.title)
@@ -24,14 +28,25 @@ export default function RecipeView(props) {
       <Card className={classes.card}>
         <Grid container spacing={16}>
           <Grid item xs={12} sm={6}>
+            <div className={classes.imageContainer}>
             <CardMedia
               component="img"
               src={recipe.imageUrl}
               title={recipe.title}
             />
+            {renderPhotoButton()}
             {renderRecipeSelectButtons()}
             {renderRecipeRating()}
             {renderEditDeleteButtons()}
+            {state.imageIsLoading ? (
+                            <CircularProgress
+                              className={classes.loadingSymbol}
+                              size={sizeLoadingSymbol}
+                            />
+                          ) : (
+                            ""
+                          )}
+            </div>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="h4">{recipe.title}</Typography>

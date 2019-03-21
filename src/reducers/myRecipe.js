@@ -3,13 +3,11 @@ import {
   ADD_NEW_STEP,
   DELETE_INGREDIENT,
   DELETE_STEP,
-  ADD_IMAGE_TO_RECIPE,
   RESET_MY_RECIPE,
   SET_EDIT_MODE_YES,
   PREFILL_RECIPE_TO_EDIT,
   CHANGE_INGREDIENT,
   CHANGE_STEP,
-  SET_PLACEHOLDER_IMAGE
 } from "../actions/recipes";
 import { imagePlaceholder } from "../constants";
 
@@ -60,9 +58,6 @@ export default (
 
       return { ...state, steps: newStepArray };
 
-    case ADD_IMAGE_TO_RECIPE:
-      return { ...state, imageUrl: action.payload };
-
     case RESET_MY_RECIPE:
       return JSON.parse(JSON.stringify(initialState));
 
@@ -77,9 +72,6 @@ export default (
         id: action.payload.id,
         imageUrl: action.payload.imageUrl
       };
-
-      case SET_PLACEHOLDER_IMAGE:
-      return {...state, imageUrl: imagePlaceholder}
 
     default:
       return state;

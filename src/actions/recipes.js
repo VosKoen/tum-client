@@ -1,5 +1,5 @@
 import * as request from "superagent";
-import { baseUrl } from "../constants";
+import { baseUrl, imagePlaceholder } from "../constants";
 import { logout } from "./users";
 import { isExpired, userId } from "../jwt";
 import { setRecipeUserRating } from "./ratings";
@@ -13,15 +13,14 @@ export const ADD_NEW_INGREDIENT = "ADD_NEW_INGREDIENT";
 export const ADD_NEW_STEP = "ADD_NEW_STEP";
 export const DELETE_INGREDIENT = "DELETE_INGREDIENT";
 export const DELETE_STEP = "DELETE_STEP";
-export const ADD_IMAGE_TO_RECIPE = "ADD_IMAGE_TO_RECIPE";
 export const SET_DELETE_RECIPE_SUCCESS = "SET_DELETE_RECIPE_SUCCESS";
 export const RESET_MY_RECIPE = "RESET_MY_RECIPE";
 export const SET_EDIT_MODE_YES = "SET_EDIT_MODE_YES";
 export const PREFILL_RECIPE_TO_EDIT = "PREFILL_RECIPE_TO_EDIT";
 export const CHANGE_INGREDIENT = "CHANGE_INGREDIENT";
 export const CHANGE_STEP = "CHANGE_STEP";
-export const SET_PLACEHOLDER_IMAGE = "SET_PLACEHOLDER_IMAGE";
 export const SET_RECIPE_HISTORY = "SET_RECIPE_HISTORY";
+export const SET_RECIPE_IMAGE_IS_USER = "SET_RECIPE_IMAGE_IS_USER";
 
 //Alerts
 export const alertIngredientAlreadyPresent = "alertIngredientAlreadyPresent";
@@ -77,10 +76,6 @@ const resetMyRecipe = () => {
   return { type: RESET_MY_RECIPE, payload: null };
 };
 
-const addImageToRecipe = imageUrl => {
-  return { type: ADD_IMAGE_TO_RECIPE, payload: imageUrl };
-};
-
 const setIsSelectedRecipe = () => {
   return { type: SET_IS_SELECTED_RECIPE, payload: null };
 };
@@ -97,8 +92,8 @@ const prefillRecipeToEdit = recipe => {
   return { type: PREFILL_RECIPE_TO_EDIT, payload: recipe };
 };
 
-const setPlaceholerImage = () => {
-  return { type: SET_PLACEHOLDER_IMAGE, payload: null };
+const setRecipeImageIsUser = boolean => {
+  return { type: SET_RECIPE_IMAGE_IS_USER, payload: boolean };
 };
 
 export const selectRecipe = recipeId => (dispatch, getState) => {
@@ -133,10 +128,7 @@ export const openSelectedRecipe = recipeId => async (dispatch, getState) => {
     .then(() => dispatch(setIsSelectedRecipe()))
     .catch(err => console.error(err));
 
-  request
-    .get(`${baseUrl}/recipes/${recipeId}/images/random`)
-    .then(result => dispatch(setRecipeImage(result.body.imageUrl)))
-    .catch(err => console.error(err));
+  getRecipeUserImage(recipeId, user, dispatch);
 
   request
     .get(`${baseUrl}/recipes/${recipeId}/users/${user}/ratings`)
@@ -167,33 +159,10 @@ export const openRecipe = recipeId => async (dispatch, getState) => {
     .then(() => dispatch(setOpenedRecipe()))
     .catch(err => console.error(err));
 
-  request
-    .get(`${baseUrl}/recipes/${recipeId}/images/random`)
-    .then(result => dispatch(setRecipeImage(result.body.imageUrl)))
-    .catch(err => console.error(err));
+  getRandomImage(recipeId, dispatch);
 };
 
-export const uploadImage = image => async (dispatch, getState) => {
-  const state = getState();
-  if (!state.user) return null;
-
-  await request
-    .post(`${baseUrl}/images/upload`)
-    .attach("file", image)
-    .then(result => {
-      dispatch(addImageToRecipe(result.body.imageUrl));
-    })
-    .catch(err => console.error(err));
-
-  return undefined;
-};
-
-export const addRecipe = (recipe, user) => async () => {
-  // const state = getState();
-  // if (!state.user) return null;
-  // const jwt = state.user.jwt;
-
-  // const user = userId(jwt);
+export const addRecipe = (recipe, user, imageFile) => async () => {
   let recipeId;
 
   await request
@@ -227,24 +196,37 @@ export const addRecipe = (recipe, user) => async () => {
         .catch(err => console.error(err))
     );
 
-  if (recipe.recipeImages[0].imageUrl)
+  if (imageFile)
     await request
-      .post(`${baseUrl}/recipes/${recipeId}/images`)
-      .send({
-        imageUrl: recipe.recipeImages[0].imageUrl
-      })
+      .post(`${baseUrl}/recipes/${recipeId}/own-image`)
+      .attach("file", imageFile)
       .catch(err => console.error(err));
-
-  recipe.id = recipeId;
 
   return undefined;
 };
 
-export const saveChangesRecipe = recipe => async dispatch => {
+export const saveChangesRecipe = (
+  recipe,
+  imageFile,
+  removeOwnImage
+) => async () => {
   await request
     .put(`${baseUrl}/recipes/${recipe.id}`)
     .send(recipe)
     .catch(err => console.error(err));
+
+  //Replacing the recipes own image if a new image file is present
+  if (imageFile)
+    await request
+      .put(`${baseUrl}/recipes/${recipe.id}/own-image`)
+      .attach("file", imageFile)
+      .catch(err => console.error(err));
+
+  //Removing the recipes own image if it is actively removed without providing a new image
+  if (removeOwnImage && !imageFile)
+    await request
+      .delete(`${baseUrl}/recipes/${recipe.id}/own-image`)
+      .catch(err => console.error(err));
 
   return undefined;
 };
@@ -332,6 +314,37 @@ export const removeStepFromRecipe = indexStepArray => (dispatch, getState) => {
   return dispatch(deleteStep(indexStepArray));
 };
 
+const getRandomImage = (recipeId, dispatch) => {
+  dispatch(setRecipeImageIsUser(false));
+
+  request
+    .get(`${baseUrl}/recipes/${recipeId}/images/random`)
+    .then(result => dispatch(setRecipeImage(result.body.imageUrl)))
+    .catch(err => {
+      if (err.status === 404) {
+        dispatch(setRecipeImage(imagePlaceholder));
+      } else {
+        console.error(err);
+      }
+    });
+};
+
+const getRecipeUserImage = (recipeId, userId, dispatch) => {
+  request
+    .get(`${baseUrl}/recipes/${recipeId}/users/${userId}/images`)
+    .then(result => {
+      dispatch(setRecipeImageIsUser(true));
+      dispatch(setRecipeImage(result.body.imageUrl));
+    })
+    .catch(err => {
+      if (err.status === 404) {
+        getRandomImage(recipeId, dispatch);
+      } else {
+        console.error(err);
+      }
+    });
+};
+
 export const getRandomRecipe = () => async (dispatch, getState) => {
   const state = getState();
   if (!state.user) return null;
@@ -344,9 +357,9 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
   //Build query based on filters
   const filterIds = Object.keys(state.filters);
   const queryFilters = filterIds.reduce((acc, filter) => {
-    if(state.filters[filter]) acc[filter] = state.filters[filter]
-    return acc
-  },{})
+    if (state.filters[filter]) acc[filter] = state.filters[filter];
+    return acc;
+  }, {});
 
   await request
     .get(`${baseUrl}/random-recipe`)
@@ -357,10 +370,7 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
     })
     .catch(err => console.error(err));
 
-  request
-    .get(`${baseUrl}/recipes/${recipeId}/images/random`)
-    .then(result => dispatch(setRecipeImage(result.body.imageUrl)))
-    .catch(err => console.error(err));
+  getRandomImage(recipeId, dispatch);
 
   request
     .get(`${baseUrl}/recipes/${recipeId}/users/${user}/ratings`)
@@ -441,6 +451,43 @@ export const openEditRecipeForm = () => (dispatch, getState) => {
   return dispatch(prefillRecipeToEdit(state.recipe));
 };
 
-export const resetPlaceholderImage = () => dispatch => {
-  return dispatch(setPlaceholerImage());
+export const addPhotoToRecipe = (recipeId, imageFile) => async (
+  dispatch,
+  getState
+) => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  if (isExpired(jwt)) return dispatch(logout());
+
+  const user = userId(jwt);
+
+  await request
+    .post(`${baseUrl}/recipes/${recipeId}/users/${user}/images`)
+    .attach("file", imageFile)
+    .then(res => {
+      dispatch(setRecipeImage(res.body.imageUrl));
+      dispatch(setRecipeImageIsUser(true));
+    })
+    .catch(err => console.error(err));
+
+  return undefined;
+};
+
+export const clearPhotoFromRecipe = recipeId => async (dispatch, getState) => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  if (isExpired(jwt)) return dispatch(logout());
+
+  const user = userId(jwt);
+
+  await request
+    .delete(`${baseUrl}/recipes/${recipeId}/users/${user}/images`)
+    .then(_ => {
+      getRandomImage(recipeId, dispatch);
+    })
+    .catch(err => console.error(err));
 };
