@@ -5,6 +5,10 @@ import { withStyles } from "@material-ui/core/styles";
 import { logoutUser } from "../../actions/users";
 import { getRandomRecipe } from "../../actions/recipes";
 import { Redirect } from "react-router-dom";
+import { Grid, Button } from "@material-ui/core";
+
+import {componentRecipeView} from "../../actions/activeComponents"
+
 
 class NavContainer extends React.PureComponent {
   state = {
@@ -51,6 +55,31 @@ class NavContainer extends React.PureComponent {
     this.handleClose();
   };
 
+  renderReportButtons = () => {
+    const { classes } = this.props;
+    if(this.props.activeComponents[componentRecipeView])
+    return (
+
+      <Grid container justify="flex-end">
+        <Button
+          className={classes.appBarButton}
+          onClick={() => console.log("report recipe")}
+        >
+          Report recipe
+        </Button>
+        <Button
+          className={classes.appBarButton}
+          onClick={() => console.log("report image")}
+        >
+          Report image
+        </Button>
+      </Grid>
+
+    );
+
+    return
+  };
+
   render() {
     const { classes } = this.props;
 
@@ -66,6 +95,7 @@ class NavContainer extends React.PureComponent {
             handleClickRandomRecipe={this.handleClickRandomRecipe}
             handleClickMyAccount={this.handleClickMyAccount}
             handleClickMyRecipes={this.handleClickMyRecipes}
+            renderReportButtons={this.renderReportButtons}
           />
           {this.state.redirectRandomRecipe ? (
             <Redirect to="/" />
@@ -88,11 +118,15 @@ const styles = theme => ({
     fontSize: 80,
     color: "white",
     margin: "auto"
+  },
+  appBarButton: {
+    color: "white"
   }
 });
 
 const mapStateToProps = state => ({
-  user: state.user
+  user: state.user,
+  activeComponents: state.activeComponents
 });
 
 export default withStyles(styles)(
