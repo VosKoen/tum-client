@@ -8,7 +8,8 @@ import {
   selectRecipe,
   deleteRecipe,
   openEditRecipeForm,
-  addPhotoToRecipe
+  addPhotoToRecipe,
+  clearPhotoFromRecipe
 } from "../../actions/recipes";
 import Fab from "@material-ui/core/Fab";
 
@@ -30,6 +31,7 @@ import { Grid } from "@material-ui/core";
 import FilterDialogContainer from "../filter-dialog/FilterDialogContainer";
 import { resizeImage } from "../../image-processing/imageProcessing";
 import { sizeLoadingSymbol } from "../../constants";
+import ClearIcon from "@material-ui/icons/Clear";
 
 import red from "@material-ui/core/colors/red";
 import green from "@material-ui/core/colors/green";
@@ -83,9 +85,12 @@ class RecipeViewContainer extends React.PureComponent {
     resizeImage(image, this.storeImage);
   };
 
-  storeImage = async (image, imageUrl) => {
+  handleClearImage = () => {
+    this.props.clearPhotoFromRecipe(this.props.recipe.id)
+  }
 
-  await this.props.addPhotoToRecipe(this.props.recipe.id, image)  
+  storeImage = async (image, imageUrl) => {
+    await this.props.addPhotoToRecipe(this.props.recipe.id, image);
 
     this.setState({
       imageIsLoading: false
@@ -204,16 +209,28 @@ class RecipeViewContainer extends React.PureComponent {
     if (this.props.recipe.isSelectedRecipe)
       return (
         <div className={this.props.classes.photoButton}>
-          <Fab
-            aria-label="Add a photo"
-            color="primary"
-            onChange={this.handleUploadImage}
-            size="small"
-            component="label"
-          >
-            <input accept="image/*" type="file" style={{ display: "none" }} />
-            <AddAPhotoIcon />
-          </Fab>
+          {!this.props.recipe.recipeImageFromUser ? (
+            <Fab
+              aria-label="Add a photo"
+              color="primary"
+              onChange={this.handleUploadImage}
+              size="small"
+              component="label"
+            >
+              <input accept="image/*" type="file" style={{ display: "none" }} />
+              <AddAPhotoIcon />
+            </Fab>
+          ) : (
+            <Fab
+              aria-label="Remove photo"
+              color="primary"
+              onClick={this.handleClearImage}
+              size="small"
+              component="label"
+            >
+              <ClearIcon />
+            </Fab>
+          )}
         </div>
       );
   };
@@ -358,7 +375,7 @@ const styles = theme => ({
     marginRight: `-${sizeLoadingSymbol / 2}px`,
     top: "50%",
     marginTop: `-${sizeLoadingSymbol / 2}px`
-  },
+  }
 });
 
 const mapStateToProps = state => ({
@@ -375,7 +392,8 @@ export default withStyles(styles)(
       setRating,
       deleteRecipe,
       openEditRecipeForm,
-      addPhotoToRecipe
+      addPhotoToRecipe,
+      clearPhotoFromRecipe
     }
   )(RecipeViewContainer)
 );
