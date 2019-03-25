@@ -70,6 +70,7 @@ class NavContainer extends React.PureComponent {
         <Button
           className={classes.appBarButton}
           onClick={() => console.log("report image")}
+          
         >
           Report image
         </Button>
