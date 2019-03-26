@@ -326,6 +326,10 @@ const styles = theme => ({
     "&:disabled": {
       color: "white",
       backgroundColor: green["A700"]
+    },    
+    "&:hover&:disabled": {
+      color: "white",
+      backgroundColor: green["A700"]
     },
     color: "white",
     backgroundColor: green[200]
@@ -334,6 +338,10 @@ const styles = theme => ({
   ratingButtonMinus: {
     ...theme.flatRoundIconButton,
     "&:disabled": {
+      color: "white",
+      backgroundColor: red["500"]
+    },
+    "&:hover&:disabled": {
       color: "white",
       backgroundColor: red["500"]
     },
