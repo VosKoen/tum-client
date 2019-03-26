@@ -326,7 +326,8 @@ const styles = theme => ({
     "&:disabled": {
       color: "white",
       backgroundColor: green["A700"]
-    },    
+    },   
+        // For Mobile, hover has to be added as well. The state immediately after clicking is hover and disabled: 
     "&:hover&:disabled": {
       color: "white",
       backgroundColor: green["A700"]
@@ -341,6 +342,7 @@ const styles = theme => ({
       color: "white",
       backgroundColor: red["500"]
     },
+    // For Mobile, hover has to be added as well. The state immediately after clicking is hover and disabled:
     "&:hover&:disabled": {
       color: "white",
       backgroundColor: red["500"]
