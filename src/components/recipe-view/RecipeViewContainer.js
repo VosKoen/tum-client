@@ -11,8 +11,6 @@ import {
   addPhotoToRecipe,
   clearPhotoFromRecipe
 } from "../../actions/recipes";
-import Fab from "@material-ui/core/Fab";
-
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import EditIcon from "@material-ui/icons/Edit";
@@ -27,7 +25,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import Button from "@material-ui/core/Button";
-import { Grid } from "@material-ui/core";
+import { Grid, IconButton } from "@material-ui/core";
 import FilterDialogContainer from "../filter-dialog/FilterDialogContainer";
 import { resizeImage } from "../../image-processing/imageProcessing";
 import { sizeLoadingSymbol } from "../../constants";
@@ -86,8 +84,8 @@ class RecipeViewContainer extends React.PureComponent {
   };
 
   handleClearImage = () => {
-    this.props.clearPhotoFromRecipe(this.props.recipe.id)
-  }
+    this.props.clearPhotoFromRecipe(this.props.recipe.id);
+  };
 
   storeImage = async (image, imageUrl) => {
     await this.props.addPhotoToRecipe(this.props.recipe.id, image);
@@ -128,35 +126,32 @@ class RecipeViewContainer extends React.PureComponent {
         >
           <Grid item xs={3} />
           <Grid item xs={2}>
-            <Fab
+            <IconButton
               aria-label="Cook"
-              color="secondary"
               onClick={this.handleConfirmation}
-              size="small"
+              className={this.props.classes.recipeCookButton}
             >
               <RestaurantIcon />
-            </Fab>
+            </IconButton>
           </Grid>
           <Grid item xs={2}>
-            <Fab
+            <IconButton
               aria-label="Add filter"
-              color="primary"
               onClick={this.toggleFilterDialog}
-              size="small"
+              className={this.props.classes.recipeFilterButton}
             >
               <TuneIcon />
-            </Fab>
+            </IconButton>
           </Grid>
 
           <Grid item xs={2}>
-            <Fab
+            <IconButton
               aria-label="Load new recipe"
-              color="primary"
               onClick={this.handleRejection}
-              size="small"
+              className={this.props.classes.recipeNextButton}
             >
               <RefreshIcon />
-            </Fab>
+            </IconButton>
           </Grid>
           <Grid item xs={3} />
         </Grid>
@@ -173,32 +168,28 @@ class RecipeViewContainer extends React.PureComponent {
         >
           <Grid item xs={3} />
           <Grid item xs={3}>
-            <Fab
+            <IconButton
               disabled={this.props.recipe.recipeIsLiked === true}
               aria-label="Thumbs up"
-              color="secondary"
               onClick={() => this.handleRating(this.props.recipe.id, true)}
-              size="small"
               className={this.props.classes.ratingButtonPlus}
             >
               <ThumbUpIcon />
-            </Fab>
+            </IconButton>
           </Grid>
           <Grid
             item
             xs={3}
             className={this.props.classes.recipeActionButtonRight}
           >
-            <Fab
+            <IconButton
               disabled={this.props.recipe.recipeIsLiked === false}
               aria-label="Thumbs down"
-              color="primary"
               onClick={() => this.handleRating(this.props.recipe.id, false)}
-              size="small"
               className={this.props.classes.ratingButtonMinus}
             >
               <ThumbDownIcon />
-            </Fab>
+            </IconButton>
           </Grid>
           <Grid item xs={3} />
         </Grid>
@@ -208,28 +199,28 @@ class RecipeViewContainer extends React.PureComponent {
   renderPhotoButton = () => {
     if (this.props.recipe.isSelectedRecipe)
       return (
-        <div className={this.props.classes.photoButton}>
+        <div className={this.props.classes.photoButtonContainer}>
           {!this.props.recipe.recipeImageFromUser ? (
-            <Fab
+            <IconButton
               aria-label="Add a photo"
               color="primary"
               onChange={this.handleUploadImage}
-              size="small"
               component="label"
+              className={this.props.classes.photoButton}
             >
               <input accept="image/*" type="file" style={{ display: "none" }} />
               <AddAPhotoIcon />
-            </Fab>
+            </IconButton>
           ) : (
-            <Fab
+            <IconButton
               aria-label="Remove photo"
               color="primary"
               onClick={this.handleClearImage}
-              size="small"
               component="label"
+              className={this.props.classes.photoButton}
             >
               <ClearIcon />
-            </Fab>
+            </IconButton>
           )}
         </div>
       );
@@ -245,28 +236,25 @@ class RecipeViewContainer extends React.PureComponent {
         >
           <Grid item xs={3} />
           <Grid item xs={3}>
-            <Fab
+            <IconButton
               aria-label="Edit recipe"
-              color="primary"
               onClick={this.handleEditRecipe}
-              size="small"
+              className={this.props.classes.editDeleteButtons}
             >
               <EditIcon />
-            </Fab>
+            </IconButton>
           </Grid>
           <Grid
             item
             xs={3}
             className={this.props.classes.recipeActionButtonRight}
           >
-            <Fab
-              aria-label="Delete recipe"
-              color="primary"
+            <IconButton
               onClick={() => this.openAlert(alertDeleteAreYouSure)}
-              size="small"
+              className={this.props.classes.editDeleteButtons}
             >
               <DeleteIcon />
-            </Fab>
+            </IconButton>
           </Grid>
           <Grid item xs={3} />
         </Grid>
@@ -334,7 +322,13 @@ const styles = theme => ({
     padding: theme.spacing.unit * 2
   },
   ratingButtonPlus: {
+    ...theme.flatRoundIconButton,
     "&:disabled": {
+      color: "white",
+      backgroundColor: green["A700"]
+    },   
+        // For Mobile, hover has to be added as well. The state immediately after clicking is hover and disabled: 
+    "&:hover&:disabled": {
       color: "white",
       backgroundColor: green["A700"]
     },
@@ -343,7 +337,13 @@ const styles = theme => ({
   },
 
   ratingButtonMinus: {
+    ...theme.flatRoundIconButton,
     "&:disabled": {
+      color: "white",
+      backgroundColor: red["500"]
+    },
+    // For Mobile, hover has to be added as well. The state immediately after clicking is hover and disabled:
+    "&:hover&:disabled": {
       color: "white",
       backgroundColor: red["500"]
     },
@@ -355,11 +355,12 @@ const styles = theme => ({
     position: "relative",
     width: "100%"
   },
-  photoButton: {
+  photoButtonContainer: {
     position: "absolute",
     right: "16px",
     top: "16px"
   },
+  photoButton: theme.flatRoundIconButton,
   recipeButtons: {
     position: "absolute",
     bottom: "16px",
@@ -375,7 +376,14 @@ const styles = theme => ({
     marginRight: `-${sizeLoadingSymbol / 2}px`,
     top: "50%",
     marginTop: `-${sizeLoadingSymbol / 2}px`
-  }
+  },
+  recipeCookButton: {
+    ...theme.flatRoundIconButton,
+    backgroundColor: green["A700"]
+  },
+  recipeFilterButton: theme.flatRoundIconButton,
+  recipeNextButton: theme.flatRoundIconButton,
+  editDeleteButtons: theme.flatRoundIconButton
 });
 
 const mapStateToProps = state => ({

@@ -8,5 +8,13 @@ export const theme = createMuiTheme({
     },
     typography: {
       useNextVariants: true
+    },
+    flatRoundIconButton: {
+      color: "white",
+      backgroundColor: red[500],
+      height: "40px",
+      width: "40px",
+      padding: 0
     }
+
   });
