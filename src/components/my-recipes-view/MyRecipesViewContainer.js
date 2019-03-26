@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import MyRecipesView from "./MyRecipesView";
 import { withStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
-import { months, startLimit, startOffset} from '../../constants'
+import { months, startLimit, startOffset } from "../../constants";
 
 import {
   getMyRecipes,
@@ -44,15 +44,15 @@ class MyRecipesViewContainer extends React.PureComponent {
     });
   };
 
-  convertTimestampToDate = (milliseconds) => {
-    const timestamp = new Date(parseInt(milliseconds))
+  convertTimestampToDate = milliseconds => {
+    const timestamp = new Date(parseInt(milliseconds));
     const year = timestamp.getFullYear();
     const month = months[timestamp.getMonth()];
     const date = timestamp.getDate();
 
-    const completeDate = `${month} ${date}, ${year}`
-    return completeDate
-  }
+    const completeDate = `${month} ${date}, ${year}`;
+    return completeDate;
+  };
 
   render() {
     if (!this.props.user) return <Redirect to="/logon" />;
@@ -82,17 +82,17 @@ const styles = theme => ({
     textAlign: "left"
   },
   buttonAddRecipeContainer: {
-    textAlign: "right"        
+    textAlign: "right"
   },
+  buttonAddRecipe: theme.flatRoundIconButton,
   secondaryTextCookbook: {
-    paddingLeft: '5px'
+    paddingLeft: "5px"
   },
   thumbUpIconInline: {
-    position: 'relative',
-    top: '2px'
+    position: "relative",
+    top: "2px"
   }
 });
-
 const mapStateToProps = state => ({
   myRecipes: state.myRecipes,
   user: state.user,

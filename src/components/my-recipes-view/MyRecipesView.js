@@ -5,7 +5,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import AddIcon from "@material-ui/icons/Add";
-import Fab from "@material-ui/core/Fab";
+import IconButton from "@material-ui/core/IconButton"
 import Grid from "@material-ui/core/Grid";
 import PaginationBarContainer from "../pagination/paginationBarContainer";
 import { startLimit, startOffset } from "../../constants";
@@ -40,14 +40,15 @@ export default function MyRecipesView(props) {
               />
             </Grid>
             <Grid item xs={3} className={classes.buttonAddRecipeContainer}>
-              <Fab
-                color="primary"
+              <IconButton className={classes.buttonAddRecipe}
+                color="inherit"
                 aria-label="Add"
                 onClick={handleClickNewRecipe}
                 size="small"
+                variant="contained"
               >
                 <AddIcon />
-              </Fab>
+              </IconButton>
             </Grid>
           </Grid>
 

@@ -475,7 +475,7 @@ export const addPhotoToRecipe = (recipeId, imageFile) => async (
   return undefined;
 };
 
-export const clearPhotoFromRecipe = recipeId => async (dispatch, getState) => {
+export const clearPhotoFromRecipe = (recipeId) => async (dispatch, getState) => {
   const state = getState();
   if (!state.user) return null;
   const jwt = state.user.jwt;
