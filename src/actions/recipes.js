@@ -451,7 +451,7 @@ export const openEditRecipeForm = () => (dispatch, getState) => {
   return dispatch(prefillRecipeToEdit(state.recipe));
 };
 
-export const addPhotoToRecipe = (recipeId, userId, imageFile) => async (
+export const addPhotoToRecipe = (recipeId, imageFile) => async (
   dispatch,
   getState
 ) => {
@@ -461,10 +461,10 @@ export const addPhotoToRecipe = (recipeId, userId, imageFile) => async (
 
   if (isExpired(jwt)) return dispatch(logout());
 
-
+  const user = userId(jwt);
 
   await request
-    .post(`${baseUrl}/recipes/${recipeId}/users/${userId}/images`)
+    .post(`${baseUrl}/recipes/${recipeId}/users/${user}/images`)
     .attach("file", imageFile)
     .then(res => {
       dispatch(setRecipeImage(res.body.imageUrl));
@@ -475,17 +475,17 @@ export const addPhotoToRecipe = (recipeId, userId, imageFile) => async (
   return undefined;
 };
 
-export const clearPhotoFromRecipe = (recipeId, userId) => async (dispatch, getState) => {
+export const clearPhotoFromRecipe = (recipeId) => async (dispatch, getState) => {
   const state = getState();
   if (!state.user) return null;
   const jwt = state.user.jwt;
 
   if (isExpired(jwt)) return dispatch(logout());
 
-
+  const user = userId(jwt);
 
   await request
-    .delete(`${baseUrl}/recipes/${recipeId}/users/${userId}/images`)
+    .delete(`${baseUrl}/recipes/${recipeId}/users/${user}/images`)
     .then(_ => {
       getRandomImage(recipeId, dispatch);
     })

@@ -86,11 +86,11 @@ class RecipeViewContainer extends React.PureComponent {
   };
 
   handleClearImage = () => {
-    this.props.clearPhotoFromRecipe(this.props.recipe.id, this.props.recipe.userId)
+    this.props.clearPhotoFromRecipe(this.props.recipe.id)
   }
 
   storeImage = async (image, imageUrl) => {
-    await this.props.addPhotoToRecipe(this.props.recipe.id, this.props.recipe.userId, image);
+    await this.props.addPhotoToRecipe(this.props.recipe.id, image);
 
     this.setState({
       imageIsLoading: false
