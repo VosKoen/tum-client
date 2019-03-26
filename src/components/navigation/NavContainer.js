@@ -7,8 +7,7 @@ import { getRandomRecipe } from "../../actions/recipes";
 import { Redirect } from "react-router-dom";
 import { Grid, Button } from "@material-ui/core";
 
-import {componentRecipeView} from "../../actions/activeComponents"
-
+import { componentRecipeView } from "../../actions/activeComponents";
 
 class NavContainer extends React.PureComponent {
   state = {
@@ -57,28 +56,30 @@ class NavContainer extends React.PureComponent {
 
   renderReportButtons = () => {
     const { classes } = this.props;
-    if(this.props.activeComponents[componentRecipeView])
-    return (
+    if (this.props.activeComponents[componentRecipeView])
+      return (
+        <Grid container justify="flex-end">
+          {this.props.recipe.isOpenedRecipe ? (
+            ""
+          ) : (
+            <Button
+              className={classes.appBarButton}
+              onClick={() => console.log("report recipe")}
+            >
+              Report recipe
+            </Button>
+          )}
+          <Button
+            className={classes.appBarButton}
+            onClick={() => console.log("report image")}
+            disabled={this.props.recipe.recipeImageFromUser}
+          >
+            Report image
+          </Button>
+        </Grid>
+      );
 
-      <Grid container justify="flex-end">
-        <Button
-          className={classes.appBarButton}
-          onClick={() => console.log("report recipe")}
-        >
-          Report recipe
-        </Button>
-        <Button
-          className={classes.appBarButton}
-          onClick={() => console.log("report image")}
-          
-        >
-          Report image
-        </Button>
-      </Grid>
-
-    );
-
-    return
+    return;
   };
 
   render() {
@@ -127,7 +128,8 @@ const styles = theme => ({
 
 const mapStateToProps = state => ({
   user: state.user,
-  activeComponents: state.activeComponents
+  activeComponents: state.activeComponents,
+  recipe: state.recipe
 });
 
 export default withStyles(styles)(
