@@ -30,6 +30,7 @@ import FilterDialogContainer from "../filter-dialog/FilterDialogContainer";
 import { resizeImage } from "../../image-processing/imageProcessing";
 import { sizeLoadingSymbol } from "../../constants";
 import ClearIcon from "@material-ui/icons/Clear";
+import {setComponentRecipeView} from '../../actions/activeComponents'
 
 import red from "@material-ui/core/colors/red";
 import green from "@material-ui/core/colors/green";
@@ -46,7 +47,12 @@ class RecipeViewContainer extends React.PureComponent {
   };
 
   componentDidMount() {
+    this.props.setComponentRecipeView(true)
     if (!this.props.recipe.id) this.props.getRandomRecipe();
+  }
+
+  componentWillUnmount() {
+    this.props.setComponentRecipeView(false)
   }
 
   handleRejection = () => {
@@ -401,7 +407,8 @@ export default withStyles(styles)(
       deleteRecipe,
       openEditRecipeForm,
       addPhotoToRecipe,
-      clearPhotoFromRecipe
+      clearPhotoFromRecipe,
+      setComponentRecipeView
     }
   )(RecipeViewContainer)
 );

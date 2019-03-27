@@ -11,10 +11,7 @@ import RecipeViewContainer from "./components/recipe-view/RecipeViewContainer";
 import MyRecipesViewContainer from "./components/my-recipes-view/MyRecipesViewContainer";
 import MyAccountContainer from "./components/account/MyAccountContainer";
 
-//TODO: Check connection database and show something in case of no connection
-
 class App extends Component {
-  componentDidMount() {}
 
   render() {
     return (

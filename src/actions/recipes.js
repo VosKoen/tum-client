@@ -41,8 +41,8 @@ const setRecipeHistory = (recipes, count) => {
   return { type: SET_RECIPE_HISTORY, payload: { recipes, count } };
 };
 
-const setRecipeImage = imageUrl => {
-  return { type: SET_RECIPE_IMAGE, payload: { imageUrl } };
+const setRecipeImage = (imageUrl, imageId) => {
+  return { type: SET_RECIPE_IMAGE, payload: { imageUrl, imageId } };
 };
 
 const addNewIngredient = ingredient => {
@@ -319,10 +319,10 @@ const getRandomImage = (recipeId, dispatch) => {
 
   request
     .get(`${baseUrl}/recipes/${recipeId}/images/random`)
-    .then(result => dispatch(setRecipeImage(result.body.imageUrl)))
+    .then(result => dispatch(setRecipeImage(result.body.imageUrl, result.body.id)))
     .catch(err => {
       if (err.status === 404) {
-        dispatch(setRecipeImage(imagePlaceholder));
+        dispatch(setRecipeImage(imagePlaceholder, null));
       } else {
         console.error(err);
       }
@@ -334,7 +334,7 @@ const getRecipeUserImage = (recipeId, userId, dispatch) => {
     .get(`${baseUrl}/recipes/${recipeId}/users/${userId}/images`)
     .then(result => {
       dispatch(setRecipeImageIsUser(true));
-      dispatch(setRecipeImage(result.body.imageUrl));
+      dispatch(setRecipeImage(result.body.imageUrl, result.body.id));
     })
     .catch(err => {
       if (err.status === 404) {
@@ -467,7 +467,7 @@ export const addPhotoToRecipe = (recipeId, imageFile) => async (
     .post(`${baseUrl}/recipes/${recipeId}/users/${user}/images`)
     .attach("file", imageFile)
     .then(res => {
-      dispatch(setRecipeImage(res.body.imageUrl));
+      dispatch(setRecipeImage(res.body.imageUrl, res.body.id));
       dispatch(setRecipeImageIsUser(true));
     })
     .catch(err => console.error(err));
