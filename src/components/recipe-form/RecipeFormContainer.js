@@ -516,8 +516,8 @@ class RecipeFormContainer extends React.PureComponent {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => this.submitRecipe()}>Submit changes</Button>
-          <Button onClick={() => this.closeAlert(alertChangeResetsRating)}>
+          <Button onClick={() => this.submitRecipe()} color="primary">Submit changes</Button>
+          <Button onClick={() => this.closeAlert(alertChangeResetsRating)} color="primary">
             Cancel
           </Button>
         </DialogActions>
