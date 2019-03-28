@@ -18,6 +18,7 @@ export const getIngredientList = () => async (dispatch, getState) => {
 
   await request
     .get(`${baseUrl}/ingredients`)
+    .set("Authorization", `Bearer ${jwt}`)
     .then(result => {
       dispatch(setIngredientList(result.body));
     })
@@ -38,6 +39,7 @@ export const submitNewIngredientRequest = (ingredient) => async (dispatch, getSt
 
   await request
   .post(`${baseUrl}/requested-ingredients`)
+  .set("Authorization", `Bearer ${jwt}`)
   .send({request: ingredient,
   userId: user})
   .then()

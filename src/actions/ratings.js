@@ -18,6 +18,7 @@ export const setRating = (recipeId, recipeIsLiked) => (dispatch, getState) => {
 
   request
     .post(`${baseUrl}/recipes/${recipeId}/users/${user}/ratings`)
+    .set("Authorization", `Bearer ${jwt}`)
     .send({ recipeIsLiked })
     .then(result => 
       dispatch(setRecipeUserRating({recipeIsLiked: result.body.recipeIsLiked, newRating: result.body.newRating})))

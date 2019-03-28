@@ -65,6 +65,7 @@ export const getAccountData = () => (dispatch, getState) => {
 
   request
     .get(`${baseUrl}/users/${user}`)
+    .set("Authorization", `Bearer ${jwt}`)
     .then(result => {
       dispatch(setUserProfileData(result.body));
     })
@@ -79,11 +80,11 @@ export const setNewPassword = (password, newPassword) => (
   if (!state.user) return null;
   const jwt = state.user.jwt;
 
-  if (isExpired(jwt)) return dispatch(logout());
   const user = userId(jwt);
 
   request
     .put(`${baseUrl}/users/${user}/new-password`)
+    .set("Authorization", `Bearer ${jwt}`)
     .send({ password, newPassword })
     .then(() => dispatch(setNewPasswordSuccess()))
     .catch(err => {

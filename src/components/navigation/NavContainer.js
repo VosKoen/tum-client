@@ -100,15 +100,20 @@ class NavContainer extends React.PureComponent {
   };
 
   reportItem = () => {
+
+    const jwt = this.props.user.jwt;
+
     switch (this.state.reportSubject) {
       case reportSubjectRecipe:
         request
           .post(`${baseUrl}/recipes/${this.props.recipe.id}/reports`)
+          .set("Authorization", `Bearer ${jwt}`)
           .catch(err => console.error(err));
         break;
       case reportSubjectImage:
         request
           .post(`${baseUrl}/images/${this.props.recipe.imageId}/reports`)
+          .set("Authorization", `Bearer ${jwt}`)
           .catch(err => console.error(err));
         break;
       default:
