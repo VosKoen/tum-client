@@ -289,7 +289,7 @@ export default function RecipeForm(props) {
         <Dialog
           open={state.ingredientOpen}
           onClose={handleIngredientClose}
-          aria-labelledby="responsive-dialog-title"
+          scroll="body"
         >
           <DialogTitle>{"Add new ingredient"}</DialogTitle>
           <DialogContent>

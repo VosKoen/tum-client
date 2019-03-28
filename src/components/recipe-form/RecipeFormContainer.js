@@ -410,8 +410,6 @@ class RecipeFormContainer extends React.PureComponent {
       imageUrl: imageUrl,
       imageIsLoading: false
     });
-
-
   };
 
   handleImageRemove = () => {
@@ -665,7 +663,7 @@ const styles = theme => ({
     marginTop: `-${sizeLoadingSymbol / 2}px`
   },
   ingredientDialogContent: {
-    height: "250px"
+    minHeight: "250px"
   }
 });
 
