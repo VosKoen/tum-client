@@ -21,7 +21,7 @@ export default function Navbar(props) {
     renderReportButtons
   } = props;
   return (
-    <AppBar position="static">
+    <AppBar position="fixed">
       <Toolbar>
         <Grid container alignItems="center">
           <Grid item xs={1} sm={4}>

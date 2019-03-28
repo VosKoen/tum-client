@@ -12,7 +12,6 @@ import MyRecipesViewContainer from "./components/my-recipes-view/MyRecipesViewCo
 import MyAccountContainer from "./components/account/MyAccountContainer";
 
 class App extends Component {
-
   render() {
     return (
       <Router>
