@@ -100,7 +100,6 @@ class NavContainer extends React.PureComponent {
   };
 
   reportItem = () => {
-
     const jwt = this.props.user.jwt;
 
     switch (this.state.reportSubject) {
@@ -199,6 +198,7 @@ class NavContainer extends React.PureComponent {
           ) : (
             ""
           )}
+          <div className={classes.toolbarSpacer} />
           <ReportDialog
             state={this.state}
             handleReportDialogClose={this.handleReportDialogClose}
@@ -220,6 +220,13 @@ const styles = theme => ({
   },
   appBarButton: {
     color: "white"
+  },
+  toolbarSpacer: {
+    [theme.breakpoints.up("sm")]: { minHeight: 80 },
+
+    [theme.breakpoints.down("xs")]: {
+      minHeight: 116
+    }
   }
 });
 
