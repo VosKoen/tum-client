@@ -106,6 +106,7 @@ export const selectRecipe = recipeId => (dispatch, getState) => {
 
   request
     .post(`${baseUrl}/users/${user}/recipes/${recipeId}/selected-recipes`)
+    .set("Authorization", `Bearer ${jwt}`)
     .then(_ => dispatch(setIsSelectedRecipe()))
     .catch(err => console.error(err));
 };
@@ -122,16 +123,18 @@ export const openSelectedRecipe = recipeId => async (dispatch, getState) => {
 
   await request
     .get(`${baseUrl}/recipes/${recipeId}`)
+    .set("Authorization", `Bearer ${jwt}`)
     .then(result => {
       dispatch(setRecipe(result.body));
     })
     .then(() => dispatch(setIsSelectedRecipe()))
     .catch(err => console.error(err));
 
-  getRecipeUserImage(recipeId, user, dispatch);
+  getRecipeUserImage(recipeId, user, dispatch, jwt);
 
   request
     .get(`${baseUrl}/recipes/${recipeId}/users/${user}/ratings`)
+    .set("Authorization", `Bearer ${jwt}`)
     .then(result =>
       dispatch(
         setRecipeUserRating({
@@ -153,20 +156,26 @@ export const openRecipe = recipeId => async (dispatch, getState) => {
 
   await request
     .get(`${baseUrl}/recipes/${recipeId}`)
+    .set("Authorization", `Bearer ${jwt}`)
     .then(result => {
       dispatch(setRecipe(result.body));
     })
     .then(() => dispatch(setOpenedRecipe()))
     .catch(err => console.error(err));
 
-  getRandomImage(recipeId, dispatch);
+  getRandomImage(recipeId, dispatch, jwt);
 };
 
-export const addRecipe = (recipe, user, imageFile) => async () => {
+export const addRecipe = (recipe, user, imageFile) => async getState => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
   let recipeId;
 
   await request
     .post(`${baseUrl}/recipes`)
+    .set("Authorization", `Bearer ${jwt}`)
     .send({ ...recipe, userId: user })
     .then(result => (recipeId = result.body.id))
     .catch(err => console.error(err));
@@ -179,6 +188,7 @@ export const addRecipe = (recipe, user, imageFile) => async () => {
             ingredient.ingredientId
           }`
         )
+        .set("Authorization", `Bearer ${jwt}`)
         .send({
           amount: ingredient.amount
         })
@@ -189,6 +199,7 @@ export const addRecipe = (recipe, user, imageFile) => async () => {
     await recipe.steps.map((step, index) =>
       request
         .post(`${baseUrl}/recipes/${recipeId}/steps`)
+        .set("Authorization", `Bearer ${jwt}`)
         .send({
           order: index,
           description: step.description
@@ -199,6 +210,7 @@ export const addRecipe = (recipe, user, imageFile) => async () => {
   if (imageFile)
     await request
       .post(`${baseUrl}/recipes/${recipeId}/own-image`)
+      .set("Authorization", `Bearer ${jwt}`)
       .attach("file", imageFile)
       .catch(err => console.error(err));
 
@@ -209,9 +221,14 @@ export const saveChangesRecipe = (
   recipe,
   imageFile,
   removeOwnImage
-) => async () => {
+) => async getState => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
   await request
     .put(`${baseUrl}/recipes/${recipe.id}`)
+    .set("Authorization", `Bearer ${jwt}`)
     .send(recipe)
     .catch(err => console.error(err));
 
@@ -219,6 +236,7 @@ export const saveChangesRecipe = (
   if (imageFile)
     await request
       .put(`${baseUrl}/recipes/${recipe.id}/own-image`)
+      .set("Authorization", `Bearer ${jwt}`)
       .attach("file", imageFile)
       .catch(err => console.error(err));
 
@@ -226,6 +244,7 @@ export const saveChangesRecipe = (
   if (removeOwnImage && !imageFile)
     await request
       .delete(`${baseUrl}/recipes/${recipe.id}/own-image`)
+      .set("Authorization", `Bearer ${jwt}`)
       .catch(err => console.error(err));
 
   return undefined;
@@ -233,10 +252,6 @@ export const saveChangesRecipe = (
 
 export const addIngredientToRecipe = ingredient => (dispatch, getState) => {
   const state = getState();
-  if (!state.user) return null;
-  const jwt = state.user.jwt;
-
-  if (isExpired(jwt)) return dispatch(logout());
 
   if (
     state.myRecipe.ingredients.find(
@@ -254,10 +269,6 @@ export const changeRecipeIngredient = (newIngredient, arrayIndex) => (
   getState
 ) => {
   const state = getState();
-  if (!state.user) return null;
-  const jwt = state.user.jwt;
-
-  if (isExpired(jwt)) return dispatch(logout());
 
   if (
     state.myRecipe.ingredients.filter(
@@ -271,55 +282,31 @@ export const changeRecipeIngredient = (newIngredient, arrayIndex) => (
   return dispatch(changeIngredient(newIngredient, arrayIndex));
 };
 
-export const removeIngredientFromRecipe = id => (dispatch, getState) => {
-  const state = getState();
-  if (!state.user) return null;
-  const jwt = state.user.jwt;
-
-  if (isExpired(jwt)) return dispatch(logout());
-
+export const removeIngredientFromRecipe = id => dispatch => {
   return dispatch(deleteIngredient(id));
 };
 
-export const addStepToRecipe = step => (dispatch, getState) => {
-  const state = getState();
-  if (!state.user) return null;
-  const jwt = state.user.jwt;
-
-  if (isExpired(jwt)) return dispatch(logout());
-
+export const addStepToRecipe = step => dispatch => {
   return dispatch(addNewStep(step));
 };
 
-export const changeRecipeStep = (newStep, arrayIndex) => (
-  dispatch,
-  getState
-) => {
-  const state = getState();
-  if (!state.user) return null;
-  const jwt = state.user.jwt;
-
-  if (isExpired(jwt)) return dispatch(logout());
-
+export const changeRecipeStep = (newStep, arrayIndex) => dispatch => {
   return dispatch(changeStep(newStep, arrayIndex));
 };
 
-export const removeStepFromRecipe = indexStepArray => (dispatch, getState) => {
-  const state = getState();
-  if (!state.user) return null;
-  const jwt = state.user.jwt;
-
-  if (isExpired(jwt)) return dispatch(logout());
-
+export const removeStepFromRecipe = indexStepArray => dispatch => {
   return dispatch(deleteStep(indexStepArray));
 };
 
-const getRandomImage = (recipeId, dispatch) => {
+const getRandomImage = (recipeId, dispatch, jwt) => {
   dispatch(setRecipeImageIsUser(false));
 
   request
     .get(`${baseUrl}/recipes/${recipeId}/images/random`)
-    .then(result => dispatch(setRecipeImage(result.body.imageUrl, result.body.id)))
+    .set("Authorization", `Bearer ${jwt}`)
+    .then(result =>
+      dispatch(setRecipeImage(result.body.imageUrl, result.body.id))
+    )
     .catch(err => {
       if (err.status === 404) {
         dispatch(setRecipeImage(imagePlaceholder, null));
@@ -329,16 +316,17 @@ const getRandomImage = (recipeId, dispatch) => {
     });
 };
 
-const getRecipeUserImage = (recipeId, userId, dispatch) => {
+const getRecipeUserImage = (recipeId, userId, dispatch, jwt) => {
   request
     .get(`${baseUrl}/recipes/${recipeId}/users/${userId}/images`)
+    .set("Authorization", `Bearer ${jwt}`)
     .then(result => {
       dispatch(setRecipeImageIsUser(true));
       dispatch(setRecipeImage(result.body.imageUrl, result.body.id));
     })
     .catch(err => {
       if (err.status === 404) {
-        getRandomImage(recipeId, dispatch);
+        getRandomImage(recipeId, dispatch, jwt);
       } else {
         console.error(err);
       }
@@ -363,6 +351,7 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
 
   await request
     .get(`${baseUrl}/random-recipe`)
+    .set("Authorization", `Bearer ${jwt}`)
     .query(queryFilters)
     .then(result => {
       recipeId = result.body.id;
@@ -370,10 +359,11 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
     })
     .catch(err => console.error(err));
 
-  getRandomImage(recipeId, dispatch);
+  getRandomImage(recipeId, dispatch, jwt);
 
   request
     .get(`${baseUrl}/recipes/${recipeId}/users/${user}/ratings`)
+    .set("Authorization", `Bearer ${jwt}`)
     .then(result =>
       dispatch(
         setRecipeUserRating({
@@ -396,6 +386,7 @@ export const getMyRecipes = (limit, offset) => (dispatch, getState) => {
 
   request
     .get(`${baseUrl}/users/${user}/recipes`)
+    .set("Authorization", `Bearer ${jwt}`)
     .query({ limit, offset })
     .then(result => {
       const recipes = result.body[0];
@@ -416,6 +407,7 @@ export const getMyRecipeHistory = (limit, offset) => (dispatch, getState) => {
 
   request
     .get(`${baseUrl}/users/${user}/selected-recipes`)
+    .set("Authorization", `Bearer ${jwt}`)
     .query({ limit, offset })
     .then(result => {
       const recipes = result.body[0];
@@ -434,6 +426,7 @@ export const deleteRecipe = recipeId => async (dispatch, getState) => {
 
   await request
     .delete(`${baseUrl}/recipes/${recipeId}`)
+    .set("Authorization", `Bearer ${jwt}`)
     .then(result => {
       if (result.statusCode === 204) dispatch(setDeleteRecipeSuccess());
     })
@@ -465,6 +458,7 @@ export const addPhotoToRecipe = (recipeId, imageFile) => async (
 
   await request
     .post(`${baseUrl}/recipes/${recipeId}/users/${user}/images`)
+    .set("Authorization", `Bearer ${jwt}`)
     .attach("file", imageFile)
     .then(res => {
       dispatch(setRecipeImage(res.body.imageUrl, res.body.id));
@@ -475,7 +469,7 @@ export const addPhotoToRecipe = (recipeId, imageFile) => async (
   return undefined;
 };
 
-export const clearPhotoFromRecipe = (recipeId) => async (dispatch, getState) => {
+export const clearPhotoFromRecipe = recipeId => async (dispatch, getState) => {
   const state = getState();
   if (!state.user) return null;
   const jwt = state.user.jwt;
@@ -486,8 +480,9 @@ export const clearPhotoFromRecipe = (recipeId) => async (dispatch, getState) => 
 
   await request
     .delete(`${baseUrl}/recipes/${recipeId}/users/${user}/images`)
+    .set("Authorization", `Bearer ${jwt}`)
     .then(_ => {
-      getRandomImage(recipeId, dispatch);
+      getRandomImage(recipeId, dispatch, jwt);
     })
     .catch(err => console.error(err));
 };
