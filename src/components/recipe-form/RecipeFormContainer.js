@@ -29,7 +29,6 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import Button from "@material-ui/core/Button";
-import { userId } from "../../jwt";
 
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { resizeImage } from "../../image-processing/imageProcessing";
@@ -350,16 +349,19 @@ class RecipeFormContainer extends React.PureComponent {
       id: this.props.myRecipe.id
     };
 
-    const user = userId(this.props.user.jwt);
-
     if (this.props.myRecipe.editMode) {
       await this.props.saveChangesRecipe(
         recipe,
         this.state.imageFile,
-        this.state.removeOwnImage
+        this.state.removeOwnImage,
+        this.props.user.jwt
       );
     } else {
-      await this.props.addRecipe(recipe, user, this.state.imageFile);
+      await this.props.addRecipe(
+        recipe,
+        this.state.imageFile,
+        this.props.user.jwt
+      );
     }
 
     this.setState({ submitRecipe: true, submitIsLoading: false });

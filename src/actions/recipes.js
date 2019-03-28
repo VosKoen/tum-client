@@ -166,17 +166,13 @@ export const openRecipe = recipeId => async (dispatch, getState) => {
   getRandomImage(recipeId, dispatch, jwt);
 };
 
-export const addRecipe = (recipe, user, imageFile) => async getState => {
-  const state = getState();
-  if (!state.user) return null;
-  const jwt = state.user.jwt;
-
+export const addRecipe = (recipe, imageFile, jwt) => async () => {
   let recipeId;
 
   await request
     .post(`${baseUrl}/recipes`)
     .set("Authorization", `Bearer ${jwt}`)
-    .send({ ...recipe, userId: user })
+    .send({ ...recipe })
     .then(result => (recipeId = result.body.id))
     .catch(err => console.error(err));
 
@@ -220,12 +216,9 @@ export const addRecipe = (recipe, user, imageFile) => async getState => {
 export const saveChangesRecipe = (
   recipe,
   imageFile,
-  removeOwnImage
-) => async getState => {
-  const state = getState();
-  if (!state.user) return null;
-  const jwt = state.user.jwt;
-
+  removeOwnImage,
+  jwt
+) => async () => {
   await request
     .put(`${baseUrl}/recipes/${recipe.id}`)
     .set("Authorization", `Bearer ${jwt}`)
