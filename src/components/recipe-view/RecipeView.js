@@ -29,61 +29,74 @@ export default function RecipeView(props) {
         <Grid container spacing={16}>
           <Grid item xs={12} sm={6}>
             <div className={classes.imageContainer}>
-            <CardMedia
-              component="img"
-              src={recipe.imageUrl}
-              title={recipe.title}
-            />
-            {renderPhotoButton()}
-            {renderRecipeSelectButtons()}
-            {renderRecipeRating()}
-            {renderEditDeleteButtons()}
-            {state.imageIsLoading ? (
-                            <CircularProgress
-                              className={classes.loadingSymbol}
-                              size={sizeLoadingSymbol}
-                            />
-                          ) : (
-                            ""
-                          )}
+              <CardMedia
+                component="img"
+                src={recipe.imageUrl}
+                title={recipe.title}
+              />
+              {renderPhotoButton()}
+              {renderRecipeSelectButtons()}
+              {renderRecipeRating()}
+              {renderEditDeleteButtons()}
+              {state.imageIsLoading ? (
+                <CircularProgress
+                  className={classes.loadingSymbol}
+                  size={sizeLoadingSymbol}
+                />
+              ) : (
+                ""
+              )}
             </div>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="h4">{recipe.title}</Typography>
             <CardContent>
-              <Grid container spacing={16}>
+              <Grid
+                container
+                spacing={16}
+                alignItems="center"
+                justify="space-between"
+              >
                 <Grid item>
-                  <Grid container spacing={8} alignItems="center">
+                  <Grid container spacing={16}>
                     <Grid item>
-                      <TimelapseIcon />
+                      <Grid container spacing={8} alignItems="center">
+                        <Grid item>
+                          <TimelapseIcon />
+                        </Grid>
+                        <Grid item>
+                          <Typography>{recipe.timeNeeded} min.</Typography>
+                        </Grid>
+                      </Grid>
                     </Grid>
                     <Grid item>
-                      <Typography>{recipe.timeNeeded} min.</Typography>
+                      <Grid container spacing={8} alignItems="center">
+                        <Grid item>
+                          <PeopleIcon />
+                        </Grid>
+                        <Grid item>
+                          <Typography>{recipe.servings}</Typography>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    <Grid item>
+                      <Grid container spacing={8} alignItems="center">
+                        <Grid item>
+                          <ThumbUpIcon />
+                        </Grid>
+                        <Grid item>
+                          <Typography>{recipe.rating}</Typography>
+                        </Grid>{" "}
+                          
+                      </Grid>
                     </Grid>
                   </Grid>
                 </Grid>
                 <Grid item>
-                  <Grid container spacing={8} alignItems="center">
-                    <Grid item>
-                      <PeopleIcon />
-                    </Grid>
-                    <Grid item>
-                      <Typography>{recipe.servings}</Typography>
-                    </Grid>
-                  </Grid>
-                </Grid>
-
-                <Grid item>
-                  <Grid container spacing={8} alignItems="center">
-                    <Grid item>
-                      <ThumbUpIcon />
-                    </Grid>
-                    <Grid item>
-                      <Typography>{recipe.rating}</Typography>
-                    </Grid>
-                  </Grid>
+                  <Typography>{recipe.username}</Typography>
                 </Grid>
               </Grid>
+
               <Divider />
               <Typography component="p" align="left">
                 {recipe.description}

@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import MyAccount from "./MyAccount";
 import { withStyles } from "@material-ui/core/styles";
-import { getAccountData, setNewPassword } from "../../actions/users";
+import { getAccountData, setNewPassword, submitUserChange } from "../../actions/users";
 import { Redirect } from "react-router-dom";
 
 import Dialog from "@material-ui/core/Dialog";
@@ -20,6 +20,7 @@ class MyAccountContainer extends React.PureComponent {
     newPassword: "",
     newPasswordConfirm: "",
     emailAddress: "",
+    username: "",
     [alertPasswordsNotSame]: false
   };
 
@@ -27,7 +28,8 @@ class MyAccountContainer extends React.PureComponent {
     await this.props.getAccountData();
 
     this.setState({
-      emailAddress: this.props.user.email
+      emailAddress: this.props.user.email,
+      username: this.props.user.username
     });
   };
 
@@ -41,6 +43,15 @@ class MyAccountContainer extends React.PureComponent {
     }
     this.props.setNewPassword(this.state.password, this.state.newPassword);
   };
+
+  handleSubmitUserChange = e => {
+    e.preventDefault();
+    const user = {
+      username: this.state.username,
+      email: this.state.emailAddress
+    }
+    this.props.submitUserChange(user);
+  }
 
   handleChange = event => {
     const { name, value } = event.target;
@@ -95,6 +106,7 @@ class MyAccountContainer extends React.PureComponent {
           state={this.state}
           handleSubmitPassword={this.handleSubmitPassword}
           handleChange={this.handleChange}
+          handleSubmitUserChange={this.handleSubmitUserChange}
           classes={this.props.classes}
         />
         {this.renderPasswordNotTheSameAlert()}
@@ -117,6 +129,6 @@ const mapStateToProps = state => ({
 export default withStyles(styles)(
   connect(
     mapStateToProps,
-    { getAccountData, setNewPassword }
+    { getAccountData, setNewPassword, submitUserChange }
   )(MyAccountContainer)
 );

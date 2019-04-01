@@ -10,6 +10,9 @@ export const SET_USER_PROFILE_DATA = "SET_USER_PROFILE_DATA";
 export const SET_NEW_PASSWORD_SUCCESS = "SET_NEW_PASSWORD_SUCCESS";
 export const SET_NEW_PASSWORD_FAILED = "SET_NEW_PASSWORD_FAILED";
 
+export const SET_USER_SAVE_SUCCESS = "SET_USER_SAVE_SUCCESS";
+export const SET_USER_SAVE_FAIL = "SET_USER_SAVE_FAIL";
+
 const setUserProfileData = user => ({
   type: SET_USER_PROFILE_DATA,
   payload: user
@@ -31,12 +34,22 @@ const userLoginFailed = error => ({
 
 const setNewPasswordSuccess = () => ({
   type: SET_NEW_PASSWORD_SUCCESS
-})
+});
 
 const setNewPasswordFailed = message => ({
   type: SET_NEW_PASSWORD_FAILED,
   payload: message
-})
+});
+
+const setUserSaveFail = message => ({
+  type: SET_USER_SAVE_FAIL,
+  payload: message
+});
+
+const setUserSaveSuccess = () => ({
+  type: SET_USER_SAVE_SUCCESS,
+  payload: null
+});
 
 export const login = (email, password) => dispatch =>
   request
@@ -71,7 +84,7 @@ export const getAccountData = () => async (dispatch, getState) => {
     })
     .catch(err => console.error(err));
 
-    return undefined
+  return undefined;
 };
 
 export const setNewPassword = (password, newPassword) => (
@@ -90,6 +103,23 @@ export const setNewPassword = (password, newPassword) => (
     .send({ password, newPassword })
     .then(() => dispatch(setNewPasswordSuccess()))
     .catch(err => {
-        dispatch(setNewPasswordFailed(err.response.body.message));
-      })
-    }
+      dispatch(setNewPasswordFailed(err.response.body.message));
+    });
+};
+
+export const submitUserChange = userData => (dispatch, getState) => {
+  const state = getState();
+  if (!state.user) return null;
+  const jwt = state.user.jwt;
+
+  const user = userId(jwt);
+
+  request
+    .put(`${baseUrl}/users/${user}`)
+    .set("Authorization", `Bearer ${jwt}`)
+    .send(userData)
+    .then(() => dispatch(setUserSaveSuccess()))
+    .catch(err => {
+      dispatch(setUserSaveFail(err.response.body.message));
+    });
+};
