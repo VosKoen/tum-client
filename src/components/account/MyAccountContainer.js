@@ -19,12 +19,17 @@ class MyAccountContainer extends React.PureComponent {
     password: "",
     newPassword: "",
     newPasswordConfirm: "",
+    emailAddress: "",
     [alertPasswordsNotSame]: false
   };
 
-  componentDidMount() {
-    this.props.getAccountData();
-  }
+  componentDidMount = async () => {
+    await this.props.getAccountData();
+
+    this.setState({
+      emailAddress: this.props.user.email
+    });
+  };
 
   handleSubmitPassword = e => {
     e.preventDefault();
@@ -34,7 +39,7 @@ class MyAccountContainer extends React.PureComponent {
       this.openAlert(alertPasswordsNotSame);
       return undefined;
     }
-    this.props.setNewPassword(this.state.password, this.state.newPassword)
+    this.props.setNewPassword(this.state.password, this.state.newPassword);
   };
 
   handleChange = event => {
@@ -64,7 +69,8 @@ class MyAccountContainer extends React.PureComponent {
       >
         <DialogContent>
           <DialogContentText>
-            The password in "Confirm new password" is not the same as the password in 'New password'
+            The password in "Confirm new password" is not the same as the
+            password in 'New password'
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -83,20 +89,26 @@ class MyAccountContainer extends React.PureComponent {
   render() {
     if (!this.props.user) return <Redirect to="/logon" />;
     return (
-        <div>
-      <MyAccount
-        user={this.props.user}
-        state={this.state}
-        handleSubmitPassword={this.handleSubmitPassword}
-        handleChange={this.handleChange}
-      />
-      {this.renderPasswordNotTheSameAlert()}
+      <div>
+        <MyAccount
+          user={this.props.user}
+          state={this.state}
+          handleSubmitPassword={this.handleSubmitPassword}
+          handleChange={this.handleChange}
+          classes={this.props.classes}
+        />
+        {this.renderPasswordNotTheSameAlert()}
       </div>
     );
   }
 }
 
-const styles = theme => ({});
+const styles = theme => ({
+  myAccount: {
+    margin: "auto",
+    padding: theme.spacing.unit * 2
+  }
+});
 
 const mapStateToProps = state => ({
   user: state.user

@@ -55,7 +55,7 @@ export const logoutUser = () => dispatch => {
   return dispatch(logout());
 };
 
-export const getAccountData = () => (dispatch, getState) => {
+export const getAccountData = () => async (dispatch, getState) => {
   const state = getState();
   if (!state.user) return null;
   const jwt = state.user.jwt;
@@ -63,13 +63,15 @@ export const getAccountData = () => (dispatch, getState) => {
   if (isExpired(jwt)) return dispatch(logout());
   const user = userId(jwt);
 
-  request
+  await request
     .get(`${baseUrl}/users/${user}`)
     .set("Authorization", `Bearer ${jwt}`)
     .then(result => {
       dispatch(setUserProfileData(result.body));
     })
     .catch(err => console.error(err));
+
+    return undefined
 };
 
 export const setNewPassword = (password, newPassword) => (

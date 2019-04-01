@@ -8,30 +8,39 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
 
 export default function MyAccount(props) {
-  const {  user, state, handleChange, handleSubmitPassword } = props;
+  const {  user, state, handleChange, handleSubmitPassword, classes } = props;
 
   return (
-    <Paper>
+    <Paper className={classes.myAccount}>
       <Grid container>
-        <Grid item xs={2} />
-        <Grid item xs={8}>
+        <Grid item xs={1} />
+        <Grid item xs={10}>
           <Typography variant="h4" align="left">
             Account details
           </Typography>
           <Divider />
 
-          <Grid container spacing={16}>
-            <Grid item xs={6}>
+          <Grid container spacing={8}>
+            <Grid item xs={12} sm={6}>
               <Typography align="left" variant="h6">Profile</Typography>
             </Grid>
-            <Grid item xs={6}>
-              <Typography align="left">Email address</Typography>
-              <Typography align="left">{user.email}</Typography>
+            <Grid item xs={12} sm={6}>
+            <FormControl margin="normal" required fullWidth>
+                  <InputLabel>Email address</InputLabel>
+                  <Input
+                    name="email"
+                    type="email"
+                    id="email"
+                    value={state.emailAddress}
+                    onChange={handleChange}
+                    disabled
+                  />
+                </FormControl>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
               <Typography align="left" variant="h6">Change password</Typography>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
               <form onSubmit={handleSubmitPassword}>
                 <FormControl margin="normal" required fullWidth>
                   <InputLabel htmlFor="password">Current password</InputLabel>
@@ -42,6 +51,7 @@ export default function MyAccount(props) {
                     autoComplete="current-password"
                     value={state.password}
                     onChange={handleChange}
+                    
                   />
                 </FormControl>
                 <FormControl margin="normal" required fullWidth>
@@ -81,7 +91,7 @@ export default function MyAccount(props) {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={2} />
+        <Grid item xs={1} />
       </Grid>
     </Paper>
   );
