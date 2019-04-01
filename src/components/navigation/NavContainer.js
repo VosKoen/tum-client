@@ -198,7 +198,7 @@ class NavContainer extends React.PureComponent {
           ) : (
             ""
           )}
-          <div className={classes.toolbarSpacer} />
+          <div className={this.props.activeComponents[componentRecipeView] ? classes.toolbarSpacerRecipeView : classes.toolbarSpacerOther } />
           <ReportDialog
             state={this.state}
             handleReportDialogClose={this.handleReportDialogClose}
@@ -221,12 +221,15 @@ const styles = theme => ({
   appBarButton: {
     color: "white"
   },
-  toolbarSpacer: {
+  toolbarSpacerRecipeView: {
     [theme.breakpoints.up("sm")]: { minHeight: 80 },
 
     [theme.breakpoints.down("xs")]: {
       minHeight: 116
     }
+  },
+  toolbarSpacerOther: {
+    minHeight: 80
   }
 });
 
