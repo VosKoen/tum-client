@@ -3,6 +3,7 @@ import { baseUrl, imagePlaceholder } from "../constants";
 import { logout } from "./users";
 import { isExpired, userId } from "../jwt";
 import { setRecipeUserRating } from "./ratings";
+import { handleError } from './error'
 
 export const SET_RECIPE = "SET_RECIPE";
 export const SET_OPENED_RECIPE = "SET_OPENED_RECIPE";
@@ -108,7 +109,7 @@ export const selectRecipe = recipeId => (dispatch, getState) => {
     .post(`${baseUrl}/users/${user}/recipes/${recipeId}/selected-recipes`)
     .set("Authorization", `Bearer ${jwt}`)
     .then(_ => dispatch(setIsSelectedRecipe()))
-    .catch(err => console.error(err));
+    .catch(err => handleError(dispatch, err));
 };
 
 export const openSelectedRecipe = recipeId => async (dispatch, getState) => {
@@ -128,7 +129,7 @@ export const openSelectedRecipe = recipeId => async (dispatch, getState) => {
       dispatch(setRecipe(result.body));
     })
     .then(() => dispatch(setIsSelectedRecipe()))
-    .catch(err => console.error(err));
+    .catch(err => handleError(dispatch, err));
 
   getRecipeUserImage(recipeId, user, dispatch, jwt);
 
@@ -143,7 +144,7 @@ export const openSelectedRecipe = recipeId => async (dispatch, getState) => {
         })
       )
     )
-    .catch(err => console.error(err));
+    .catch(err => handleError(dispatch, err));
 };
 
 export const openRecipe = recipeId => async (dispatch, getState) => {
@@ -161,7 +162,7 @@ export const openRecipe = recipeId => async (dispatch, getState) => {
       dispatch(setRecipe(result.body));
     })
     .then(() => dispatch(setOpenedRecipe()))
-    .catch(err => console.error(err));
+    .catch(err => handleError(dispatch, err));
 
   getRandomImage(recipeId, dispatch, jwt);
 };
@@ -304,7 +305,7 @@ const getRandomImage = (recipeId, dispatch, jwt) => {
       if (err.status === 404) {
         dispatch(setRecipeImage(imagePlaceholder, null));
       } else {
-        console.error(err);
+        handleError(dispatch, err);
       }
     });
 };
@@ -321,7 +322,7 @@ const getRecipeUserImage = (recipeId, userId, dispatch, jwt) => {
       if (err.status === 404) {
         getRandomImage(recipeId, dispatch, jwt);
       } else {
-        console.error(err);
+        handleError(dispatch, err);
       }
     });
 };
@@ -350,7 +351,7 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
       recipeId = result.body.id;
       dispatch(setRecipe(result.body));
     })
-    .catch(err => console.error(err));
+    .catch(err => handleError(dispatch, err));
 
   getRandomImage(recipeId, dispatch, jwt);
 
@@ -365,7 +366,7 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
         })
       )
     )
-    .catch(err => console.error(err));
+    .catch(err => handleError(dispatch, err));
 };
 
 export const getMyRecipes = (limit, offset) => (dispatch, getState) => {
@@ -386,7 +387,7 @@ export const getMyRecipes = (limit, offset) => (dispatch, getState) => {
       const count = result.body[1];
       dispatch(setMyRecipes(recipes, count));
     })
-    .catch(err => console.error(err));
+    .catch(err => handleError(dispatch, err));
 };
 
 export const getMyRecipeHistory = (limit, offset) => (dispatch, getState) => {
@@ -407,7 +408,7 @@ export const getMyRecipeHistory = (limit, offset) => (dispatch, getState) => {
       const count = result.body[1];
       dispatch(setRecipeHistory(recipes, count));
     })
-    .catch(err => console.error(err));
+    .catch(err => handleError(dispatch, err));
 };
 
 export const deleteRecipe = recipeId => async (dispatch, getState) => {
@@ -423,7 +424,7 @@ export const deleteRecipe = recipeId => async (dispatch, getState) => {
     .then(result => {
       if (result.statusCode === 204) dispatch(setDeleteRecipeSuccess());
     })
-    .catch(err => console.error(err));
+    .catch(err => handleError(dispatch, err));
 };
 
 export const resetRecipeForm = () => dispatch => {
@@ -457,7 +458,7 @@ export const addPhotoToRecipe = (recipeId, imageFile) => async (
       dispatch(setRecipeImage(res.body.imageUrl, res.body.id));
       dispatch(setRecipeImageIsUser(true));
     })
-    .catch(err => console.error(err));
+    .catch(err => handleError(dispatch, err));
 
   return undefined;
 };
@@ -477,5 +478,5 @@ export const clearPhotoFromRecipe = recipeId => async (dispatch, getState) => {
     .then(_ => {
       getRandomImage(recipeId, dispatch, jwt);
     })
-    .catch(err => console.error(err));
+    .catch(err => handleError(dispatch, err));
 };

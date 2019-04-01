@@ -2,7 +2,10 @@ import * as request from "superagent";
 import { baseUrl } from "../constants";
 import { logout } from "./users";
 import { isExpired, userId } from "../jwt";
+import { handleError } from './error'
+
 export const SET_RECIPE_USER_RATING = "SET_RECIPE_USER_RATING";
+
 
 export const setRecipeUserRating = userRatingResult => {
   return { type: SET_RECIPE_USER_RATING, payload: userRatingResult };
@@ -22,5 +25,5 @@ export const setRating = (recipeId, recipeIsLiked) => (dispatch, getState) => {
     .send({ recipeIsLiked })
     .then(result => 
       dispatch(setRecipeUserRating({recipeIsLiked: result.body.recipeIsLiked, newRating: result.body.newRating})))
-    .catch(err => console.error(err));
+    .catch(err => handleError(dispatch, err));
 };
