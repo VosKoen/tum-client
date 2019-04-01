@@ -1,14 +1,11 @@
 import * as React from "react";
-import { Paper, Divider } from "@material-ui/core";
+import { Paper, Divider, TextField } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import FormControl from "@material-ui/core/FormControl";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
 
 export default function MyAccount(props) {
-  const {  user, state, handleChange, handleSubmitPassword, classes } = props;
+  const { user, state, handleChange, handleSubmitPassword, classes } = props;
 
   return (
     <Paper className={classes.myAccount}>
@@ -22,71 +19,91 @@ export default function MyAccount(props) {
 
           <Grid container spacing={8}>
             <Grid item xs={12} sm={6}>
-              <Typography align="left" variant="h6">Profile</Typography>
+              <Typography align="left" variant="h6">
+                Profile
+              </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
-            <FormControl margin="normal" required fullWidth>
-                  <InputLabel>Email address</InputLabel>
-                  <Input
-                    name="email"
-                    type="email"
-                    id="email"
-                    value={state.emailAddress}
-                    onChange={handleChange}
-                    disabled
-                  />
-                </FormControl>
+              <Grid container direction="column">
+                <TextField
+                  name="email"
+                  type="email"
+                  id="email"
+                  value={state.emailAddress}
+                  onChange={handleChange}
+                  disabled
+                  label="Email address"
+                  variant="outlined"
+                  required
+                  margin="normal"
+                />
+
+                <TextField
+                  name="username"
+                  type="text"
+                  id="username"
+                  value={state.username}
+                  onChange={handleChange}
+                  label="Username"
+                  variant="outlined"
+                  required
+                  margin="normal"
+                />
+              </Grid>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography align="left" variant="h6">Change password</Typography>
+              <Typography align="left" variant="h6">
+                Change password
+              </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <form onSubmit={handleSubmitPassword}>
-                <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="password">Current password</InputLabel>
-                  <Input
+                <Grid container direction="column">
+                  <TextField
                     name="password"
                     type="password"
                     id="password"
-                    autoComplete="current-password"
                     value={state.password}
                     onChange={handleChange}
-                    
+                    label="Current password"
+                    variant="outlined"
+                    required
+                    margin="normal"
                   />
-                </FormControl>
-                <FormControl margin="normal" required fullWidth>
-                  <InputLabel>New password</InputLabel>
-                  <Input
+
+                  <TextField
                     name="newPassword"
                     type="password"
                     id="new-password"
                     value={state.newPassword}
                     onChange={handleChange}
+                    label="New password"
+                    variant="outlined"
+                    required
+                    margin="normal"
                   />
-                </FormControl>
-                <FormControl margin="normal" required fullWidth>
-                  <InputLabel>Confirm new password</InputLabel>
-                  <Input
+
+                  <TextField
                     name="newPasswordConfirm"
                     type="password"
                     id="newPasswordConfirm"
                     value={state.newPasswordConfirm}
                     onChange={handleChange}
+                    label="Confirm new password"
+                    variant="outlined"
+                    required
+                    margin="normal"
                   />
-                </FormControl>
+                </Grid>
                 <Grid container spacing={16} justify="flex-start">
-                <Grid item>
-                <Typography>{user.resetPasswordFailMessage}</Typography> 
-                <Typography>{user.resetPasswordSuccessMessage}</Typography> 
-                <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-            >
-              Change password
-            </Button>
-            </Grid>
-            </Grid>
+                  <Grid item>
+                    <Typography>{user.resetPasswordFailMessage}</Typography>
+                    <Typography>{user.resetPasswordSuccessMessage}</Typography>
+                    <Button type="submit" variant="contained" color="primary">
+                      Change password
+                    </Button>
+                  </Grid>
+                </Grid>
               </form>
             </Grid>
           </Grid>

@@ -20,6 +20,7 @@ class MyAccountContainer extends React.PureComponent {
     newPassword: "",
     newPasswordConfirm: "",
     emailAddress: "",
+    username: "",
     [alertPasswordsNotSame]: false
   };
 
@@ -27,7 +28,8 @@ class MyAccountContainer extends React.PureComponent {
     await this.props.getAccountData();
 
     this.setState({
-      emailAddress: this.props.user.email
+      emailAddress: this.props.user.email,
+      username: this.props.user.username
     });
   };
 
