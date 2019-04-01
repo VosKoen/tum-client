@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 
 export default function MyAccount(props) {
-  const { user, state, handleChange, handleSubmitPassword, classes } = props;
+  const { user, state, handleChange, handleSubmitPassword, handleSubmitUserChange, classes } = props;
 
   return (
     <Paper className={classes.myAccount}>
@@ -24,32 +24,47 @@ export default function MyAccount(props) {
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Grid container direction="column">
-                <TextField
-                  name="email"
-                  type="email"
-                  id="email"
-                  value={state.emailAddress}
-                  onChange={handleChange}
-                  disabled
-                  label="Email address"
-                  variant="outlined"
-                  required
-                  margin="normal"
-                />
-
-                <TextField
-                  name="username"
-                  type="text"
-                  id="username"
-                  value={state.username}
-                  onChange={handleChange}
-                  label="Username"
-                  variant="outlined"
-                  required
-                  margin="normal"
-                />
-              </Grid>
+              <form onSubmit={handleSubmitUserChange}>
+                <Grid
+                  container
+                  direction="column"
+                  alignItems="flex-start"
+                  spacing={16}
+                >
+                  <Grid item>
+                    <TextField
+                      name="email"
+                      type="email"
+                      id="email"
+                      value={state.emailAddress}
+                      onChange={handleChange}
+                      disabled
+                      label="Email address"
+                      variant="outlined"
+                      required
+                      margin="normal"
+                    />
+                  </Grid>
+                  <Grid item>
+                    <TextField
+                      name="username"
+                      type="text"
+                      id="username"
+                      value={state.username}
+                      onChange={handleChange}
+                      label="Username"
+                      variant="outlined"
+                      required
+                    />
+                  </Grid>
+                  <Grid item>
+                    <Button type="submit" variant="contained" color="primary">
+                      Save changes
+                    </Button>
+                    <Typography>{user.userSaveMessage}</Typography>
+                  </Grid>
+                </Grid>
+              </form>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography align="left" variant="h6">
@@ -58,44 +73,49 @@ export default function MyAccount(props) {
             </Grid>
             <Grid item xs={12} sm={6}>
               <form onSubmit={handleSubmitPassword}>
-                <Grid container direction="column">
-                  <TextField
-                    name="password"
-                    type="password"
-                    id="password"
-                    value={state.password}
-                    onChange={handleChange}
-                    label="Current password"
-                    variant="outlined"
-                    required
-                    margin="normal"
-                  />
-
-                  <TextField
-                    name="newPassword"
-                    type="password"
-                    id="new-password"
-                    value={state.newPassword}
-                    onChange={handleChange}
-                    label="New password"
-                    variant="outlined"
-                    required
-                    margin="normal"
-                  />
-
-                  <TextField
-                    name="newPasswordConfirm"
-                    type="password"
-                    id="newPasswordConfirm"
-                    value={state.newPasswordConfirm}
-                    onChange={handleChange}
-                    label="Confirm new password"
-                    variant="outlined"
-                    required
-                    margin="normal"
-                  />
-                </Grid>
-                <Grid container spacing={16} justify="flex-start">
+                <Grid
+                  container
+                  direction="column"
+                  alignItems="flex-start"
+                  spacing={16}
+                >
+                  <Grid item>
+                    <TextField
+                      name="password"
+                      type="password"
+                      id="password"
+                      value={state.password}
+                      onChange={handleChange}
+                      label="Current password"
+                      variant="outlined"
+                      required
+                      margin="normal"
+                    />
+                  </Grid>
+                  <Grid item>
+                    <TextField
+                      name="newPassword"
+                      type="password"
+                      id="new-password"
+                      value={state.newPassword}
+                      onChange={handleChange}
+                      label="New password"
+                      variant="outlined"
+                      required
+                    />
+                  </Grid>
+                  <Grid item>
+                    <TextField
+                      name="newPasswordConfirm"
+                      type="password"
+                      id="newPasswordConfirm"
+                      value={state.newPasswordConfirm}
+                      onChange={handleChange}
+                      label="Confirm new password"
+                      variant="outlined"
+                      required
+                    />
+                  </Grid>
                   <Grid item>
                     <Typography>{user.resetPasswordFailMessage}</Typography>
                     <Typography>{user.resetPasswordSuccessMessage}</Typography>
