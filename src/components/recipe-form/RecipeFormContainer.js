@@ -229,7 +229,7 @@ class RecipeFormContainer extends React.PureComponent {
   handleIngredientAdd = () => {
     const ingredient = {
       ingredientId: this.props.referenceData.ingredients.find(
-        ingredient => ingredient.name === this.state.ingredient
+        ingredient => deburr(ingredient.name).toLowerCase() === deburr(this.state.ingredient).toLowerCase()
       ).id,
       amount: this.state.amount,
       name: this.state.ingredient
