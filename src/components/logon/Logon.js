@@ -21,7 +21,6 @@ export default function Logon(props) {
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign in
-            {process.env.PUBLIC_URL}
           </Typography>
           <form className={classes.form} onSubmit={handleSubmit}>
             <FormControl margin="normal" required fullWidth>
