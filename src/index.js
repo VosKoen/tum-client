@@ -9,6 +9,9 @@ import CssBaseline from "@material-ui/core/CssBaseline/CssBaseline";
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import {theme} from "./theme";
 
+// Enforce https
+if(window.location.protocol === 'http:') window.location.protocol = 'https:';
+
 ReactDOM.render(
   <Provider store={store}>
   <MuiThemeProvider theme={theme}>
@@ -22,4 +25,6 @@ ReactDOM.render(
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA
+
+
 serviceWorker.register();
