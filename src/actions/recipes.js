@@ -238,7 +238,7 @@ export const saveChangesRecipe = (
   if (removeOwnImage && !imageFile)
     await request
       .delete(`${baseUrl}/recipes/${recipe.id}/own-image`)
-      .set("Authorization", `Bearer  ${jwt}`)
+      .set("Authorization", `Bearer ${jwt}`)
       .catch(err => handleError(dispatch, err));
 
   return undefined;
