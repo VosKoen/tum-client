@@ -559,6 +559,7 @@ class RecipeFormContainer extends React.PureComponent {
       renderSuggestion
     };
 
+    if (this.props.error) return <Redirect to="/error" />;
     if (!this.props.user) return <Redirect to="/logon" />;
     if (this.state.cancelSubmit === true || this.state.submitRecipe === true)
       return <Redirect to="/my-recipes" />;
@@ -673,7 +674,8 @@ const mapStateToProps = state => ({
   myRecipe: state.myRecipe,
   user: state.user,
   referenceData: state.referenceData,
-  recipe: state.recipe
+  recipe: state.recipe,
+  error: state.error
 });
 
 export default withStyles(styles)(

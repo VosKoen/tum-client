@@ -98,7 +98,9 @@ class MyAccountContainer extends React.PureComponent {
   };
 
   render() {
+    if (this.props.error) return <Redirect to="/error" />;
     if (!this.props.user) return <Redirect to="/logon" />;
+
     return (
       <div>
         <MyAccount
@@ -123,7 +125,8 @@ const styles = theme => ({
 });
 
 const mapStateToProps = state => ({
-  user: state.user
+  user: state.user,
+  error: state.error
 });
 
 export default withStyles(styles)(

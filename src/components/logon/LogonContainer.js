@@ -22,14 +22,16 @@ class LogonContainer extends React.PureComponent {
   };
 
   render() {
+    if (this.props.error) return <Redirect to="/error" />;
     if (this.props.user) return <Redirect to="/" />;
+
     return (
       <Logon
         handleSubmit={this.handleSubmit}
         handleChange={this.handleChange}
         state={this.state}
         classes={this.props.classes}
-        error={this.props.error}
+        error={this.props.loginError}
       />
     );
   }
@@ -59,7 +61,8 @@ const styles = theme => ({
 
 const mapStateToProps = state => ({
   user: state.user,
-  error: state.login.error
+  loginError: state.login.error,
+  error: state.error
 });
 
 export default withStyles(styles)(

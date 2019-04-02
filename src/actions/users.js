@@ -1,6 +1,7 @@
 import * as request from "superagent";
 import { baseUrl } from "../constants";
 import { isExpired, userId } from "../jwt";
+import { handleError } from './error'
 
 export const USER_LOGIN_SUCCESS = "USER_LOGIN_SUCCESS";
 export const USER_LOGIN_FAILED = "USER_LOGIN_FAILED";
@@ -60,7 +61,7 @@ export const login = (email, password) => dispatch =>
       if (err.status === 400) {
         dispatch(userLoginFailed(err.response.body.message));
       } else {
-        console.error(err);
+        handleError(dispatch, err);
       }
     });
 
@@ -82,7 +83,7 @@ export const getAccountData = () => async (dispatch, getState) => {
     .then(result => {
       dispatch(setUserProfileData(result.body));
     })
-    .catch(err => console.error(err));
+    .catch(err => handleError(dispatch, err));
 
   return undefined;
 };

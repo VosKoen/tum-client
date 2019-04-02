@@ -55,9 +55,11 @@ class MyRecipesViewContainer extends React.PureComponent {
   };
 
   render() {
+    if (this.props.error) return <Redirect to="/error" />;
     if (!this.props.user) return <Redirect to="/logon" />;
     if (this.state.recipeOpened) return <Redirect to="/" />;
     if (this.state.addNewRecipeClicked) return <Redirect to="/recipe-form" />;
+    
 
     return (
       <MyRecipesView
@@ -96,7 +98,8 @@ const styles = theme => ({
 const mapStateToProps = state => ({
   myRecipes: state.myRecipes,
   user: state.user,
-  recipeHistory: state.recipeHistory
+  recipeHistory: state.recipeHistory,
+  error: state.error
 });
 
 export default withStyles(styles)(
