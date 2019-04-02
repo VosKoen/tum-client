@@ -5,13 +5,13 @@ import {
   SET_OPENED_RECIPE,
   SET_DELETE_RECIPE_SUCCESS,
   SET_MY_RECIPES,
-  SET_RECIPE_IMAGE_IS_USER
+  SET_RECIPE_IMAGE_IS_USER,
+  RESET_RECIPE
 } from "../actions/recipes";
 import { SET_RECIPE_USER_RATING } from "../actions/ratings";
-import { imagePlaceholder } from "../constants";
 
 const initialState = {
-  imageUrl: imagePlaceholder,
+  imageUrl: null,
   recipeIsLiked: null,
   deleteRecipeSuccess: false
 };
@@ -44,6 +44,8 @@ export default (state = { ...initialState }, action = {}) => {
       return { ...initialState, deleteRecipeSuccess: true };
     case SET_MY_RECIPES:
       return { ...state, deleteRecipeSuccess: false };
+      case RESET_RECIPE:
+      return { ...initialState };
     default:
       return state;
   }

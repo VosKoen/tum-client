@@ -6,6 +6,7 @@ import { setRecipeUserRating } from "./ratings";
 import { handleError } from "./error";
 
 export const SET_RECIPE = "SET_RECIPE";
+export const RESET_RECIPE = "RESET_RECIPE";
 export const SET_OPENED_RECIPE = "SET_OPENED_RECIPE";
 export const SET_MY_RECIPES = "SET_MY_RECIPES";
 export const SET_RECIPE_IMAGE = "SET_RECIPE_IMAGE";
@@ -75,6 +76,10 @@ const deleteStep = indexStepArray => {
 
 const resetMyRecipe = () => {
   return { type: RESET_MY_RECIPE, payload: null };
+};
+
+const resetRecipe = () => {
+  return { type: RESET_RECIPE, payload: null };
 };
 
 const setIsSelectedRecipe = () => {
@@ -479,4 +484,8 @@ export const clearPhotoFromRecipe = recipeId => async (dispatch, getState) => {
       getRandomImage(recipeId, dispatch, jwt);
     })
     .catch(err => handleError(dispatch, err));
+};
+
+export const resetRecipeView = () => dispatch => {
+  return dispatch(resetRecipe());
 };
