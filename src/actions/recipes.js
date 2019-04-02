@@ -207,7 +207,7 @@ export const addRecipe = (recipe, imageFile, jwt) => async dispatch => {
   if (imageFile)
     await request
       .post(`${baseUrl}/recipes/${recipeId}/own-image`)
-      .set("Authorization", `Bearer `)
+      .set("Authorization", `Bearer ${jwt}`)
       .attach("file", imageFile)
       .catch(err => handleError(dispatch, err));
 
