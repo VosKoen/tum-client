@@ -3,7 +3,7 @@ import { baseUrl, imagePlaceholder } from "../constants";
 import { logout } from "./users";
 import { isExpired, userId } from "../jwt";
 import { setRecipeUserRating } from "./ratings";
-import { handleError } from './error'
+import { handleError } from "./error";
 
 export const SET_RECIPE = "SET_RECIPE";
 export const SET_OPENED_RECIPE = "SET_OPENED_RECIPE";
@@ -167,7 +167,7 @@ export const openRecipe = recipeId => async (dispatch, getState) => {
   getRandomImage(recipeId, dispatch, jwt);
 };
 
-export const addRecipe = (recipe, imageFile, jwt) => async () => {
+export const addRecipe = (recipe, imageFile, jwt) => async dispatch => {
   let recipeId;
 
   await request
@@ -175,7 +175,7 @@ export const addRecipe = (recipe, imageFile, jwt) => async () => {
     .set("Authorization", `Bearer ${jwt}`)
     .send({ ...recipe })
     .then(result => (recipeId = result.body.id))
-    .catch(err => console.error(err));
+    .catch(err => handleError(dispatch, err));
 
   if (recipe.recipeIngredients)
     await recipe.recipeIngredients.map(ingredient =>
@@ -189,7 +189,7 @@ export const addRecipe = (recipe, imageFile, jwt) => async () => {
         .send({
           amount: ingredient.amount
         })
-        .catch(err => console.error(err))
+        .catch(err => handleError(dispatch, err))
     );
 
   if (recipe.steps)
@@ -201,15 +201,15 @@ export const addRecipe = (recipe, imageFile, jwt) => async () => {
           order: index,
           description: step.description
         })
-        .catch(err => console.error(err))
+        .catch(err => handleError(dispatch, err))
     );
 
   if (imageFile)
     await request
       .post(`${baseUrl}/recipes/${recipeId}/own-image`)
-      .set("Authorization", `Bearer ${jwt}`)
+      .set("Authorization", `Bearer `)
       .attach("file", imageFile)
-      .catch(err => console.error(err));
+      .catch(err => handleError(dispatch, err));
 
   return undefined;
 };
@@ -219,12 +219,12 @@ export const saveChangesRecipe = (
   imageFile,
   removeOwnImage,
   jwt
-) => async () => {
+) => async dispatch => {
   await request
     .put(`${baseUrl}/recipes/${recipe.id}`)
     .set("Authorization", `Bearer ${jwt}`)
     .send(recipe)
-    .catch(err => console.error(err));
+    .catch(err => handleError(dispatch, err));
 
   //Replacing the recipes own image if a new image file is present
   if (imageFile)
@@ -232,14 +232,14 @@ export const saveChangesRecipe = (
       .put(`${baseUrl}/recipes/${recipe.id}/own-image`)
       .set("Authorization", `Bearer ${jwt}`)
       .attach("file", imageFile)
-      .catch(err => console.error(err));
+      .catch(err => handleError(dispatch, err));
 
   //Removing the recipes own image if it is actively removed without providing a new image
   if (removeOwnImage && !imageFile)
     await request
       .delete(`${baseUrl}/recipes/${recipe.id}/own-image`)
-      .set("Authorization", `Bearer ${jwt}`)
-      .catch(err => console.error(err));
+      .set("Authorization", `Bearer  ${jwt}`)
+      .catch(err => handleError(dispatch, err));
 
   return undefined;
 };
