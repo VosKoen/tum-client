@@ -9,7 +9,8 @@ import {
   deleteRecipe,
   openEditRecipeForm,
   addPhotoToRecipe,
-  clearPhotoFromRecipe
+  clearPhotoFromRecipe,
+  resetRecipeView
 } from "../../actions/recipes";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
@@ -30,7 +31,7 @@ import FilterDialogContainer from "../filter-dialog/FilterDialogContainer";
 import { resizeImage } from "../../image-processing/imageProcessing";
 import { sizeLoadingSymbol } from "../../constants";
 import ClearIcon from "@material-ui/icons/Clear";
-import {setComponentRecipeView} from '../../actions/activeComponents'
+import { setComponentRecipeView } from "../../actions/activeComponents";
 
 import red from "@material-ui/core/colors/red";
 import green from "@material-ui/core/colors/green";
@@ -47,12 +48,13 @@ class RecipeViewContainer extends React.PureComponent {
   };
 
   componentDidMount() {
-    this.props.setComponentRecipeView(true)
+    this.props.setComponentRecipeView(true);
     if (!this.props.recipe.id) this.props.getRandomRecipe();
   }
 
   componentWillUnmount() {
-    this.props.setComponentRecipeView(false)
+    this.props.setComponentRecipeView(false);
+    this.props.resetRecipeView();
   }
 
   handleRejection = () => {
@@ -333,8 +335,12 @@ const styles = theme => ({
     "&:disabled": {
       color: "white",
       backgroundColor: green["A700"]
-    },   
-        // For Mobile, hover has to be added as well. The state immediately after clicking is hover and disabled: 
+    },
+    "&:hover": {
+      color: "white",
+      backgroundColor: green["A700"]
+    },
+    // For Mobile, hover has to be added as well. The state immediately after clicking is hover and disabled:
     "&:hover&:disabled": {
       color: "white",
       backgroundColor: green["A700"]
@@ -346,6 +352,10 @@ const styles = theme => ({
   ratingButtonMinus: {
     ...theme.flatRoundIconButton,
     "&:disabled": {
+      color: "white",
+      backgroundColor: red["500"]
+    },
+    "&:hover": {
       color: "white",
       backgroundColor: red["500"]
     },
@@ -386,7 +396,10 @@ const styles = theme => ({
   },
   recipeCookButton: {
     ...theme.flatRoundIconButton,
-    backgroundColor: green["A700"]
+    backgroundColor: green["A700"],
+    "&:hover": {
+      backgroundColor: green["A700"],
+    }
   },
   recipeFilterButton: theme.flatRoundIconButton,
   recipeNextButton: theme.flatRoundIconButton,
@@ -410,7 +423,8 @@ export default withStyles(styles)(
       openEditRecipeForm,
       addPhotoToRecipe,
       clearPhotoFromRecipe,
-      setComponentRecipeView
+      setComponentRecipeView,
+      resetRecipeView
     }
   )(RecipeViewContainer)
 );
