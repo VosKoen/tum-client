@@ -15,7 +15,7 @@ import ErrorPageContainer from "./components/error/ErrorPageContainer";
 class App extends Component {
 
   render() {
-    console.log(process.env.NODE_ENV)
+
     return (
       <Router>
         <div className="App">
