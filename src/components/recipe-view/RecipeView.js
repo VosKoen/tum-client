@@ -11,6 +11,7 @@ import PeopleIcon from "@material-ui/icons/People";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { sizeLoadingSymbol } from "../../constants";
+import { ChefsHatIcon } from "../../svgPaths";
 
 export default function RecipeView(props) {
   const {
@@ -93,7 +94,14 @@ export default function RecipeView(props) {
                   </Grid>
                 </Grid>
                 <Grid item>
-                  <Typography>{recipe.username}</Typography>
+                  <Grid container spacing={8} alignItems="center">
+                    <Grid item>
+                      <ChefsHatIcon />
+                    </Grid>
+                    <Grid>
+                      <Typography>{recipe.username}</Typography>
+                    </Grid>
+                  </Grid>
                 </Grid>
               </Grid>
 
