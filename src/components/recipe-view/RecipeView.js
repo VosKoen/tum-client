@@ -93,16 +93,21 @@ export default function RecipeView(props) {
                     </Grid>
                   </Grid>
                 </Grid>
-                <Grid item>
-                  <Grid container spacing={8} alignItems="center">
-                    <Grid item>
-                      <ChefsHatIcon />
-                    </Grid>
-                    <Grid>
-                      <Typography>{recipe.username}</Typography>
+
+                {recipe.username ? (
+                  <Grid item>
+                    <Grid container spacing={8} alignItems="center">
+                      <Grid item>
+                        <ChefsHatIcon />
+                      </Grid>
+                      <Grid>
+                        <Typography>{recipe.username}</Typography>
+                      </Grid>
                     </Grid>
                   </Grid>
-                </Grid>
+                ) : (
+                  ""
+                )}
               </Grid>
 
               <Divider />
