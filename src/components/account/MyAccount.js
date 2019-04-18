@@ -3,9 +3,19 @@ import { Paper, Divider, TextField } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 export default function MyAccount(props) {
-  const { user, state, handleChange, handleSubmitPassword, handleSubmitUserChange, classes } = props;
+  const {
+    user,
+    state,
+    handleChange,
+    handleToggle,
+    handleSubmitPassword,
+    handleSubmitUserChange,
+    classes
+  } = props;
 
   return (
     <Paper className={classes.myAccount}>
@@ -55,6 +65,19 @@ export default function MyAccount(props) {
                       label="Username"
                       variant="outlined"
                       required
+                    />
+                  </Grid>
+                  <Grid item>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          name="showUsername"
+                          checked={state.showUsername}
+                          onChange={handleToggle}
+                          color="primary"
+                        />
+                      }
+                      label="Username visible to other users"
                     />
                   </Grid>
                   <Grid item>
