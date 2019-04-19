@@ -54,7 +54,7 @@ export default function Navbar(props) {
           </Grid>
           <Grid item xs={10} sm={4}>
             <Typography variant="h1" className={classes.header}>
-              Tum
+              Tum it!
             </Typography>
           </Grid>
           <Grid item xs={12} sm={4}>
