@@ -12,6 +12,7 @@ import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { sizeLoadingSymbol } from "../../constants";
 import { ChefsHatIcon } from "../../svgPaths";
+import Chip from "@material-ui/core/Chip";
 
 export default function RecipeView(props) {
   const {
@@ -52,6 +53,18 @@ export default function RecipeView(props) {
           <Grid item xs={12} sm={6}>
             <Typography variant="h4">{recipe.title}</Typography>
             <CardContent>
+            <Grid item xs={12} sm={6}>
+            <Grid container justify="flex-start" spacing={8}>
+              {recipe.labels.map(label => (
+                <Grid item key={label.labelId}>
+                  <Chip
+                    label={label.labelName}
+                    color="primary"
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
               <Grid
                 container
                 spacing={16}
@@ -119,6 +132,9 @@ export default function RecipeView(props) {
         </Grid>
         <CardContent>
           <Grid container spacing={16}>
+
+
+
             <Grid item xs={12} sm={6}>
               <Typography variant="h6" align="left">
                 Ingredients
