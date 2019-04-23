@@ -16,6 +16,7 @@ export const ADD_NEW_STEP = "ADD_NEW_STEP";
 export const ADD_NEW_LABEL = "ADD_NEW_LABEL";
 export const DELETE_INGREDIENT = "DELETE_INGREDIENT";
 export const DELETE_STEP = "DELETE_STEP";
+export const DELETE_LABEL = "DELETE_LABEL";
 export const SET_DELETE_RECIPE_SUCCESS = "SET_DELETE_RECIPE_SUCCESS";
 export const RESET_MY_RECIPE = "RESET_MY_RECIPE";
 export const SET_EDIT_MODE_YES = "SET_EDIT_MODE_YES";
@@ -78,6 +79,11 @@ const deleteStep = indexStepArray => {
 const addNewLabel = label => {
   return { type: ADD_NEW_LABEL, payload: label };
 };
+
+const deleteLabel = id => {
+  return { type: DELETE_LABEL, payload: id };
+};
+
 
 const resetMyRecipe = () => {
   return { type: RESET_MY_RECIPE, payload: null };
@@ -304,6 +310,10 @@ export const removeStepFromRecipe = indexStepArray => dispatch => {
 
 export const addLabelToRecipe = label => dispatch => {
   dispatch(addNewLabel(label));
+};
+
+export const removeLabelFromRecipe = id => dispatch => {
+  dispatch(deleteLabel(id));
 };
 
 const getRandomImage = (recipeId, dispatch, jwt) => {

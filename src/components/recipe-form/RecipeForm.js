@@ -60,6 +60,7 @@ export default function RecipeForm(props) {
     handleLabelOpen,
     handleLabelClose,
     handleLabelAdd,
+    handleLabelDelete,
     allLabels
   } = props;
 
@@ -194,8 +195,20 @@ export default function RecipeForm(props) {
                 className={classes.button}
                 onClick={handleLabelOpen}
               >
-                Add new labels
+                Add labels
               </Button>
+            </Grid>
+          </Grid>
+          <Grid item xs={12}>
+            <Grid container justify="flex-start" spacing={8}>
+              {myRecipe.labels.map(label => (
+                <Grid item key={label.labelId}>
+                  <Chip
+                    label={label.labelName}
+                    onDelete={() => handleLabelDelete(label.labelId)}
+                  />
+                </Grid>
+              ))}
             </Grid>
           </Grid>
         </Grid>
@@ -452,15 +465,27 @@ export default function RecipeForm(props) {
               Please add labels to your recipe by clicking the desired labels.
             </DialogContentText>
 
-            {allLabels.filter(label => !myRecipe.labels.find(activeLabel => activeLabel.id === label.id)).map(label => <Chip label={label.labelName} key={label.id} onClick={() => handleLabelAdd(label.id)} />)}
-        
+            <Grid container justify="flex-start" spacing={8}>
+              {allLabels
+                .filter(
+                  label =>
+                    !myRecipe.labels.find(
+                      activeLabel => activeLabel.labelId === label.id
+                    )
+                )
+                .map(label => (
+                  <Grid item key={label.id}>
+                    <Chip
+                      label={label.labelName}
+                      onClick={() => handleLabelAdd(label)}
+                    />
+                  </Grid>
+                ))}
+            </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => console.log("Click!")} color="primary">
-              Save
-            </Button>
             <Button onClick={handleLabelClose} color="primary">
-              Cancel
+              Close
             </Button>
           </DialogActions>
         </Dialog>

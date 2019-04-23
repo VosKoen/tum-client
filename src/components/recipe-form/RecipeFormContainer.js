@@ -18,7 +18,8 @@ import {
   changeRecipeIngredient,
   changeRecipeStep,
   saveChangesRecipe,
-  addLabelToRecipe
+  addLabelToRecipe,
+  removeLabelFromRecipe
 } from "../../actions/recipes";
 import {
   getIngredientList,
@@ -212,8 +213,14 @@ class RecipeFormContainer extends React.PureComponent {
     });
   };
 
-  handleLabelAdd = (labelId) => {
-    console.log("clicked chip " + labelId);
+  handleLabelAdd = label => {
+    const recipeLabelToAdd = { labelId: label.id, labelName: label.labelName };
+
+    this.props.addLabelToRecipe(recipeLabelToAdd);
+  };
+
+  handleLabelDelete = labelId => {
+    this.props.removeLabelFromRecipe(labelId);
   };
 
   handleIngredientOpen = () => {
@@ -368,6 +375,7 @@ class RecipeFormContainer extends React.PureComponent {
       servings: this.state.servings,
       recipeIngredients: this.props.myRecipe.ingredients,
       steps: this.props.myRecipe.steps,
+      recipeLabels: this.props.myRecipe.labels,
       id: this.props.myRecipe.id
     };
 
@@ -623,6 +631,7 @@ class RecipeFormContainer extends React.PureComponent {
           handleLabelOpen={this.handleLabelOpen}
           handleLabelClose={this.handleLabelClose}
           handleLabelAdd={this.handleLabelAdd}
+          handleLabelDelete={this.handleLabelDelete}
           allLabels={this.props.referenceData.labels}
         />
         {this.state.submitIsLoading ? (
@@ -725,7 +734,8 @@ export default withStyles(styles)(
       changeRecipeStep,
       saveChangesRecipe,
       submitNewIngredientRequest,
-      addLabelToRecipe
+      addLabelToRecipe,
+      removeLabelFromRecipe
     }
   )(RecipeFormContainer)
 );
