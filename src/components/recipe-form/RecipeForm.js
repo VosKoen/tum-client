@@ -206,6 +206,7 @@ export default function RecipeForm(props) {
                   <Chip
                     label={label.labelName}
                     onDelete={() => handleLabelDelete(label.labelId)}
+                    color="primary"
                   />
                 </Grid>
               ))}
@@ -478,6 +479,7 @@ export default function RecipeForm(props) {
                     <Chip
                       label={label.labelName}
                       onClick={() => handleLabelAdd(label)}
+                      color='primary'
                     />
                   </Grid>
                 ))}
