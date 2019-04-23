@@ -17,6 +17,7 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ClearIcon from "@material-ui/icons/Clear";
+import Chip from "@material-ui/core/Chip";
 
 import InputAdornment from "@material-ui/core/InputAdornment";
 
@@ -55,7 +56,11 @@ export default function RecipeForm(props) {
     handleImageRemove,
     handleRequestIngredientClose,
     handleRequestIngredientOpen,
-    handleRequestIngredientSubmit
+    handleRequestIngredientSubmit,
+    handleLabelOpen,
+    handleLabelClose,
+    handleLabelAdd,
+    allLabels
   } = props;
 
   return (
@@ -140,7 +145,7 @@ export default function RecipeForm(props) {
               fullWidth
             />
             <Grid container spacing={16}>
-              <Grid item >
+              <Grid item>
                 <TextField
                   required
                   id="preparation-time"
@@ -158,7 +163,7 @@ export default function RecipeForm(props) {
                   }}
                 />
               </Grid>
-              <Grid item >
+              <Grid item>
                 <TextField
                   required
                   id="servings"
@@ -171,6 +176,26 @@ export default function RecipeForm(props) {
                   type="number"
                 />
               </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+
+        <Grid container justify={"flex-start"} spacing={16}>
+          <Grid item>
+            <Typography variant="h6" align="left">
+              Labels
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Grid container justify="flex-start">
+              <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+                onClick={handleLabelOpen}
+              >
+                Add new labels
+              </Button>
             </Grid>
           </Grid>
         </Grid>
@@ -303,7 +328,7 @@ export default function RecipeForm(props) {
                   variant: "outlined",
                   label: "Search for an ingredient",
                   required: true,
-                  margin: 'normal'
+                  margin: "normal"
                 }}
                 theme={{
                   container: classes.autosuggestContainer,
@@ -411,6 +436,30 @@ export default function RecipeForm(props) {
             )}
 
             <Button onClick={handleStepClose} color="primary">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={state.labelOpen}
+          onClose={handleLabelClose}
+          aria-labelledby="responsive-dialog-title"
+        >
+          <DialogTitle>{"Add Labels"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Please add labels to your recipe by clicking the desired labels.
+            </DialogContentText>
+
+            {allLabels.filter(label => !myRecipe.labels.find(activeLabel => activeLabel.id === label.id)).map(label => <Chip label={label.labelName} key={label.id} onClick={() => handleLabelAdd(label.id)} />)}
+        
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => console.log("Click!")} color="primary">
+              Save
+            </Button>
+            <Button onClick={handleLabelClose} color="primary">
               Cancel
             </Button>
           </DialogActions>

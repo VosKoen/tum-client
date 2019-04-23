@@ -17,12 +17,14 @@ import {
   resetRecipeForm,
   changeRecipeIngredient,
   changeRecipeStep,
-  saveChangesRecipe
+  saveChangesRecipe,
+  addLabelToRecipe
 } from "../../actions/recipes";
 import {
   getIngredientList,
   submitNewIngredientRequest
 } from "../../actions/ingredients";
+import { getLabelList } from "../../actions/labels";
 import { Redirect } from "react-router-dom";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -136,11 +138,13 @@ class RecipeFormContainer extends React.PureComponent {
     servings: "",
     preparationTime: "",
     submitIsLoading: false,
-    removeOwnImage: false
+    removeOwnImage: false,
+    labelOpen: false
   };
 
   componentDidMount = () => {
     this.props.getIngredientList();
+    this.props.getLabelList();
 
     if (this.props.myRecipe.editMode)
       this.setState({
@@ -196,6 +200,22 @@ class RecipeFormContainer extends React.PureComponent {
     });
   };
 
+  handleLabelOpen = () => {
+    this.setState({
+      labelOpen: true
+    });
+  };
+
+  handleLabelClose = () => {
+    this.setState({
+      labelOpen: false
+    });
+  };
+
+  handleLabelAdd = (labelId) => {
+    console.log("clicked chip " + labelId);
+  };
+
   handleIngredientOpen = () => {
     this.setState({
       ingredientOpen: true,
@@ -229,7 +249,9 @@ class RecipeFormContainer extends React.PureComponent {
   handleIngredientAdd = () => {
     const ingredient = {
       ingredientId: this.props.referenceData.ingredients.find(
-        ingredient => deburr(ingredient.name).toLowerCase() === deburr(this.state.ingredient).toLowerCase()
+        ingredient =>
+          deburr(ingredient.name).toLowerCase() ===
+          deburr(this.state.ingredient).toLowerCase()
       ).id,
       amount: this.state.amount,
       name: this.state.ingredient
@@ -516,8 +538,13 @@ class RecipeFormContainer extends React.PureComponent {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => this.submitRecipe()} color="primary">Submit changes</Button>
-          <Button onClick={() => this.closeAlert(alertChangeResetsRating)} color="primary">
+          <Button onClick={() => this.submitRecipe()} color="primary">
+            Submit changes
+          </Button>
+          <Button
+            onClick={() => this.closeAlert(alertChangeResetsRating)}
+            color="primary"
+          >
             Cancel
           </Button>
         </DialogActions>
@@ -593,6 +620,10 @@ class RecipeFormContainer extends React.PureComponent {
           handleRequestIngredientClose={this.handleRequestIngredientClose}
           handleRequestIngredientOpen={this.handleRequestIngredientOpen}
           handleRequestIngredientSubmit={this.handleRequestIngredientSubmit}
+          handleLabelOpen={this.handleLabelOpen}
+          handleLabelClose={this.handleLabelClose}
+          handleLabelAdd={this.handleLabelAdd}
+          allLabels={this.props.referenceData.labels}
         />
         {this.state.submitIsLoading ? (
           <CircularProgress
@@ -688,11 +719,13 @@ export default withStyles(styles)(
       removeStepFromRecipe,
       addRecipe,
       getIngredientList,
+      getLabelList,
       resetRecipeForm,
       changeRecipeIngredient,
       changeRecipeStep,
       saveChangesRecipe,
-      submitNewIngredientRequest
+      submitNewIngredientRequest,
+      addLabelToRecipe
     }
   )(RecipeFormContainer)
 );

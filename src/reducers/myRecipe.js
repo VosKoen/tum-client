@@ -14,6 +14,7 @@ import { imagePlaceholder } from "../constants";
 const initialState = {
   ingredients: [],
   steps: [],
+  labels: [],
   imageUrl: imagePlaceholder,
   editMode: false
 };
