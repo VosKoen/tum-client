@@ -367,6 +367,7 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
     return acc;
   }, {});
 
+
   await request
     .get(`${baseUrl}/random-recipe`)
     .set("Authorization", `Bearer ${jwt}`)

@@ -8,7 +8,8 @@ import { applyFilters } from "../../actions/filters";
 
 class FilterDialogContainer extends React.PureComponent {
   state = {
-    preparationTime: this.props.filters.preparationTime
+    preparationTime: this.props.filters.preparationTime,
+    vegetarian: this.props.filters.vegetarian
   };
 
   handleChange = event => {
@@ -18,17 +19,26 @@ class FilterDialogContainer extends React.PureComponent {
     });
   };
 
+  handleCheck = event => {
+    const { name, checked } = event.target;
+    this.setState({
+      [name]: checked
+    });
+  };
+
   handleClose = () => {
     this.props.close();
     this.setState({
-      preparationTime: this.props.filters.preparationTime
+      preparationTime: this.props.filters.preparationTime,
+      vegetarian: this.props.filters.vegetarian
     });
   };
 
   handleApply = () => {
     const filters = {
-      preparationTime: this.state.preparationTime
-    }
+      preparationTime: this.state.preparationTime,
+      vegetarian: this.state.vegetarian
+    };
     this.props.applyFilters(filters);
     this.props.close();
   };
@@ -43,6 +53,7 @@ class FilterDialogContainer extends React.PureComponent {
         classes={this.props.classes}
         InputLabelRef={this.InputLabelRef}
         handleApply={this.handleApply}
+        handleCheck={this.handleCheck}
       />
     );
   }
@@ -60,10 +71,8 @@ const styles = theme => ({
   }
 });
 
-const mapStateToProps = state => (
-{
-filters: state.filters
- 
+const mapStateToProps = state => ({
+  filters: state.filters
 });
 
 export default withStyles(styles)(

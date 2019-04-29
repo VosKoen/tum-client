@@ -37,5 +37,6 @@ export const filters = [
       { value: "60", label: "1 hour or less" },
       { value: "180", label: "3 hours or less" }
     ]
-  }
+  },
+  {id: "vegetarian"}
 ];

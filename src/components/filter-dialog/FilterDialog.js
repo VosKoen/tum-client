@@ -11,9 +11,20 @@ import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import { filters } from "../../constants";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import Grid from "@material-ui/core/Grid";
 
 export default function FilterDialog(props) {
-  const { state, open, handleClose, handleChange, classes, handleApply } = props;
+  const {
+    state,
+    open,
+    handleClose,
+    handleChange,
+    classes,
+    handleApply,
+    handleCheck
+  } = props;
 
   const [inputLabelRef, setInputLabelRef] = useState(undefined);
   const labelOffsetWidth = inputLabelRef
@@ -24,35 +35,54 @@ export default function FilterDialog(props) {
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle id="">Select filters</DialogTitle>
       <DialogContent>
-        <FormControl
-          variant="outlined"
-          className={classes.select}
-          margin="normal"
-        >
-          <InputLabel
-            ref={ref => setInputLabelRef(ref)}
-            htmlFor="preparation-time"
-          >
-            Preparation time
-          </InputLabel>
-          <Select
-            value={state.preparationTime}
-            onChange={handleChange}
-            input={
-              <OutlinedInput
-                labelWidth={labelOffsetWidth}
-                name="preparationTime"
-                id="preparation-time"
-              />
-            }
-          >
-            {filters
-              .find(filter => filter.id === "preparationTime")
-              .options.map((option,index) => (
-                <MenuItem key={index} value={option.value}>{option.value ? option.label: <em>{option.label}</em>}</MenuItem>
-              ))}
-          </Select>
-        </FormControl>
+        <Grid container direction="column">
+          <Grid item>
+            <FormControl
+              variant="outlined"
+              className={classes.select}
+              margin="normal"
+            >
+              <InputLabel
+                ref={ref => setInputLabelRef(ref)}
+                htmlFor="preparation-time"
+              >
+                Preparation time
+              </InputLabel>
+              <Select
+                value={state.preparationTime}
+                onChange={handleChange}
+                input={
+                  <OutlinedInput
+                    labelWidth={labelOffsetWidth}
+                    name="preparationTime"
+                    id="preparation-time"
+                  />
+                }
+              >
+                {filters
+                  .find(filter => filter.id === "preparationTime")
+                  .options.map((option, index) => (
+                    <MenuItem key={index} value={option.value}>
+                      {option.value ? option.label : <em>{option.label}</em>}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={state.vegetarian}
+                  onChange={handleCheck}
+                  name="vegetarian"
+                  id="vegetarian"
+                />
+              }
+              label="Vegetarian"
+            />
+          </Grid>
+        </Grid>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">
