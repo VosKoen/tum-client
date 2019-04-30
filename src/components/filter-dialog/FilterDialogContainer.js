@@ -5,11 +5,21 @@ import FilterDialog from "./FilterDialog";
 import { withStyles } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
 import { applyFilters } from "../../actions/filters";
+import { getLabelList } from "../../actions/labels";
 
 class FilterDialogContainer extends React.PureComponent {
   state = {
     preparationTime: this.props.filters.preparationTime,
-    vegetarian: this.props.filters.vegetarian
+    vegetarian: this.props.filters.vegetarian,
+    filterOnLabels: false,
+    
+  };
+
+  componentDidMount = async () => {
+    await this.props.getLabelList();
+    this.props.availableLabels.map( label => this.setState({
+      [label.labelName]: this.props.filters[label.labelName] || false
+    }))
   };
 
   handleChange = event => {
@@ -32,6 +42,12 @@ class FilterDialogContainer extends React.PureComponent {
       preparationTime: this.props.filters.preparationTime,
       vegetarian: this.props.filters.vegetarian
     });
+
+    this.props.availableLabels.map(label =>
+      this.setState({
+        [label.labelName]: this.props.filters[label.labelName]
+      })
+    );
   };
 
   handleApply = () => {
@@ -39,6 +55,12 @@ class FilterDialogContainer extends React.PureComponent {
       preparationTime: this.state.preparationTime,
       vegetarian: this.state.vegetarian
     };
+    this.props.availableLabels.map(
+      label =>
+        (filters[label.labelName] = this.state.filterOnLabels
+          ? this.state[label.labelName]
+          : false)
+    );
     this.props.applyFilters(filters);
     this.props.close();
   };
@@ -54,6 +76,7 @@ class FilterDialogContainer extends React.PureComponent {
         InputLabelRef={this.InputLabelRef}
         handleApply={this.handleApply}
         handleCheck={this.handleCheck}
+        availableLabels={this.props.availableLabels}
       />
     );
   }
@@ -72,12 +95,13 @@ const styles = theme => ({
 });
 
 const mapStateToProps = state => ({
-  filters: state.filters
+  filters: state.filters,
+  availableLabels: state.referenceData.labels
 });
 
 export default withStyles(styles)(
   connect(
     mapStateToProps,
-    { applyFilters }
+    { applyFilters, getLabelList }
   )(FilterDialogContainer)
 );
