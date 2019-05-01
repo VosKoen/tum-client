@@ -84,7 +84,6 @@ const deleteLabel = id => {
   return { type: DELETE_LABEL, payload: id };
 };
 
-
 const resetMyRecipe = () => {
   return { type: RESET_MY_RECIPE, payload: null };
 };
@@ -367,8 +366,8 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
     return acc;
   }, {});
 
-let continueProcess = true
-console.log('here')
+  let continueProcess = true;
+
   await request
     .get(`${baseUrl}/random-recipe`)
     .set("Authorization", `Bearer ${jwt}`)
@@ -379,27 +378,27 @@ console.log('here')
     })
     .catch(err => {
       continueProcess = false;
-      if(err.status === 404) {
-
+      if (err.status === 404) {
       } else {
-      handleError(dispatch, err);}});
+        handleError(dispatch, err);
+      }
+    });
 
-  if(continueProcess)
-  getRandomImage(recipeId, dispatch, jwt);
+  if (continueProcess) getRandomImage(recipeId, dispatch, jwt);
 
-  if(continueProcess)
-  request
-    .get(`${baseUrl}/recipes/${recipeId}/users/${user}/ratings`)
-    .set("Authorization", `Bearer ${jwt}`)
-    .then(result =>
-      dispatch(
-        setRecipeUserRating({
-          recipeIsLiked: result.body.recipeIsLiked,
-          newRating: result.body.newRating
-        })
+  if (continueProcess)
+    request
+      .get(`${baseUrl}/recipes/${recipeId}/users/${user}/ratings`)
+      .set("Authorization", `Bearer ${jwt}`)
+      .then(result =>
+        dispatch(
+          setRecipeUserRating({
+            recipeIsLiked: result.body.recipeIsLiked,
+            newRating: result.body.newRating
+          })
+        )
       )
-    )
-    .catch(err => handleError(dispatch, err));
+      .catch(err => handleError(dispatch, err));
 };
 
 export const getMyRecipes = (limit, offset) => (dispatch, getState) => {
