@@ -361,13 +361,14 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
   let recipeId;
 
   //Build query based on filters
-  const filterIds = Object.keys(state.filters);
-  const queryFilters = filterIds.reduce((acc, filter) => {
+  const filterNames = Object.keys(state.filters);
+  const queryFilters = filterNames.reduce((acc, filter) => {
     if (state.filters[filter]) acc[filter] = state.filters[filter];
     return acc;
   }, {});
 
-
+let continueProcess = true
+console.log('here')
   await request
     .get(`${baseUrl}/random-recipe`)
     .set("Authorization", `Bearer ${jwt}`)
@@ -376,10 +377,17 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
       recipeId = result.body.id;
       dispatch(setRecipe(result.body));
     })
-    .catch(err => handleError(dispatch, err));
+    .catch(err => {
+      continueProcess = false;
+      if(err.status === 404) {
 
+      } else {
+      handleError(dispatch, err);}});
+
+  if(continueProcess)
   getRandomImage(recipeId, dispatch, jwt);
 
+  if(continueProcess)
   request
     .get(`${baseUrl}/recipes/${recipeId}/users/${user}/ratings`)
     .set("Authorization", `Bearer ${jwt}`)
