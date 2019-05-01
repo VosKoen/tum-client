@@ -99,7 +99,7 @@ export default function FilterDialog(props) {
                   id="filterOnLabels"
                 />
               }
-              label="Only include results with at least one of the selected labels"
+              label="Results must include at least one of the following labels"
             />
           </Grid>
           <Grid item>
@@ -124,6 +124,43 @@ export default function FilterDialog(props) {
               </FormGroup>
             </FormControl>
           </Grid>
+
+          <Grid item>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={state.filterOnLabels}
+                  onChange={handleCheck}
+                  name="filterOnLabels"
+                  id="filterOnLabels"
+                />
+              }
+              label="Results must include all of the following labels"
+            />
+          </Grid>
+          <Grid item>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Labels</FormLabel>
+              <FormGroup>
+                {availableLabels.map(label => (
+                  <FormControlLabel
+                    key={label.id}
+                    control={
+                      <Checkbox
+                        checked={state[label.labelName]}
+                        onChange={handleCheck}
+                        name={label.labelName}
+                        id={label.labelName}
+                      />
+                    }
+                    label={label.labelName}
+                    disabled={!state.filterOnLabels}
+                  />
+                ))}
+              </FormGroup>
+            </FormControl>
+          </Grid>
+
         </Grid>
       </DialogContent>
       <DialogActions>
