@@ -129,10 +129,10 @@ export default function FilterDialog(props) {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={state.filterOnLabels}
+                  checked={state.filterOnLabelsAll}
                   onChange={handleCheck}
-                  name="filterOnLabels"
-                  id="filterOnLabels"
+                  name="filterOnLabelsAll"
+                  id="filterOnLabelsAll"
                 />
               }
               label="Results must include all of the following labels"
@@ -147,14 +147,14 @@ export default function FilterDialog(props) {
                     key={label.id}
                     control={
                       <Checkbox
-                        checked={state[label.labelName]}
+                        checked={state[`${label.labelName}AndCondition`]}
                         onChange={handleCheck}
-                        name={label.labelName}
-                        id={label.labelName}
+                        name={`${label.labelName}AndCondition`}
+                        id={`${label.labelName}AndCondition`}
                       />
                     }
                     label={label.labelName}
-                    disabled={!state.filterOnLabels}
+                    disabled={!state.filterOnLabelsAll}
                   />
                 ))}
               </FormGroup>

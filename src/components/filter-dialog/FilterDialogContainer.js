@@ -12,13 +12,15 @@ class FilterDialogContainer extends React.PureComponent {
     preparationTime: this.props.filters.preparationTime,
     vegetarian: this.props.filters.vegetarian,
     filterOnLabels: false,
+    filterOnLabelsAll: false,
     
   };
 
   componentDidMount = async () => {
     await this.props.getLabelList();
     this.props.availableLabels.map( label => this.setState({
-      [label.labelName]: this.props.filters[label.labelName] || false
+      [label.labelName]: this.props.filters[label.labelName] || false,
+      [`${label.labelName}AndCondition`]: this.props.filters[`${label.labelName}AndCondition`] || false
     }))
   };
 
@@ -45,7 +47,8 @@ class FilterDialogContainer extends React.PureComponent {
 
     this.props.availableLabels.map(label =>
       this.setState({
-        [label.labelName]: this.props.filters[label.labelName]
+        [label.labelName]: this.props.filters[label.labelName] || false,
+        [`${label.labelName}AndCondition`]: this.props.filters[`${label.labelName}AndCondition`] || false
       })
     );
   };
@@ -59,6 +62,12 @@ class FilterDialogContainer extends React.PureComponent {
       label =>
         (filters[label.labelName] = this.state.filterOnLabels
           ? this.state[label.labelName]
+          : false)
+    );
+    this.props.availableLabels.map(
+      label =>
+        (filters[`${label.labelName}AndCondition`] = this.state.filterOnLabelsAll
+          ? this.state[`${label.labelName}AndCondition`]
           : false)
     );
     this.props.applyFilters(filters);
