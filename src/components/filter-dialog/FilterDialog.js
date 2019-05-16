@@ -74,19 +74,6 @@ export default function FilterDialog(props) {
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={state.vegetarian}
-                  onChange={handleCheck}
-                  name="vegetarian"
-                  id="vegetarian"
-                />
-              }
-              label="Vegetarian"
-            />
-          </Grid>
-          <Grid item>
             <Divider />
           </Grid>
           <Grid item>

@@ -10,7 +10,6 @@ import { getLabelList } from "../../actions/labels";
 class FilterDialogContainer extends React.PureComponent {
   state = {
     preparationTime: this.props.filters.preparationTime,
-    vegetarian: this.props.filters.vegetarian,
     filterOnLabels: false,
     filterOnLabelsAll: false,
     
@@ -42,7 +41,6 @@ class FilterDialogContainer extends React.PureComponent {
     this.props.close();
     this.setState({
       preparationTime: this.props.filters.preparationTime,
-      vegetarian: this.props.filters.vegetarian
     });
 
     this.props.availableLabels.map(label =>
@@ -56,7 +54,6 @@ class FilterDialogContainer extends React.PureComponent {
   handleApply = () => {
     const filters = {
       preparationTime: this.state.preparationTime,
-      vegetarian: this.state.vegetarian
     };
     this.props.availableLabels.map(
       label =>
