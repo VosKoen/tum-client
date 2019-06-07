@@ -13,7 +13,9 @@ import MyAccountContainer from "./components/account/MyAccountContainer";
 import ErrorPageContainer from "./components/error/ErrorPageContainer";
 
 class App extends Component {
+
   render() {
+
     return (
       <Router>
         <div className="App">
