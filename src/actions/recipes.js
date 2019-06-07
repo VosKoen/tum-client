@@ -13,8 +13,10 @@ export const SET_RECIPE_IMAGE = "SET_RECIPE_IMAGE";
 export const SET_IS_SELECTED_RECIPE = "SET_IS_SELECTED_RECIPE";
 export const ADD_NEW_INGREDIENT = "ADD_NEW_INGREDIENT";
 export const ADD_NEW_STEP = "ADD_NEW_STEP";
+export const ADD_NEW_LABEL = "ADD_NEW_LABEL";
 export const DELETE_INGREDIENT = "DELETE_INGREDIENT";
 export const DELETE_STEP = "DELETE_STEP";
+export const DELETE_LABEL = "DELETE_LABEL";
 export const SET_DELETE_RECIPE_SUCCESS = "SET_DELETE_RECIPE_SUCCESS";
 export const RESET_MY_RECIPE = "RESET_MY_RECIPE";
 export const SET_EDIT_MODE_YES = "SET_EDIT_MODE_YES";
@@ -72,6 +74,14 @@ const changeStep = (newStep, arrayIndex) => {
 
 const deleteStep = indexStepArray => {
   return { type: DELETE_STEP, payload: indexStepArray };
+};
+
+const addNewLabel = label => {
+  return { type: ADD_NEW_LABEL, payload: label };
+};
+
+const deleteLabel = id => {
+  return { type: DELETE_LABEL, payload: id };
 };
 
 const resetMyRecipe = () => {
@@ -297,6 +307,14 @@ export const removeStepFromRecipe = indexStepArray => dispatch => {
   return dispatch(deleteStep(indexStepArray));
 };
 
+export const addLabelToRecipe = label => dispatch => {
+  dispatch(addNewLabel(label));
+};
+
+export const removeLabelFromRecipe = id => dispatch => {
+  dispatch(deleteLabel(id));
+};
+
 const getRandomImage = (recipeId, dispatch, jwt) => {
   dispatch(setRecipeImageIsUser(false));
 
@@ -342,11 +360,13 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
   let recipeId;
 
   //Build query based on filters
-  const filterIds = Object.keys(state.filters);
-  const queryFilters = filterIds.reduce((acc, filter) => {
+  const filterNames = Object.keys(state.filters);
+  const queryFilters = filterNames.reduce((acc, filter) => {
     if (state.filters[filter]) acc[filter] = state.filters[filter];
     return acc;
   }, {});
+
+  let continueProcess = true;
 
   await request
     .get(`${baseUrl}/random-recipe`)
@@ -356,22 +376,29 @@ export const getRandomRecipe = () => async (dispatch, getState) => {
       recipeId = result.body.id;
       dispatch(setRecipe(result.body));
     })
-    .catch(err => handleError(dispatch, err));
+    .catch(err => {
+      continueProcess = false;
+      if (err.status === 404) {
+      } else {
+        handleError(dispatch, err);
+      }
+    });
 
-  getRandomImage(recipeId, dispatch, jwt);
+  if (continueProcess) getRandomImage(recipeId, dispatch, jwt);
 
-  request
-    .get(`${baseUrl}/recipes/${recipeId}/users/${user}/ratings`)
-    .set("Authorization", `Bearer ${jwt}`)
-    .then(result =>
-      dispatch(
-        setRecipeUserRating({
-          recipeIsLiked: result.body.recipeIsLiked,
-          newRating: result.body.newRating
-        })
+  if (continueProcess)
+    request
+      .get(`${baseUrl}/recipes/${recipeId}/users/${user}/ratings`)
+      .set("Authorization", `Bearer ${jwt}`)
+      .then(result =>
+        dispatch(
+          setRecipeUserRating({
+            recipeIsLiked: result.body.recipeIsLiked,
+            newRating: result.body.newRating
+          })
+        )
       )
-    )
-    .catch(err => handleError(dispatch, err));
+      .catch(err => handleError(dispatch, err));
 };
 
 export const getMyRecipes = (limit, offset) => (dispatch, getState) => {

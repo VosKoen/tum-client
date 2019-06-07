@@ -21,6 +21,7 @@ class MyAccountContainer extends React.PureComponent {
     newPasswordConfirm: "",
     emailAddress: "",
     username: "",
+    showUsername: true,
     [alertPasswordsNotSame]: false
   };
 
@@ -29,7 +30,8 @@ class MyAccountContainer extends React.PureComponent {
 
     this.setState({
       emailAddress: this.props.user.email,
-      username: this.props.user.username
+      username: this.props.user.username,
+      showUsername: !this.props.user.hideUsername
     });
   };
 
@@ -48,7 +50,8 @@ class MyAccountContainer extends React.PureComponent {
     e.preventDefault();
     const user = {
       username: this.state.username,
-      email: this.state.emailAddress
+      email: this.state.emailAddress,
+      hideUsername: !this.state.showUsername
     }
     this.props.submitUserChange(user);
   }
@@ -57,6 +60,14 @@ class MyAccountContainer extends React.PureComponent {
     const { name, value } = event.target;
     this.setState({
       [name]: value
+    });
+  };
+
+  handleToggle = event => {
+    const name = event.target.name;
+
+    this.setState({
+      [name]: !this.state[name]
     });
   };
 
@@ -108,6 +119,7 @@ class MyAccountContainer extends React.PureComponent {
           state={this.state}
           handleSubmitPassword={this.handleSubmitPassword}
           handleChange={this.handleChange}
+          handleToggle={this.handleToggle}
           handleSubmitUserChange={this.handleSubmitUserChange}
           classes={this.props.classes}
         />

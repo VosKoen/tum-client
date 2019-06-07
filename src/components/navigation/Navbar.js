@@ -24,7 +24,7 @@ export default function Navbar(props) {
     <AppBar position="fixed">
       <Toolbar>
         <Grid container alignItems="center">
-          <Grid item xs={1} sm={4}>
+          <Grid item xs={1} sm={3}>
             <Grid container justify="flex-start">
               <IconButton
                 color="inherit"
@@ -52,12 +52,12 @@ export default function Navbar(props) {
               </Menu>
             </Grid>
           </Grid>
-          <Grid item xs={10} sm={4}>
+          <Grid item xs={10} sm={6}>
             <Typography variant="h1" className={classes.header}>
-              Tum
+              Tum it!
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={3}>
             {renderReportButtons()}
           </Grid>
         </Grid>

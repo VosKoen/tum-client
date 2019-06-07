@@ -1,5 +1,5 @@
 export const baseUrl =
-  process.env.REACT_APP_SERVER_URL || "https://koen.local:4000";
+  process.env.REACT_APP_SERVER_URL || "http://localhost:4000";
 export const localStorageJwtKey = "currentUserJwt";
 
 export const imagePlaceholder =
@@ -37,5 +37,6 @@ export const filters = [
       { value: "60", label: "1 hour or less" },
       { value: "180", label: "3 hours or less" }
     ]
-  }
+  },
+  {id: "vegetarian"}
 ];
