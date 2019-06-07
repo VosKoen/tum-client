@@ -37,7 +37,7 @@ class NavContainer extends React.PureComponent {
       redirectMyAccount: false,
       redirectRandomRecipe: false
     });
-    console.log(process.env.NODE_ENV)
+
   }
 
   handleClick = event => {
