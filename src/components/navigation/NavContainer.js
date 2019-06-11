@@ -26,6 +26,7 @@ class NavContainer extends React.PureComponent {
     redirectMyAccount: false,
     redirectRandomRecipe: false,
     redirectMyRecipes: false,
+    redirectMyHeadChefs: false,
     reportSubject: null,
     alertItemIsReported: false,
     reportDialogOpen: false
@@ -35,7 +36,8 @@ class NavContainer extends React.PureComponent {
     this.setState({
       redirectMyRecipes: false,
       redirectMyAccount: false,
-      redirectRandomRecipe: false
+      redirectRandomRecipe: false,
+      redirectMyHeadChefs: false,
     });
 
   }
@@ -66,6 +68,11 @@ class NavContainer extends React.PureComponent {
 
   handleClickMyAccount = () => {
     this.setState({ redirectMyAccount: true });
+    this.handleClose();
+  };
+
+  handleClickMyHeadChefs = () => {
+    this.setState({ redirectMyHeadChefs: true });
     this.handleClose();
   };
 
@@ -188,6 +195,7 @@ class NavContainer extends React.PureComponent {
             handleClickRandomRecipe={this.handleClickRandomRecipe}
             handleClickMyAccount={this.handleClickMyAccount}
             handleClickMyRecipes={this.handleClickMyRecipes}
+            handleClickMyHeadChefs={this.handleClickMyHeadChefs}
             renderReportButtons={this.renderReportButtons}
           />
           {this.state.redirectRandomRecipe ? (
@@ -196,6 +204,8 @@ class NavContainer extends React.PureComponent {
             <Redirect to="/my-recipes" />
           ) : this.state.redirectMyAccount ? (
             <Redirect to="/my-account" />
+          ) : this.state.redirectMyHeadChefs ? (
+            <Redirect to="/my-head-chefs" />
           ) : (
             ""
           )}

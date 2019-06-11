@@ -18,6 +18,7 @@ export default function Navbar(props) {
     handleClickRandomRecipe,
     handleClickMyAccount,
     handleClickMyRecipes,
+    handleClickMyHeadChefs,
     renderReportButtons
   } = props;
   return (
@@ -45,8 +46,9 @@ export default function Navbar(props) {
                 <MenuItem onClick={handleClickRandomRecipe}>
                   Give me a recipe
                 </MenuItem>
-                <MenuItem onClick={handleClickMyRecipes}>Cookbook</MenuItem>
-                <MenuItem onClick={handleClickMyAccount}>My account</MenuItem>
+                <MenuItem onClick={handleClickMyRecipes}>My Cookbook</MenuItem>
+                <MenuItem onClick={handleClickMyHeadChefs}>My Head Chefs</MenuItem>
+                <MenuItem onClick={handleClickMyAccount}>My Account</MenuItem>
 
                 <MenuItem onClick={handleClickLogout}>Logout</MenuItem>
               </Menu>

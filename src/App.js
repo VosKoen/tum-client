@@ -11,6 +11,7 @@ import RecipeViewContainer from "./components/recipe-view/RecipeViewContainer";
 import MyRecipesViewContainer from "./components/my-recipes-view/MyRecipesViewContainer";
 import MyAccountContainer from "./components/account/MyAccountContainer";
 import ErrorPageContainer from "./components/error/ErrorPageContainer";
+import HeadChefsViewContainer from "./components/head-chefs-view/HeadChefsViewContainer";
 
 class App extends Component {
 
@@ -25,6 +26,7 @@ class App extends Component {
           <main>
             <Route exact path="/" component={RecipeViewContainer} />
             <Route exact path="/recipe-form" component={RecipeFormContainer} />
+            <Route exact path="/my-head-chefs" component={HeadChefsViewContainer} />
             <Route
               exact
               path="/my-recipes"
